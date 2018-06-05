@@ -1,0 +1,40 @@
+{
+    "name": "putyourlightson/craft-sherlock",
+    "description": "Security scanner to keep your site and CMS secure.",
+    "version": "2.0.0",
+    "type": "craft-plugin",
+    "homepage": "https://www.putyourlightson.net/craft-sherlock",
+    "license": "proprietary",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "security",
+        "scanner",
+        "secure"
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+          "putyourlightson\\sherlock\\": "src/"
+        }
+    },
+    "support": {
+        "docs": "https://www.putyourlightson.net/craft-sherlock/docs",
+        "source": "https://github.com/putyourlightson/craft-sherlock",
+        "issues": "https://github.com/putyourlightson/craft-sherlock/issues"
+    },
+    "extra": {
+        "name": "Sherlock",
+        "handle": "sherlock",
+        "developer": "PutYourLightsOn",
+        "developerUrl": "https://www.putyourlightson.net/",
+        "schemaVersion": "2.0.0",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-sherlock/v2/CHANGELOG.md",
+        "class": "putyourlightson\\sherlock\\Sherlock"
+    }
+}

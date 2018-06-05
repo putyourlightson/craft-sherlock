@@ -1,0 +1,83 @@
+.sherlock h1 {
+    color: #000;
+    font-size: 26px;
+    margin: 15px 0 30px;
+}
+
+.sherlock h2 {
+    color: #8f98a3;
+    font-size: 16px;
+    font-weight: normal;
+    margin: 10px 0 40px;
+}
+
+.sherlock h1.title {
+    margin: 15px 0 10px;
+}
+
+.sherlock h1 img {
+    vertical-align: text-bottom;
+}
+
+.sherlock table.data th:first-of-type {
+    width: 20px;
+}
+
+.sherlock table.data td:first-of-type img {
+    width: 20px;
+    height: 22px;
+    vertical-align: middle;
+}
+
+.sherlock .fail {
+    font-weight: bold;
+}
+
+.sherlock .type {
+    margin-left: 3px;
+    font-size: 110%;
+    color: #CECBD8;
+}
+
+.sherlock .expand {
+    margin: 15px 0;
+}
+
+.sherlock .result .info:before {
+    content: 'alert';
+}
+
+.sherlock .caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-top: 4px solid\9;
+    border-right: 4px solid rgba(0, 0, 0, 0);
+    border-left: 4px solid rgba(0, 0, 0, 0);
+    margin-left: 3px;
+}
+
+.sherlock .caret.up {
+    content: "";
+    border-top: 0;
+    border-bottom: 4px dashed;
+    border-bottom: 4px solid\9;
+}
+
+.sherlock-settings .missing-fields {
+    margin: 25px 0;
+}
+
+.sherlock-settings .missing-fields .field {
+    margin: 10px 0;
+}
+
+.sherlock-settings .extra-instructions {
+    margin-top: -15px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #8f98a3;
+}
