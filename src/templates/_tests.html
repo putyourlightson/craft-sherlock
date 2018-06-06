@@ -199,17 +199,6 @@
         },
         'info': 'Requiring that new email addresses are verified before getting saved to user accounts ensures that they are genuine and active email addresses.',
     },
-    'allowPublicRegistration': {
-        'name': 'Allow Public Registration',
-        'type': 'users',
-        'typeName': 'User Setting',
-        'details': {
-            'pass': 'Public registration is disabled or enabled and protected by <a href="https://www.putyourlightson.net/craft-snaptcha" target="_blank">Snaptcha</a>',
-            'warning': 'Public registration is enabled but not protected by <a href="https://www.putyourlightson.net/craft-snaptcha" target="_blank">Snaptcha</a>',
-        },
-        'info': 'Enabling public registration allows unauthenticated registration of user accounts on the front-end of your site. If you enable this then ensure that you are protecting your user registration forms with a spam blocker such as Snaptcha.',
-        'url': 'https://craftcms.com/docs/users#public-registration',
-    },
     'devMode': {
         'name': 'Dev Mode',
         'type': 'settings',
@@ -232,7 +221,7 @@
         'info': 'If enabled, this setting will wrap all strings that are ran through Craft::t() or the |translate filter with "@" symbols. It is intended for debugging and should be disabled in live production environments.',
         'url': 'https://craftcms.com/docs/config-settings#translationDebugOutput',
     },
-    'defaultFilePermissions': {
+    'defaultFileMode': {
         'name': 'Default File Permissions',
         'type': 'settings',
         'typeName': 'Config Setting',
@@ -241,9 +230,9 @@
             'warning': 'Set default file permissions to 0664',
         },
         'info': 'The permissions Craft will use when creating a new file on the file system. Set this to at most 0664, which will grant read and write for the owner and group, read for everyone else.',
-        'url': 'https://craftcms.com/docs/config-settings#defaultFilePermissions',
+        'url': 'https://craftcms.com/docs/config-settings#defaultFileMode',
     },
-    'defaultFolderPermissions': {
+    'defaultDirMode': {
         'name': 'Default Folder Permissions',
         'type': 'settings',
         'typeName': 'Config Setting',
@@ -252,7 +241,7 @@
             'warning': 'Set default folder permissions to 0775',
         },
         'info': 'The permissions Craft will use when creating a new folder on the file system. Set this to at most 0775, which will grant everything for the owner and group, read and execute for everyone else.',
-        'url': 'https://craftcms.com/docs/config-settings#defaultFolderPermissions',
+        'url': 'https://craftcms.com/docs/config-settings#defaultDirMode',
     },
     'defaultTokenDuration': {
         'name': 'Default Token Duration',
@@ -287,7 +276,7 @@
         'info': 'Whether Craft should set the secure flag on its cookies, limiting them to only be sent on secure (SSL) requests. Setting this to "on" or "auto" will ensure that the secure flag is set.',
         'url': 'https://craftcms.com/docs/config-settings#useSecureCookies',
     },
-    'validationKey': {
+    'securityKey': {
         'name': 'Validation Key',
         'type': 'settings',
         'typeName': 'Config Setting',
@@ -296,7 +285,7 @@
             'warning': 'Set secure validation key',
         },
         'info': 'This setting will override the auto-generated secure validation key used to verify that hashed values have not been tampered with. If set, ensure that it is a private, random, cryptographically secure key.',
-        'url': 'https://craftcms.com/docs/config-settings#validationKey',
+        'url': 'https://craftcms.com/docs/config-settings#securityKey',
     },
     'cpTrigger': {
         'name': 'Control Panel Trigger',

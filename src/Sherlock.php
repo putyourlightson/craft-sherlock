@@ -45,6 +45,7 @@ class Sherlock extends Plugin
         // Register services as components
         $this->setComponents([
             'sherlock' => SherlockService::class,
+            'tests' => TestsService::class,
         ]);
 
         // Register variable
@@ -85,7 +86,7 @@ class Sherlock extends Plugin
     {
         // Create and save default settings
         $settings = $this->createSettingsModel();
-        $this->settings->saveSettings($settings);
+        Craft::$app->plugins->savePluginSettings($this, $settings->getAttributes());
 
         // Redirect to settings page
         $url = UrlHelper::cpUrl('settings/plugins/sherlock');

@@ -7,12 +7,21 @@ namespace putyourlightson\sherlock\services;
 
 use Craft;
 use craft\base\Component;
+use craft\base\Plugin;
+use craft\enums\PluginUpdateStatus;
+use craft\enums\VersionUpdateStatus;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\TransferStats;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
 
 /**
  * Tests Service
+ *
+ * @property array $testNames
  */
 class TestsService extends Component
 {
@@ -35,7 +44,7 @@ class TestsService extends Component
     public function getTestNames(): array
     {
         // Default tests
-        $tests = ['criticalCraftUpdates', 'criticalPluginUpdates', 'pluginVulnerabilities', 'httpsControlPanel', 'httpsFrontEnd', 'cors', 'xFrameOptions', 'xContentTypeOptions', 'xXssProtection', 'strictTransportSecurity', 'purifyHtml', 'craftFoldersAboveWebRoot', 'craftFolderPermissions', 'craftFilePermissions', 'phpVersion', 'craftUpdates', 'pluginUpdates', 'requireEmailVerification', 'allowPublicRegistration', 'devMode', 'translationDebugOutput', 'defaultFilePermissions', 'defaultFolderPermissions', 'defaultTokenDuration', 'enableCsrfProtection', 'useSecureCookies', 'validationKey', 'cpTrigger', 'blowfishHashCost', 'cooldownDuration', 'invalidLoginWindowDuration', 'maxInvalidLogins', 'rememberedUserSessionDuration', 'requireMatchingUserAgentForSession', 'requireUserAgentAndIpForSession', 'testToEmailAddress', 'userSessionDuration', 'verificationCodeDuration'];
+        $tests = ['criticalCraftUpdates', 'criticalPluginUpdates', 'pluginVulnerabilities', 'httpsControlPanel', 'httpsFrontEnd', 'cors', 'xFrameOptions', 'xContentTypeOptions', 'xXssProtection', 'strictTransportSecurity', 'purifyHtml', 'craftFoldersAboveWebRoot', 'craftFolderPermissions', 'craftFilePermissions', 'phpVersion', 'craftUpdates', 'pluginUpdates', 'requireEmailVerification', 'devMode', 'translationDebugOutput', 'defaultFileMode', 'defaultDirMode', 'defaultTokenDuration', 'enableCsrfProtection', 'useSecureCookies', 'securityKey', 'cpTrigger', 'blowfishHashCost', 'cooldownDuration', 'invalidLoginWindowDuration', 'maxInvalidLogins', 'rememberedUserSessionDuration', 'requireMatchingUserAgentForSession', 'requireUserAgentAndIpForSession', 'testToEmailAddress', 'userSessionDuration', 'verificationCodeDuration'];
 
         // Remove disabled tests
         $disabledTests = Sherlock::$plugin->getSettings()->disabledTests;
@@ -66,14 +75,15 @@ class TestsService extends Component
         {
             $url = str_replace('https://', 'http://', UrlHelper::baseSiteUrl());
     		$client = Craft::createGuzzleClient();
-    		$request = $client->get($url, [
+    		$response = $client->get($url, [
     			'timeout' => 10,
     			'connect_timeout' => 5,
+                'on_stats' => function (TransferStats $stats) {
+    		        $this->_effectiveUrl = $stats->getEffectiveUri();
+                },
     		]);
 
-    		$response = $request->send();
             $this->_headers = $response->getHeaders();
-            $this->_effectiveUrl = $response->getEffectiveUrl();
         }
 
         // get updates, forcing a refresh
@@ -82,7 +92,7 @@ class TestsService extends Component
             $this->_updateModel = Craft::$app->getUpdates()->getUpdates(true);
         }
 
-        $testModel = new TestModel(craft()->config->get($test, 'sherlock'));
+        $testModel = new TestModel();
         $testModel->highSecurityLevel = $this->_settings->highSecurityLevel;
 
         switch ($test)
@@ -97,28 +107,28 @@ class TestsService extends Component
 
                     try
                     {
-                        $request = $client->get($this->_settings->pluginVulnerabilitiesFeedUrl, [
+                        $response = $client->get($this->_settings->pluginVulnerabilitiesFeedUrl, [
                             'timeout' => 10,
                             'connect_timeout' => 5,
                         ]);
 
-                        $response = $request->send();
                         $responseBody = $response->getBody();
-                        $vulnerabilities = JsonHelper::decode($responseBody);
+                        $vulnerabilities = Json::decode($responseBody);
 
                         if ($vulnerabilities)
                         {
-                            $installedPlugins = craft()->plugins->getPlugins();
+                            $installedPlugins = Craft::$app->getPlugins()->getAllPlugins();
 
                             foreach ($vulnerabilities as $vulnerability)
                             {
                                 if (isset($installedPlugins[$vulnerability['handle']]))
                                 {
-                                    $plugin = craft()->plugins->getPlugin($vulnerability['handle']);
+                                    /** @var Plugin $plugin */
+                                    $plugin = Craft::$app->getPlugins()->getPlugin($vulnerability['handle']);
 
                                     if (empty($vulnerability['fixedVersion']) OR version_compare($plugin->getVersion(), $vulnerability['fixedVersion'], '<'))
                                     {
-                                        $pluginVulnerabilities[] = '<a href="'.$vulnerability['url'].'" target="_blank">'.$plugin->getName().' '.$vulnerability['version'].'</a> <span class="info">'.$vulnerability['description'].(isset($vulnerability['fixedVersion']) ? ' (fixed in version '.$vulnerability['fixedVersion'].')' : '').'</span>';
+                                        $pluginVulnerabilities[] = '<a href="'.$vulnerability['url'].'" target="_blank">'.$plugin->name.' '.$vulnerability['version'].'</a> <span class="info">'.$vulnerability['description'].(isset($vulnerability['fixedVersion']) ? ' (fixed in version '.$vulnerability['fixedVersion'].')' : '').'</span>';
                                     }
                                 }
                             }
@@ -129,8 +139,7 @@ class TestsService extends Component
                             $testModel->warning = true;
                         }
                     }
-                    catch (\Guzzle\Http\Exception\BadResponseException $e) { $testModel->warning = true; }
-                    catch (\Guzzle\Http\Exception\CurlException $e) { $testModel->warning = true; }
+                    catch (ConnectException $e) { $testModel->warning = true; }
 
                     if (!empty($pluginVulnerabilities))
                     {
@@ -172,6 +181,10 @@ class TestsService extends Component
 
                     else if ($this->_headers['Access-Control-Allow-Origin'])
                     {
+                        if (is_array($this->_headers['Access-Control-Allow-Origin'])) {
+                            $this->_headers['Access-Control-Allow-Origin'] = implode(', ', $this->_headers['Access-Control-Allow-Origin']);
+                        }
+
                         $testModel->warning = true;
                         $testModel->value = '"'.$this->_headers['Access-Control-Allow-Origin'].'"';
                     }
@@ -253,48 +266,37 @@ class TestsService extends Component
 
             case 'craftFoldersAboveWebRoot':
                 $paths = [
-                    'app' => CRAFT_BASE_PATH,
-                    'config' => CRAFT_CONFIG_PATH,
-                    'storage' => CRAFT_STORAGE_PATH,
-                    'templates' => CRAFT_TEMPLATES_PATH,
+                    'root' => Craft::getAlias('@root'),
+                    'config' => Craft::getAlias('@config'),
+                    'storage' => Craft::getAlias('@storage'),
+                    'templates' => Craft::getAlias('@templates'),
                 ];
                 $pathsFailed = [];
                 $cwd = getcwd();
 
-                if (strpos(CRAFT_BASE_PATH, $cwd) !== false)
+                foreach ($paths as $key => $path)
+                {
+                    // if the current working directory is a substring of the path
+                    if (strpos($path, $cwd) !== false)
+                    {
+                        $pathsFailed[] = $key;
+                    }
+                }
+
+                if (count($pathsFailed))
                 {
                     $testModel->failTest();
 
-                    $testModel->value = 'craft';
-                }
-
-                else
-                {
-                    foreach ($paths as $key => $path)
-                    {
-                        // if the current working directory is a substring of the path
-                        if (strpos($path, $cwd) !== false)
-                        {
-                            $pathsFailed[] = $key;
-                        }
-                    }
-
-                    if (count($pathsFailed))
-                    {
-                        $testModel->failTest();
-
-                        $testModel->value = implode(', ', $pathsFailed);
-                    }
-
+                    $testModel->value = implode(', ', $pathsFailed);
                 }
 
                 break;
 
             case 'craftFolderPermissions':
                 $paths = [
-                    'app' => CRAFT_BASE_PATH,
-                    'config' => CRAFT_CONFIG_PATH,
-                    'storage' => CRAFT_STORAGE_PATH,
+                    'root' => Craft::getAlias('@root'),
+                    'config' => Craft::getAlias('@config'),
+                    'storage' => Craft::getAlias('@storage'),
                 ];
                 $pathsFailed = [];
 
@@ -317,10 +319,11 @@ class TestsService extends Component
                 break;
 
             case 'craftFilePermissions':
+                $configPath = Craft::getAlias('@config');
                 $files = [
-                    'config/db.php' => CRAFT_CONFIG_PATH.'db.php',
-                    'config/general.php' => CRAFT_CONFIG_PATH.'general.php',
-                    'config/license.key' => CRAFT_CONFIG_PATH.'license.key',
+                    'config/db.php' => $configPath.'/db.php',
+                    'config/general.php' => $configPath.'/general.php',
+                    'config/license.key' => $configPath.'/license.key',
                 ];
                 $filesFailed = [];
 
@@ -449,20 +452,6 @@ class TestsService extends Component
 
                 break;
 
-            case 'allowPublicRegistration':
-                if (Craft::$app->getSystemSettings()->getSetting('users', 'allowPublicRegistration') === true)
-                {
-                    $installedPlugins = Craft::$app->getPlugins()->getAllPlugins();
-
-                    // if not installed or not enabled
-                    if (empty($installedPlugins['snaptcha']) OR !Craft::$app->getPlugins()->getPlugin('snaptcha')->getSettings()->enabled)
-                    {
-                        $testModel->failTest();
-                    }
-                }
-
-                break;
-
             case 'devMode':
                 if (Craft::$app->getConfig()->getGeneral()->$test)
                 {
@@ -492,8 +481,8 @@ class TestsService extends Component
 
                 break;
 
-            case 'defaultFilePermissions':
-            case 'defaultFolderPermissions':
+            case 'defaultFileMode':
+            case 'defaultDirMode':
                 $value = Craft::$app->getConfig()->getGeneral()->$test;
 
                 if ($value > $testModel->threshold)
@@ -512,7 +501,7 @@ class TestsService extends Component
             case 'verificationCodeDuration':
                 $value = Craft::$app->getConfig()->getGeneral()->$test;
 
-                $interval = new \DateInterval($value);
+                $interval = DateTimeHelper::secondsToInterval($value);
 
                 if ($interval->format($testModel->format) > $testModel->threshold)
                 {
@@ -526,10 +515,10 @@ class TestsService extends Component
 
                 break;
 
-            case 'validationKey':
+            case 'securityKey4securityKey4':
                 $value = Craft::$app->getConfig()->getGeneral()->$test;
 
-                if ($value AND (strlen($value) < 10 OR $value == '6#AYD6jW6nUJ3GMfreeXcPTGmBu.V*3Fi?f'))
+                if ($value AND (strlen($value) < 10))
                 {
                     $testModel->failTest();
                 }
@@ -563,7 +552,7 @@ class TestsService extends Component
 
             case 'cooldownDuration':
                 $value = Craft::$app->getConfig()->getGeneral()->$test;
-                $interval = new \DateInterval($value);
+                $interval = DateTimeHelper::secondsToInterval($value);
 
                 if ($interval->format($testModel->format) < $testModel->threshold)
                 {
@@ -580,7 +569,7 @@ class TestsService extends Component
             case 'invalidLoginWindowDuration':
                 $value = Craft::$app->getConfig()->getGeneral()->$test;
 
-                $interval = new \DateInterval($value);
+                $interval = DateTimeHelper::secondsToInterval($value);
 
                 if ($interval->format($testModel->format) < $testModel->threshold)
                 {
@@ -619,7 +608,7 @@ class TestsService extends Component
 
                 if ($value)
                 {
-                    $interval = new \DateInterval($value);
+                    $interval = DateTimeHelper::secondsToInterval($value);
 
                     if ($interval->format($testModel->format) > $testModel->threshold)
                     {
@@ -644,7 +633,7 @@ class TestsService extends Component
 
                 else
                 {
-                    $interval = new \DateInterval($value);
+                    $interval = DateTimeHelper::secondsToInterval($value);
 
                     if ($interval->format($testModel->format) > $testModel->threshold)
                     {

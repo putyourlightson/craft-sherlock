@@ -5,6 +5,10 @@
 
 namespace putyourlightson\sherlock\variables;
 
+use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\sherlock\models\ScanModel;
+use putyourlightson\sherlock\Sherlock;
+
 
 /**
  * Sherlock Variable
@@ -12,21 +16,11 @@ namespace putyourlightson\sherlock\variables;
 class SherlockVariable
 {
     /**
-     * Get plugin name
-     *
-	 * @return string
-     */
-    public function getPluginName()
-    {
-        return craft()->plugins->getPlugin('sherlock')->getName();
-    }
-
-    /**
      * Get random string
      *
 	 * @return string
      */
-    public function getRandomString()
+    public function getRandomString(): string
     {
         return StringHelper::randomString(32);
     }
@@ -34,11 +28,11 @@ class SherlockVariable
     /**
      * Get last scan
      *
-	 * @return Sherlock_ScanModel
+	 * @return ScanModel
      */
-    public function getLastScan()
+    public function getLastScan(): ScanModel
     {
-        return craft()->sherlock->getLastScan();
+        return Sherlock::$plugin->sherlock->getLastScan();
     }
 
     /**
@@ -46,9 +40,9 @@ class SherlockVariable
      *
 	 * @return array
      */
-    public function getAllScans()
+    public function getAllScans(): array
     {
-        return craft()->sherlock->getAllScans();
+        return Sherlock::$plugin->sherlock->getAllScans();
     }
 
     /**
@@ -56,18 +50,16 @@ class SherlockVariable
      *
 	 * @return string
      */
-    public function checkHighSecurityLevel()
+    public function checkHighSecurityLevel(): string
     {
-        return craft()->plugins->getPlugin('sherlock')->getSettings()->highSecurityLevel;
+        return Sherlock::$plugin->getSettings()->highSecurityLevel;
     }
 
     /**
      * Run scan
-     *
-	 * @return Sherlock_ScanModel
      */
     public function runScan()
     {
-        craft()->sherlock->runScan();
+        Sherlock::$plugin->sherlock->runScan();
     }
 }

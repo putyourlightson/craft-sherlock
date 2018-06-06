@@ -1,11 +1,10 @@
 {% extends "sherlock/_tests" %}
 
-{% includeCssResource "sherlock/css/style.css" %}
-{% includeCssResource "css/updates.css" %}
-{% includeJsResource "sherlock/js/script.js" %}
 
-{% set title = craft.sherlock.pluginName %}
+{% set title = 'Sherlock' %}
 {% set faIcons = {'header': 'fa-lock', 'server': 'fa-server', 'upload': 'fa-upload', 'folder': 'fa-folder-o', 'files': 'fa-files-o', 'code': 'fa-code'} %}
+
+{% do view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
 
 
 {% block content %}
@@ -20,7 +19,7 @@
 
         <div class="sherlock">
             <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/runScanAjax') }}">{{ "Run Scan Now"|t }}</a>
+                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan-ajax') }}">{{ "Run Scan Now"|t }}</a>
             </div>
 
             <h1 class="title">{{ "Last Security Scan"|t }}</h1>
@@ -30,7 +29,7 @@
             </h2>
 
             <h1>
-                <img width="32" height="32" src="{{ resourceUrl('sherlock/icons/' ~ (lastScan.pass ? 'pass' : 'fail') ~ '.svg') }}" />
+                <img width="32" height="32" src="{{ ('sherlock/icons/' ~ (lastScan.pass ? 'pass' : 'fail') ~ '.svg') }}" />
                 This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.checkHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}
                 <span class="info">{{ "This security scan result is determined by a set of criteria used by Sherlock's standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner."|t }}</span>
             </h1>
@@ -50,7 +49,7 @@
                         {% set test = tests[testName] %}
                         <tr>
                             <td>
-                                <img src="{{ resourceUrl('sherlock/icons/' ~ resultType ~ '.svg') }}" title="{{ resultType|capitalize }}" />
+                                <img src="{{ ('sherlock/icons/' ~ resultType ~ '.svg') }}" title="{{ resultType|capitalize }}" />
                             </td>
                             <td>
                                 <span class="{{ resultType == 'fail' ? 'fail' }}">{{ test.name|t }}</span>
@@ -89,7 +88,7 @@
             <br/><br/><br/>
 
             <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/runScanAjax') }}">{{ "Run Scan Now"|t }}</a>
+                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('scans/run-scan-ajax') }}">{{ "Run Scan Now"|t }}</a>
             </div>
 
             <h1 class="title">{{ "Security Scan History"|t }}</h1>
@@ -109,7 +108,7 @@
                 <tbody>
                     {% for scan in allScans %}
                         <tr>
-                            <td><img src="{{ resourceUrl('sherlock/icons/' ~ (scan.pass ? 'pass' : 'fail') ~ '.svg') }}" /></td>
+                            <td><img src="{{ ('sherlock/icons/' ~ (scan.pass ? 'pass' : 'fail') ~ '.svg') }}" /></td>
                             <td>{{ scan.pass ? 'Pass' ~ (scan.warning ? ' with warnings') : 'Fail' }}</td>
                             <td>{{ scan.highSecurityLevel ? 'High' : 'Standard' }}</td>
                             <td>{{ scan.results.fail is defined ? scan.results.fail|length : 0 }}</td>
@@ -128,7 +127,7 @@
 
     {% else %}
 
-        <script>var runScanAjax = '{{ actionUrl('sherlock/runScanAjax') }}';</script>
+        <script>var runScanAjax = '{{ actionUrl('sherlock/scans/run-scan-ajax') }}';</script>
 
     {% endif %}
 

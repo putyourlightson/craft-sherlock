@@ -8,33 +8,26 @@ namespace putyourlightson\sherlock\records;
 use craft\db\ActiveRecord;
 
 /**
-* Scan Record
-*
-*/
+ * Scan Record
+ *
+ * @property bool $highSecurityLevel          High security level
+ * @property bool $pass                       Pass
+ * @property bool $warning                    Warning
+ * @property mixed $results                   Results
+ * @property string $tableName
+ */
 class ScanRecord extends ActiveRecord
 {
-    /**
-    * Gets the database table name
-    *
-    * @return string
-    */
-    public function getTableName()
-    {
-        return 'sherlock';
-    }
+    // Public Static Methods
+    // =========================================================================
 
-    /**
-    * Define columns for our database table
-    *
-    * @return array
-    */
-    public function defineAttributes()
+     /**
+     * @inheritdoc
+     *
+     * @return string the table name
+     */
+    public static function tableName(): string
     {
-        return array(
-            'highSecurityLevel' => AttributeType::Bool,
-            'pass' => AttributeType::Bool,
-            'warning' => AttributeType::Bool,
-            'results' => AttributeType::Mixed,
-        );
+        return '{{%sherlock}}';
     }
 }

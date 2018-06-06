@@ -163,11 +163,10 @@ class SherlockService extends Component
         $scanModel->results = $results;
 
         // log scan
-        $user = craft()->userSession->getUser();
-        SherlockPlugin::log(
-            'Scan run by '.($user ? $user->username : $request->ipAddress).' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
-            LogLevel::Info,
-            $this->_settings->logAllEvents
+        $user = Craft::$app->getUser()->getIdentity();
+        Craft::info(
+            'Scan run by '.($user ? $user->username : '').' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
+            'sherlock'
         );
 
         // check failed scan against last scan

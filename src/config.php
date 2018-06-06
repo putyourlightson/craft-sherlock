@@ -74,18 +74,17 @@ return array(
     'requireEmailVerification' => array(
         'canFail' => true,
     ),
-    'allowPublicRegistration' => array(),
     'devMode' => array(
         'canFail' => true,
     ),
     'translationDebugOutput' => array(
         'canFail' => true,
     ),
-    'defaultFilePermissions' => array(
+    'defaultFileMode' => array(
         'canFail' => true,
         'threshold' => 0664,
     ),
-    'defaultFolderPermissions' => array(
+    'defaultDirMode' => array(
         'canFail' => true,
         'threshold' => 0775,
     ),
@@ -100,7 +99,7 @@ return array(
     'useSecureCookies' => array(
         'canFail' => true,
     ),
-    'validationKey' => array(
+    'securityKey' => array(
         'canFail' => true,
     ),
     'cpTrigger' => array(),
