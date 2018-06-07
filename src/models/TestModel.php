@@ -36,6 +36,11 @@ class TestModel extends BaseModel
     public $threshold = 0;
 
     /**
+     * @var mixed|null
+     */
+    public $thresholds;
+
+    /**
      * @var string|null
      */
     public $format;

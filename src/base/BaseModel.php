@@ -25,15 +25,12 @@ abstract class BaseModel extends Model
      */
     public static function populateModel($values, $safeOnly = true): Model
     {
-        if ($values instanceof Model) {
-            $values = $values->getAttributes();
-        }
-
         $class = static::class;
 
+        $properties = array_keys((new $class())->getAttributes());
+
         /** @var Model $model */
-        $model = new $class();
-        $model->setAttributes($values->getAttributes(), $safeOnly);
+        $model = new $class($values->toArray($properties));
 
         return $model;
     }
@@ -55,8 +52,9 @@ abstract class BaseModel extends Model
         {
             foreach ($data as $values)
             {
-                $model = static::populateModel($values, $safeOnly);
-                if ($indexBy)
+                $model = self::populateModel($values, $safeOnly);
+
+                if ($indexBy !== null)
                 {
                     $models[$model->$indexBy] = $model;
                 }

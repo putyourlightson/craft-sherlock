@@ -82,6 +82,16 @@ class Sherlock extends Plugin
     /**
      * @inheritdoc
      */
+    protected function settingsHtml()
+    {
+        return Craft::$app->getView()->renderTemplate('sherlock/settings', [
+            'settings' => $this->getSettings()
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function afterInstall()
     {
         // Create and save default settings
@@ -89,8 +99,6 @@ class Sherlock extends Plugin
         Craft::$app->plugins->savePluginSettings($this, $settings->getAttributes());
 
         // Redirect to settings page
-        $url = UrlHelper::cpUrl('settings/plugins/sherlock');
-
-        Craft::$app->getResponse()->redirect($url)->send();
+        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('settings/plugins/sherlock'))->send();
     }
 }

@@ -19,6 +19,11 @@
     vertical-align: text-bottom;
 }
 
+.sherlock h1 .info {
+    vertical-align: top;
+    font-size: 14px;
+}
+
 .sherlock table.data th:first-of-type {
     width: 20px;
 }

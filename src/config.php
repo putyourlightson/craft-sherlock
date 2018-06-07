@@ -1,60 +1,75 @@
 <?php
+/**
+ * @copyright Copyright (c) PutYourLightsOn
+ */
 
-return array(
+/**
+ * Sherlock config.php
+ *
+ * This file exists only as a template for the Sherlock settings.
+ * It does nothing on its own.
+ *
+ * Don't edit this file, instead copy it to 'craft/config' as 'sherlock.php'
+ * and make your changes there to override default settings.
+ *
+ * Once copied to 'craft/config', this file will be multi-environment aware as
+ * well, so you can have different settings groups for each environment, just as
+ * you do for 'general.php'
+ */
+
+return [
 
     /**
 	 * Add tests to disable to the array
+	 *
+    'disabledTests' => [],
 	 */
-    'disabledTests' => array(),
 
     /**
 	 * Individual test settings
-	 */
-    'criticalCraftUpdates' => array(
+	 *
+    'criticalCraftUpdates' => [
         'forceFail' => true,
-    ),
-    'criticalPluginUpdates' => array(
+    ],
+    'criticalPluginUpdates' => [
         'forceFail' => true,
-    ),
-    'pluginVulnerabilities' => array(
+    ],
+    'pluginVulnerabilities' => [
         'forceFail' => true,
-    ),
-    'httpsControlPanel' => array(
+    ],
+    'httpsControlPanel' => [
         'forceFail' => true,
-    ),
-    'httpsFrontEnd' => array(
+    ],
+    'httpsFrontEnd' => [
         'canFail' => true,
-    ),
-    'cors' => array(
+    ],
+    'cors' => [
         'forceFail' => true,
-    ),
-    'xFrameOptions' => array(
+    ],
+    'xFrameOptions' => [
         'canFail' => true,
-    ),
-    'xContentTypeOptions' => array(
+    ],
+    'xContentTypeOptions' => [
         'canFail' => true,
-    ),
-    'xXssProtection' => array(
+    ],
+    'xXssProtection' => [
         'canFail' => true,
-    ),
-    'strictTransportSecurity' => array(
+    ],
+    'strictTransportSecurity' => [
         'canFail' => true,
-    ),
-    'purifyHtml' => array(
+    ],
+    'craftFoldersAboveWebRoot' => [
         'canFail' => true,
-    ),
-    'craftFoldersAboveWebRoot' => array(
+    ],
+    'craftFolderPermissions' => [
         'canFail' => true,
-    ),
-    'craftFolderPermissions' => array(
+    ],
+    'craftFilePermissions' => [
         'canFail' => true,
-    ),
-    'craftFilePermissions' => array(
+    ],
+    'phpVersion' => [
         'canFail' => true,
-    ),
-    'phpVersion' => array(
-        'canFail' => true,
-        'thresholds' => array(
+        'thresholds' => [
             '5.0' => '2005-09-05',
             '5.1' => '2006-07-24',
             '5.2' => '2011-01-06',
@@ -63,78 +78,81 @@ return array(
             '5.5' => '2016-07-10',
             '5.6' => '2018-12-31',
             '7.0' => '2018-12-03',
-        ),
-    ),
-    'craftUpdates' => array(
+            '7.1' => '2019-12-01',
+            '7.2' => '2020-11-30',
+        ],
+    ],
+    'craftUpdates' => [
         'canFail' => true,
-    ),
-    'pluginUpdates' => array(
+    ],
+    'pluginUpdates' => [
         'canFail' => true,
-    ),
-    'requireEmailVerification' => array(
+    ],
+    'requireEmailVerification' => [
         'canFail' => true,
-    ),
-    'devMode' => array(
+    ],
+    'devMode' => [
         'canFail' => true,
-    ),
-    'translationDebugOutput' => array(
+    ],
+    'translationDebugOutput' => [
         'canFail' => true,
-    ),
-    'defaultFileMode' => array(
+    ],
+    'defaultFileMode' => [
         'canFail' => true,
         'threshold' => 0664,
-    ),
-    'defaultDirMode' => array(
+    ],
+    'defaultDirMode' => [
         'canFail' => true,
         'threshold' => 0775,
-    ),
-    'defaultTokenDuration' => array(
+    ],
+    'defaultTokenDuration' => [
         'canFail' => true,
         'threshold' => 1,
         'format' => '%d',
-    ),
-    'enableCsrfProtection' => array(
+    ],
+    'enableCsrfProtection' => [
         'canFail' => true,
-    ),
-    'useSecureCookies' => array(
+    ],
+    'useSecureCookies' => [
         'canFail' => true,
-    ),
-    'securityKey' => array(
+    ],
+    'securityKey' => [
         'canFail' => true,
-    ),
-    'cpTrigger' => array(),
-    'blowfishHashCost' => array(
+    ],
+    'cpTrigger' => [],
+    'blowfishHashCost' => [
         'threshold' => 13,
-    ),
-    'cooldownDuration' => array(
+    ],
+    'cooldownDuration' => [
         'threshold' => 5,
         'format' => '%i',
-    ),
-    'invalidLoginWindowDuration' => array(
+    ],
+    'invalidLoginWindowDuration' => [
         'threshold' => 1,
         'format' => '%h',
-    ),
-    'maxInvalidLogins' => array(
+    ],
+    'maxInvalidLogins' => [
         'canFail' => true,
         'threshold' => 5,
-    ),
-    'rememberedUserSessionDuration' => array(
+    ],
+    'rememberedUserSessionDuration' => [
         'threshold' => 14,
         'format' => '%d',
-    ),
-    'requireMatchingUserAgentForSession' => array(),
-    'requireUserAgentAndIpForSession' => array(),
-    'testToEmailAddress' => array(
+    ],
+    'requireMatchingUserAgentForSession' => [],
+    'requireUserAgentAndIpForSession' => [],
+    'testToEmailAddress' => [
         'canFail' => true,
-    ),
-    'userSessionDuration' => array(
+    ],
+    'userSessionDuration' => [
         'canFail' => true,
         'threshold' => 1,
         'format' => '%h',
-    ),
-    'verificationCodeDuration' => array(
+    ],
+    'verificationCodeDuration' => [
         'canFail' => true,
         'threshold' => 1,
         'format' => '%d',
-    ),
-);
+    ],
+     */
+];

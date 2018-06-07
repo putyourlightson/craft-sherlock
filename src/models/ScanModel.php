@@ -5,6 +5,7 @@
 
 namespace putyourlightson\sherlock\models;
 
+use craft\helpers\Json;
 use putyourlightson\sherlock\base\BaseModel;
 
 /**
@@ -48,4 +49,18 @@ class ScanModel extends BaseModel
      * @var \DateTime
      */
     public $dateCreated;
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Decode results if not array
+        $this->results = is_array($this->results) ? $this->results : Json::decode($this->results);
+    }
 }

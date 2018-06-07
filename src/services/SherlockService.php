@@ -15,6 +15,9 @@ use yii\web\HttpException;
 
 /**
  * Sherlock Service
+ *
+ * @property ScanModel|null $lastScan
+ * @property array $cpAlerts
  */
 class SherlockService extends Component
 {
@@ -79,7 +82,7 @@ class SherlockService extends Component
      */
     public function getCpAlerts(): array
     {
-        $alerts = array();
+        $alerts = [];
 
         if ($this->_settings->liveMode) {
             $userId = Craft::$app->getUser()->id;
@@ -137,10 +140,10 @@ class SherlockService extends Component
      */
     public function runScan()
     {
-        // create model
-        $scanModel = new ScanModel(array(
-            'highSecurityLevel' => $this->_settings->highSecurityLevel,
-        ));
+        // Create model
+        $scanModel = new ScanModel([
+            'highSecurityLevel' => (bool)$this->_settings->highSecurityLevel,
+        ]);
 
         $results = $scanModel->results;
         $tests = Sherlock::$plugin->tests->getTestNames();
@@ -162,10 +165,10 @@ class SherlockService extends Component
 
         $scanModel->results = $results;
 
-        // log scan
+        // Log scan
         $user = Craft::$app->getUser()->getIdentity();
         Craft::info(
-            'Scan run by '.($user ? $user->username : '').' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
+            'Scan run by '.$user->username.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
             'sherlock'
         );
 
@@ -200,11 +203,11 @@ class SherlockService extends Component
             }
         }
 
-        // populate and save record
+        // Populate and save record
         $scanRecord = new ScanRecord;
         $scanRecord->setAttributes($scanModel->getAttributes(), false);
 
-        // simlplify results
+        // Simlplify results
         $results = array();
         foreach ($scanRecord->results as $key => $result) {
             foreach ($result as $test => $testModel) {

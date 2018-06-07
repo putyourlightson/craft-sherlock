@@ -1,78 +1,67 @@
 {% import '_includes/forms' as forms %}
 
-{% includeCssResource "sherlock/css/style.css" %}
-
-
 <div class="sherlock-settings">
     {{ forms.lightswitchField({
         first: true,
-        label: 'Live Mode'|t,
+        label: 'Live Mode'|t('sherlock'),
         name: 'liveMode',
-        instructions: 'Whether the site is live – if on then CP alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins'|t,
+        instructions: 'Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins.'|t('sherlock'),
         on: settings.liveMode,
         errors: settings.getErrors('liveMode')
     }) }}
 
     {{ forms.lightswitchField({
-    	label: 'High Security Level'|t,
+    	label: 'High Security Level'|t('sherlock'),
     	name: 'highSecurityLevel',
-    	instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings'|t,
+    	instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
     	on: settings.highSecurityLevel,
     	errors: settings.getErrors('highSecurityLevel')
     }) }}
 
     {{ forms.lightswitchField({
-    	label: 'Header Protection'|t,
+    	label: 'Header Protection'|t('sherlock'),
     	name: 'headerProtection',
-    	instructions: 'Protects your site by setting HTTP response headers that provide added security'|t,
+    	instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
     	on: settings.headerProtection,
     	errors: settings.getErrors('headerProtection')
-    }) }}
-
-    {{ forms.lightswitchField({
-        label: 'Log All Events'|t,
-        name: 'logAllEvents',
-        instructions: 'Whether to log events even when Dev Mode is disabled'|t,
-        on: settings.logAllEvents,
-        errors: settings.getErrors('logAllEvents')
     }) }}
 
     <hr />
 
     {{ forms.textField({
-    	label: 'Notification Email Addresses'|t,
+    	label: 'Notification Email Addresses'|t('sherlock'),
     	name: 'notificationEmailAddresses',
-    	instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues'|t,
+    	instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues.'|t('sherlock'),
     	value: settings.notificationEmailAddresses,
     	errors: settings.getErrors('notificationEmailAddresses')
     }) }}
 
     {{ forms.textField({
-    	label: 'Plugin Vulnerabilities Feed URL'|t,
+    	label: 'Plugin Vulnerabilities Feed URL'|t('sherlock'),
     	name: 'pluginVulnerabilitiesFeedUrl',
-    	instructions: 'The URL of of a JSON feed URL containing known plugin vulnerabilities (must begin with "https://", view the <a href="https://github.com/putyourlightson/craft-plugin-vulnerabilities" target="_blank">feed format</a>)'|t|raw,
+    	instructions: 'The URL of of a JSON feed URL containing known plugin vulnerabilities (must begin with "https://", view the <a href="https://github.com/putyourlightson/craft-plugin-vulnerabilities" target="_blank">feed format</a>).'|t('sherlock')|raw,
     	value: settings.pluginVulnerabilitiesFeedUrl,
     	errors: settings.getErrors('pluginVulnerabilitiesFeedUrl')
     }) }}
 
     {{ forms.textField({
-    	label: 'API Key'|t,
+    	label: 'API Key'|t('sherlock'),
     	name: 'apiKey',
-    	instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work (randomly generated string: '|t ~ craft.sherlock.randomString ~ ')',
+    	instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work.'|t('sherlock'),
     	value: settings.apiKey,
     	errors: settings.getErrors('apiKey')
     }) }}
 
     <p class="extra-instructions">
-        You can create a cron job to run scans on a regular basis. The method you use depends on your server environment. For example, this cron command will trigger a scan to be run every day at 8am:
+        {{ 'You can create a cron job to run scans on a regular basis. The method you use depends on your server environment. For example, this cron command will trigger a scan to be run every day at 8am:'|t('sherlock') }}
         <br/>
         <code>0 8 * * *    /usr/bin/curl --silent --compressed {{ siteUrl(craft.config.get('actionTrigger') ~ '/sherlock/runScan', { key: settings.apiKey }) }}</code>
     </p>
 
     {{ forms.textField({
-    	label: 'Secret Key'|t,
+    	label: 'Secret Key'|t('sherlock'),
     	name: 'secretKey',
-    	instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin (randomly generated string: '|t ~ craft.sherlock.randomString ~ ')',
+    	instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.'|t('sherlock'),
     	value: settings.secretKey,
     	errors: settings.getErrors('secretKey')
     }) }}
@@ -81,17 +70,19 @@
     <hr />
 
     {{ forms.textareaField({
-        label: 'Restrict Control Panel Access To IP Addresses'|t,
+        label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
         name: 'restrictControlPanelIpAddresses',
-        instructions: 'Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access)'|t,
+        instructions: 'Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).'|t('sherlock'),
+        rows: 3,
         value: settings.restrictControlPanelIpAddresses,
         errors: settings.getErrors('restrictControlPanelIpAddresses')
     }) }}
 
     {{ forms.textareaField({
-        label: 'Restrict Front-End Access To IP Addresses'|t,
+        label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
         name: 'restrictFrontEndIpAddresses',
-        instructions: 'Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access)'|t,
+        instructions: 'Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access).'|t('sherlock'),
+        rows: 3,
         value: settings.restrictFrontEndIpAddresses,
         errors: settings.getErrors('restrictFrontEndIpAddresses')
     }) }}

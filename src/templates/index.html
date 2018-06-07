@@ -4,7 +4,8 @@
 {% set title = 'Sherlock' %}
 {% set faIcons = {'header': 'fa-lock', 'server': 'fa-server', 'upload': 'fa-upload', 'folder': 'fa-folder-o', 'files': 'fa-files-o', 'code': 'fa-code'} %}
 
-{% do view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
+{% set bundle = view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
+{% set resourcesUrl = bundle.baseUrl %}
 
 
 {% block content %}
@@ -19,67 +20,69 @@
 
         <div class="sherlock">
             <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan-ajax') }}">{{ "Run Scan Now"|t }}</a>
+                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan-ajax') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
             </div>
 
-            <h1 class="title">{{ "Last Security Scan"|t }}</h1>
+            <h1 class="title">{{ "Last Security Scan"|t('sherlock') }}</h1>
             <h2>
                 <i class="fa fa-clock-o"></i>
                 {{ lastScan.dateCreated|date('j F Y \\a\\t H:i') }}
             </h2>
 
             <h1>
-                <img width="32" height="32" src="{{ ('sherlock/icons/' ~ (lastScan.pass ? 'pass' : 'fail') ~ '.svg') }}" />
+                <img width="32" height="32" src="{{ resourcesUrl ~ '/icons/' ~ (lastScan.pass ? 'pass' : 'fail') ~ '.svg' }}" />
                 This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.checkHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}
-                <span class="info">{{ "This security scan result is determined by a set of criteria used by Sherlock's standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner."|t }}</span>
+                <span class="info">{{ "This security scan result is determined by a set of criteria used by Sherlock's standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner."|t('sherlock') }}</span>
             </h1>
 
             <table class="data fullwidth">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>{{ "Test"|t }}</th>
-                        <th>{{ "Details"|t }}</th>
+                        <th>{{ "Test"|t('sherlock') }}</th>
+                        <th>{{ "Details"|t('sherlock') }}</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for resultType, results in lastScan.results %}
                     {% for testName, value in results %}
-                        {% set test = tests[testName] %}
-                        <tr>
-                            <td>
-                                <img src="{{ ('sherlock/icons/' ~ resultType ~ '.svg') }}" title="{{ resultType|capitalize }}" />
-                            </td>
-                            <td>
-                                <span class="{{ resultType == 'fail' ? 'fail' }}">{{ test.name|t }}</span>
-                                {% if faIcons[test.type] is defined %}
-                                    <i class="type fa {{ faIcons[test.type] }}" title="{{ test.typeName|t }}"></i>
-                                {% else %}
-                                    <i class="type" data-icon="{{ test.type }}" title="{{ test.typeName|t }}"></i>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <span class="result {{ resultType == 'fail' ? 'fail' }}">
-                                    {% if resultType == 'pass' %}
-                                        {{ test.details.pass|t|raw }}
-                                    {% elseif resultType == 'warning' %}
-                                        {{ test.details.warning|t|raw }}
+                        {% if tests[testName] is defined %}
+                            {% set test = tests[testName] %}
+                            <tr>
+                                <td>
+                                    <img src="{{ resourcesUrl ~ '/icons/' ~ resultType ~ '.svg' }}" title="{{ resultType|capitalize }}" />
+                                </td>
+                                <td>
+                                    <span class="{{ resultType == 'fail' ? 'fail' }}">{{ test.name|t('sherlock') }}</span>
+                                    {% if faIcons[test.type] is defined %}
+                                        <i class="type fa {{ faIcons[test.type] }}" title="{{ test.typeName|t('sherlock') }}"></i>
                                     {% else %}
-                                        {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t|raw }}
+                                        <i class="type" data-icon="{{ test.type }}" title="{{ test.typeName|t('sherlock') }}"></i>
                                     {% endif %}
-                                    {{ value ? value|raw }}
-                                </span>
-                                {% if test.info and not (testName == 'pluginVulnerabilities' and resultType == 'fail') %}
-                                    <span class="info">{{ test.info|t|raw }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if test.url is defined %}
-                                    <a href="{{ test.url }}" class="go" target="_blank">{{ "Docs"|t }}</a>
-                                {% endif %}
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <span class="result {{ resultType == 'fail' ? 'fail' }}">
+                                        {% if resultType == 'pass' %}
+                                            {{ test.details.pass|t('sherlock')|raw }}
+                                        {% elseif resultType == 'warning' %}
+                                            {{ test.details.warning|t('sherlock')|raw }}
+                                        {% else %}
+                                            {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t('sherlock')|raw }}
+                                        {% endif %}
+                                        {{ value ? value|raw }}
+                                    </span>
+                                    {% if test.info and not (testName == 'pluginVulnerabilities' and resultType == 'fail') %}
+                                        <span class="info">{{ test.info|t('sherlock')|raw }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if test.url is defined %}
+                                        <a href="{{ test.url }}" class="go" target="_blank">{{ "Docs"|t('sherlock') }}</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 {% endfor %}
                 </tbody>
@@ -88,27 +91,27 @@
             <br/><br/><br/>
 
             <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('scans/run-scan-ajax') }}">{{ "Run Scan Now"|t }}</a>
+                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('scans/run-scan-ajax') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
             </div>
 
-            <h1 class="title">{{ "Security Scan History"|t }}</h1>
-            <h2><i class="fa fa-history"></i> {{ "Previously run security scans"|t }}</h2>
+            <h1 class="title">{{ "Security Scan History"|t('sherlock') }}</h1>
+            <h2><i class="fa fa-history"></i> {{ "Previously run security scans"|t('sherlock') }}</h2>
 
             <table class="data fullwidth limited" data-limit="10">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>{{ "Result"|t }}</th>
-                        <th>{{ "Security Level"|t }}</th>
-                        <th>{{ "Failed Tests"|t }}</th>
-                        <th>{{ "Warnings"|t }}</th>
-                        <th>{{ "Date"|t }}</th>
+                        <th>{{ "Result"|t('sherlock') }}</th>
+                        <th>{{ "Security Level"|t('sherlock') }}</th>
+                        <th>{{ "Failed Tests"|t('sherlock') }}</th>
+                        <th>{{ "Warnings"|t('sherlock') }}</th>
+                        <th>{{ "Date"|t('sherlock') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for scan in allScans %}
                         <tr>
-                            <td><img src="{{ ('sherlock/icons/' ~ (scan.pass ? 'pass' : 'fail') ~ '.svg') }}" /></td>
+                            <td><img src="{{ resourcesUrl ~ '/icons/' ~ (scan.pass ? 'pass' : 'fail') ~ '.svg' }}" /></td>
                             <td>{{ scan.pass ? 'Pass' ~ (scan.warning ? ' with warnings') : 'Fail' }}</td>
                             <td>{{ scan.highSecurityLevel ? 'High' : 'Standard' }}</td>
                             <td>{{ scan.results.fail is defined ? scan.results.fail|length : 0 }}</td>
@@ -133,7 +136,7 @@
 
     <div class="running" {{ allScans|length ? 'style="display: none;"' }}>
     	<div id="graphic" class="spinner big"></div>
-    	<div id="status">{{ "Running security scan…"|t }}</div>
+    	<div id="status"><p>{{ "Running security scan…"|t('sherlock') }}</p></div>
     </div>
 
 {% endblock %}

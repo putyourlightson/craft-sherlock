@@ -32,11 +32,9 @@ $(document).ready(function()
         $.get($(this).data('url'), function() {
             location.reload();
         }).fail(function(xhr) {
-            var error = xhr.responseText
-            error = error.replace(/\n/g, '');
-            error = error.replace(/<pre>(.*)/, '');
+            var error = xhr.responseText;
             $('.running #graphic').addClass('error');
-            $('.running #status').html(error);
+            $('.running #status').addClass('error').html(error);
         });
 
         event.preventDefault();

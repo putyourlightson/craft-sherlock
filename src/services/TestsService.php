@@ -14,9 +14,11 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\TransferStats;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
+use yii\web\HttpException;
 
 /**
  * Tests Service
@@ -44,7 +46,7 @@ class TestsService extends Component
     public function getTestNames(): array
     {
         // Default tests
-        $tests = ['criticalCraftUpdates', 'criticalPluginUpdates', 'pluginVulnerabilities', 'httpsControlPanel', 'httpsFrontEnd', 'cors', 'xFrameOptions', 'xContentTypeOptions', 'xXssProtection', 'strictTransportSecurity', 'purifyHtml', 'craftFoldersAboveWebRoot', 'craftFolderPermissions', 'craftFilePermissions', 'phpVersion', 'craftUpdates', 'pluginUpdates', 'requireEmailVerification', 'devMode', 'translationDebugOutput', 'defaultFileMode', 'defaultDirMode', 'defaultTokenDuration', 'enableCsrfProtection', 'useSecureCookies', 'securityKey', 'cpTrigger', 'blowfishHashCost', 'cooldownDuration', 'invalidLoginWindowDuration', 'maxInvalidLogins', 'rememberedUserSessionDuration', 'requireMatchingUserAgentForSession', 'requireUserAgentAndIpForSession', 'testToEmailAddress', 'userSessionDuration', 'verificationCodeDuration'];
+        $tests = ['criticalCraftUpdates', 'criticalPluginUpdates', 'pluginVulnerabilities', 'httpsControlPanel', 'httpsFrontEnd', 'cors', 'xFrameOptions', 'xContentTypeOptions', 'xXssProtection', 'strictTransportSecurity', 'craftFoldersAboveWebRoot', 'craftFolderPermissions', 'craftFilePermissions', 'phpVersion', 'craftUpdates', 'pluginUpdates', 'requireEmailVerification', 'devMode', 'translationDebugOutput', 'defaultFileMode', 'defaultDirMode', 'defaultTokenDuration', 'enableCsrfProtection', 'useSecureCookies', 'securityKey', 'cpTrigger', 'blowfishHashCost', 'cooldownDuration', 'invalidLoginWindowDuration', 'maxInvalidLogins', 'rememberedUserSessionDuration', 'requireMatchingUserAgentForSession', 'requireUserAgentAndIpForSession', 'testToEmailAddress', 'userSessionDuration', 'verificationCodeDuration'];
 
         // Remove disabled tests
         $disabledTests = Sherlock::$plugin->getSettings()->disabledTests;
@@ -64,35 +66,44 @@ class TestsService extends Component
      */
     public function runTest($test): TestModel
     {
-        // get settings
+        // Get settings
         if (empty($this->_settings))
         {
             $this->_settings = Sherlock::$plugin->getSettings();
         }
 
-        // get site headers of insecure front-end site url
+        // Get site headers of insecure front-end site url
         if (empty($this->_headers))
         {
             $url = str_replace('https://', 'http://', UrlHelper::baseSiteUrl());
     		$client = Craft::createGuzzleClient();
-    		$response = $client->get($url, [
-    			'timeout' => 10,
-    			'connect_timeout' => 5,
-                'on_stats' => function (TransferStats $stats) {
-    		        $this->_effectiveUrl = $stats->getEffectiveUri();
-                },
-    		]);
 
-            $this->_headers = $response->getHeaders();
+            try {
+                $response = $client->get($url, [
+                    'timeout' => 10,
+                    'connect_timeout' => 5,
+                    'on_stats' => function(TransferStats $stats) {
+                        $this->_effectiveUrl = $stats->getEffectiveUri();
+                    },
+                ]);
+
+                $this->_headers = $response->getHeaders();
+            }
+            catch (ConnectException $e) {}
+            catch (ServerException $e) {}
+
+            if (empty($this->_headers)) {
+                throw new HttpException(500, Craft::t('sherlock', 'unable to connect to {url}. Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]));
+            }
         }
 
-        // get updates, forcing a refresh
+        // Get updates, forcing a refresh
         if (empty($this->_updateModel))
         {
             $this->_updateModel = Craft::$app->getUpdates()->getUpdates(true);
         }
 
-        $testModel = new TestModel();
+        $testModel = new TestModel($this->_settings->$test);
         $testModel->highSecurityLevel = $this->_settings->highSecurityLevel;
 
         switch ($test)
@@ -101,8 +112,6 @@ class TestsService extends Component
                 if (!empty($this->_settings->pluginVulnerabilitiesFeedUrl) AND stripos($this->_settings->pluginVulnerabilitiesFeedUrl, 'https://') === 0)
                 {
                     $pluginVulnerabilities = [];
-
-                    // Create new guzzle client
                     $client = Craft::createGuzzleClient();
 
                     try
@@ -239,31 +248,6 @@ class TestsService extends Component
 
                 break;
 
-            /*
-            case 'purifyHtml':
-                $fields = Craft::$app->getFields()->getAllFields();
-                $fieldsFailed = [];
-
-                foreach ($fields as $field)
-            	{
-                    $fieldtype = $field->getFieldType();
-
-                    if ($fieldtype AND $fieldtype->model->type == 'RichText' AND !$fieldtype->getSettings()->purifyHtml)
-                    {
-                        $fieldsFailed[] = '<a href="'.UrlHelper::getCpUrl('settings/fields/edit/'.$field->id).'" target="_blank">'.$field->name.'</a>';
-                    }
-                }
-
-                if (count($fieldsFailed))
-                {
-                    $testModel->failTest();
-
-                    $testModel->value = implode(', ', $fieldsFailed);
-                }
-
-                break;
-            */
-
             case 'craftFoldersAboveWebRoot':
                 $paths = [
                     'root' => Craft::getAlias('@root'),
@@ -360,7 +344,7 @@ class TestsService extends Component
                     $eolDate = $testModel->thresholds[$value];
                 }
 
-                $testModel->value = $version.' (until '.$eolDate.')';
+                $testModel->value = $version.($eolDate ? ' (until '.$eolDate.')' : '');
 
                 break;
 
