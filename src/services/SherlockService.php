@@ -7,7 +7,9 @@ namespace putyourlightson\sherlock\services;
 
 use Craft;
 use craft\base\Component;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\UrlHelper;
+use craft\mail\Message;
 use putyourlightson\sherlock\models\ScanModel;
 use putyourlightson\sherlock\records\ScanRecord;
 use putyourlightson\sherlock\Sherlock;
@@ -159,7 +161,7 @@ class SherlockService extends Component
                 $scanModel->warning = true;
             }
 
-            $status = (!$testModel->pass ? 'fail' : ($testModel->warning ? 'warning' : 'pass'));
+            $status = !$testModel->pass ? 'fail' : ($testModel->warning ? 'warning' : 'pass');
             $results[$status][$test] = $testModel;
         }
 
@@ -221,25 +223,28 @@ class SherlockService extends Component
 
     /**
      * Send and Log Notification Email
+     *
+     * @param $subject
+     * @param $message
+     * @param $log
+     * @throws SiteNotFoundException
      */
     private function _sendLogNotificationEmail($subject, $message, $log)
     {
-        // if live mode and notification email addresses exist
+        // If live mode and notification email addresses exist
         if ($this->_settings->liveMode and !empty($this->_settings->notificationEmailAddresses)) {
-            $emailModel = new EmailModel();
-            $emailModel->toEmail = $this->_settings->notificationEmailAddresses;
-            $emailModel->subject = craft()->getSiteName().' – '.$subject;
-            $emailModel->body = $message.UrlHelper::getCpUrl('sherlock');
+            $mailer = Craft::$app->getMailer();
 
-            craft()->email->sendEmail($emailModel);
+            /** @var Message $message*/
+            $message = $mailer->compose()
+                ->setTo($this->_settings->notificationEmailAddresses)
+                ->setSubject(Craft::$app->getSites()->getCurrentSite()->name.' - '.$subject)
+                ->setHtmlBody($message.UrlHelper::cpUrl('sherlock'));
 
-            // log notification email
-            $user = craft()->userSession->getUser();
-            SherlockPlugin::log(
-                $log.$this->_settings->notificationEmailAddresses,
-                LogLevel::Info,
-                true
-            );
+            $message->send();
+
+            // Log notification email
+            Craft::info($log.$this->_settings->notificationEmailAddresses, 'sherlock');
         }
     }
 }

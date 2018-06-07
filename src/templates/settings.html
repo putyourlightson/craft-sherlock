@@ -55,7 +55,7 @@
     <p class="extra-instructions">
         {{ 'You can create a cron job to run scans on a regular basis. The method you use depends on your server environment. For example, this cron command will trigger a scan to be run every day at 8am:'|t('sherlock') }}
         <br/>
-        <code>0 8 * * *    /usr/bin/curl --silent --compressed {{ siteUrl(craft.config.get('actionTrigger') ~ '/sherlock/runScan', { key: settings.apiKey }) }}</code>
+        <code>0 8 * * *    /usr/bin/curl --silent --compressed {{ siteUrl(craft.app.config.general.actionTrigger ~ '/sherlock/runScan', { key: settings.apiKey }) }}</code>
     </p>
 
     {{ forms.textField({
