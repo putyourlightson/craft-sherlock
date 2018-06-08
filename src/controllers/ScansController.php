@@ -35,10 +35,6 @@ class ScansController extends Controller
 
         // Get settings
         $this->_settings = Sherlock::$plugin->getSettings();
-
-        // prevent devMode logging from being output
-        //\Craft::$app->getLog()->removeRoute('WebLogRoute');
-        //craft()->log->removeRoute('ProfileLogRoute');
     }
 
     /**
@@ -57,13 +53,15 @@ class ScansController extends Controller
         $scan = Json::encode(Sherlock::$plugin->sherlock->getLastScan());
 
         // Encrypt scan with secret key
-        $scan = Craft::$app->getSecurity()->encrypt($scan, false, $this->_settings->secretKey);
+        $scan = Craft::$app->getSecurity()->encryptByKey($scan, $this->_settings->secretKey);
 
         exit($scan);
     }
 
     /**
      * Get all scans
+     *
+     * @throws HttpException
      */
     public function actionGetAllScans()
     {
@@ -78,10 +76,10 @@ class ScansController extends Controller
         $offsetId = Craft::$app->getRequest()->getParam('offsetId', 0);
 
         // Get JSON encoded scans from offset ID
-        $scans = Json::encode(craft()->sherlock->getAllScans($offsetId));
+        $scans = Json::encode(Sherlock::$plugin->sherlock->getAllScans($offsetId));
 
         // Encrypt scans with secret key
-        $scans = Craft::$app->getSecurity()->encrypt($scans, false, $this->_settings->secretKey);
+        $scans = Craft::$app->getSecurity()->encryptByKey($scans, $this->_settings->secretKey);
 
         exit($scans);
     }
@@ -102,7 +100,7 @@ class ScansController extends Controller
         $success = Json::encode(array('success' => 1));
 
         // Encrypt with secret key
-        $data = Craft::$app->getSecurity()->encrypt($success, false, $this->_settings->secretKey);
+        $data = Craft::$app->getSecurity()->encryptByKey($success, $this->_settings->secretKey);
 
         exit($data);
     }

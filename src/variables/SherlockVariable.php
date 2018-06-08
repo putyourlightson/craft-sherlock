@@ -5,7 +5,6 @@
 
 namespace putyourlightson\sherlock\variables;
 
-use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\sherlock\models\ScanModel;
 use putyourlightson\sherlock\Sherlock;
 
@@ -15,16 +14,6 @@ use putyourlightson\sherlock\Sherlock;
  */
 class SherlockVariable
 {
-    /**
-     * Get random string
-     *
-	 * @return string
-     */
-    public function getRandomString(): string
-    {
-        return StringHelper::randomString(32);
-    }
-
     /**
      * Get last scan
      *
