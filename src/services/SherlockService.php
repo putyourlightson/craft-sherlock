@@ -116,7 +116,10 @@ class SherlockService extends Component
             return null;
         }
 
-        return ScanModel::populateModel($scanRecord);
+        /** @var ScanModel $scan */
+        $scan = ScanModel::populateModel($scanRecord);
+
+        return $scan;
     }
 
     /**

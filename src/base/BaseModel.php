@@ -19,11 +19,10 @@ abstract class BaseModel extends Model
      * Populates a new model instance with a given set of attributes.
      *
      * @param mixed $values
-     * @param bool|null $safeOnly
      *
      * @return Model
      */
-    public static function populateModel($values, $safeOnly = true): Model
+    public static function populateModel($values): Model
     {
         $class = static::class;
 
@@ -39,12 +38,11 @@ abstract class BaseModel extends Model
      * Mass-populates models based on an array of attribute arrays.
      *
      * @param array $data
-     * @param bool|null $safeOnly
      * @param string|null $indexBy
      *
      * @return array
      */
-    public static function populateModels(array $data, $safeOnly = true, $indexBy = null): array
+    public static function populateModels(array $data, $indexBy = null): array
     {
         $models = [];
 
@@ -52,7 +50,7 @@ abstract class BaseModel extends Model
         {
             foreach ($data as $values)
             {
-                $model = self::populateModel($values, $safeOnly);
+                $model = self::populateModel($values);
 
                 if ($indexBy !== null)
                 {

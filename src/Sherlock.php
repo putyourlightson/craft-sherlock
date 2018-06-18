@@ -58,7 +58,7 @@ class Sherlock extends Plugin
         // Check for header protection
         $this->sherlock->checkHeaderProtection();
 
-        // Check for site resrictions
+        // Check for site restrictions
         $this->sherlock->checkRestrictions();
     }
 

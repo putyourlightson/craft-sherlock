@@ -181,67 +181,68 @@ class TestsService extends Component
                 break;
 
             case 'cors':
-                if (isset($this->_headers['Access-Control-Allow-Origin']))
+                if (isset($this->_headers['Access-Control-Allow-Origin'][0]))
                 {
-                    if ($this->_headers['Access-Control-Allow-Origin'] == '*')
+                    if ($this->_headers['Access-Control-Allow-Origin'][0] == '*')
                     {
                         $testModel->failTest();
                     }
 
-                    else if ($this->_headers['Access-Control-Allow-Origin'])
+                    else if ($this->_headers['Access-Control-Allow-Origin'][0])
                     {
-                        if (is_array($this->_headers['Access-Control-Allow-Origin'])) {
-                            $this->_headers['Access-Control-Allow-Origin'] = implode(', ', $this->_headers['Access-Control-Allow-Origin']);
+                        if (is_array($this->_headers['Access-Control-Allow-Origin'][0])) {
+                            $this->_headers['Access-Control-Allow-Origin'][0] = implode(', ', $this->_headers['Access-Control-Allow-Origin'][0]);
                         }
 
                         $testModel->warning = true;
-                        $testModel->value = '"'.$this->_headers['Access-Control-Allow-Origin'].'"';
                     }
+
+                    $testModel->value = '"'.$this->_headers['Access-Control-Allow-Origin'][0].'"';
                 }
 
                 break;
 
             case 'xFrameOptions':
-                if (empty($this->_headers['X-Frame-Options']) OR ($this->_headers['X-Frame-Options'] != 'DENY' AND $this->_headers['X-Frame-Options'] != 'SAMEORIGIN'))
+                if (empty($this->_headers['X-Frame-Options'][0]) OR ($this->_headers['X-Frame-Options'][0] != 'DENY' AND $this->_headers['X-Frame-Options'][0] != 'SAMEORIGIN'))
                 {
                     $testModel->failTest();
                 }
 
                 else
                 {
-                    $testModel->value = '"'.$this->_headers['X-Frame-Options'].'"';
+                    $testModel->value = '"'.$this->_headers['X-Frame-Options'][0].'"';
                 }
 
                 break;
 
             case 'xContentTypeOptions':
-                if (empty($this->_headers['X-Content-Type-Options']) OR $this->_headers['X-Content-Type-Options'] != 'nosniff')
+                if (empty($this->_headers['X-Content-Type-Options'][0]) OR $this->_headers['X-Content-Type-Options'][0] != 'nosniff')
                 {
                     $testModel->failTest();
                 }
 
                 else
                 {
-                    $testModel->value = '"'.$this->_headers['X-Content-Type-Options'].'"';
+                    $testModel->value = '"'.$this->_headers['X-Content-Type-Options'][0].'"';
                 }
 
                 break;
 
             case 'xXssProtection':
-                if (empty($this->_headers['X-Xss-Protection']) OR $this->_headers['X-Xss-Protection'] != '1; mode=block')
+                if (empty($this->_headers['X-Xss-Protection'][0]) OR $this->_headers['X-Xss-Protection'][0] != '1; mode=block')
                 {
                     $testModel->failTest();
                 }
 
                 else
                 {
-                    $testModel->value = '"'.$this->_headers['X-Xss-Protection'].'"';
+                    $testModel->value = '"'.$this->_headers['X-Xss-Protection'][0].'"';
                 }
 
                 break;
 
             case 'strictTransportSecurity':
-                if (strpos($this->_effectiveUrl, 'https') === 0 AND empty($this->_headers['Strict-Transport-Security']))
+                if (strpos($this->_effectiveUrl, 'https') === 0 AND empty($this->_headers['Strict-Transport-Security'][0]))
                 {
                     $testModel->failTest();
                 }
