@@ -1,4 +1,6 @@
-# Sherlock Plugin for Craft CMS
+<p align="center"><img width="200" src="src/icon.svg"></p>
+
+# Sherlock Plugin for Craft CMS 3
 
 Sherlock is a security scanner and monitor to keep your site and [Craft CMS](https://craftcms.com/) secure.
 
