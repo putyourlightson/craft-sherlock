@@ -68,11 +68,11 @@ class SherlockService extends Component
     {
         $request = Craft::$app->getRequest();
 
-        if (!empty($this->_settings->restrictControlPanelIpAddresses) and $request->getIsCpRequest() and !Craft::$app->getUser()->getIsAdmin() and !in_array($request->getUserIP(), explode("\n", $this->_settings->restrictControlPanelIpAddresses), true)) {
+        if (!empty($this->_settings->restrictControlPanelIpAddresses) and $request->getIsCpRequest() and !Craft::$app->getUser()->getIsAdmin() and !in_array($request->getUserIP(), explode(PHP_EOL, $this->_settings->restrictControlPanelIpAddresses), true)) {
             throw new HttpException(503);
         }
 
-        if (!empty($this->_settings->restrictFrontEndIpAddresses) and $request->getIsSiteRequest() and !Craft::$app->getUser()->getIsAdmin() and !in_array($request->getUserIP(), explode("\n", $this->_settings->restrictFrontEndIpAddresses), true)) {
+        if (!empty($this->_settings->restrictFrontEndIpAddresses) and $request->getIsSiteRequest() and !Craft::$app->getUser()->getIsAdmin() and !in_array($request->getUserIP(), explode(PHP_EOL, $this->_settings->restrictFrontEndIpAddresses), true)) {
             throw new HttpException(503);
         }
     }

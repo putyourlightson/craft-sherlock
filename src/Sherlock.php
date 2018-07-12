@@ -7,6 +7,7 @@ namespace putyourlightson\sherlock;
 
 use Craft;
 use craft\base\Plugin;
+use craft\console\Application as ConsoleApplication;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\web\twig\variables\CraftVariable;
@@ -47,6 +48,11 @@ class Sherlock extends Plugin
             'sherlock' => SherlockService::class,
             'tests' => TestsService::class,
         ]);
+
+        // Console request
+        if (Craft::$app instanceof ConsoleApplication) {
+            return;
+        }
 
         // Register variable
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {

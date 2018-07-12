@@ -1,7 +1,7 @@
 {
     "name": "putyourlightson/craft-sherlock",
     "description": "Security scanner and monitor to keep your site and CMS secure.",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "type": "craft-plugin",
     "homepage": "https://www.putyourlightson.net/craft-sherlock",
     "license": "proprietary",
