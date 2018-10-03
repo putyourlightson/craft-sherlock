@@ -8,6 +8,10 @@ Learn more at [https://www.putyourlightson.net/craft-sherlock](https://www.putyo
 
 View the documentation at [https://www.putyourlightson.net/craft-sherlock/docs](https://www.putyourlightson.net/craft-sherlock/docs).
   
+## License
+
+This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $99 plus $29 per subsequent year for updates (optional).
+
 ## Requirements
 
 Craft CMS 3.0.0 or later.

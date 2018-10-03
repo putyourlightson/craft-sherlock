@@ -19,7 +19,7 @@ class ScansController extends Controller
     // Properties
     // =========================================================================
 
-    protected $allowAnonymous = array('actionGetLastScan', 'actionGetAllScans', 'actionVerify', 'actionRunScan');
+    protected $allowAnonymous = array('get-last-scan', 'get-all-scans', 'verify', 'run-scan');
 
     private $_settings;
 
