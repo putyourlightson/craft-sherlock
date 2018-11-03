@@ -4,7 +4,7 @@
 
 Sherlock is a security scanner and monitor to keep your site and [Craft CMS](https://craftcms.com/) secure.
 
-Learn more at [https://www.putyourlightson.net/craft-sherlock](https://www.putyourlightson.net/craft-sherlock).
+Learn more at [https://putyourlightson.com/craft-sherlock](https://putyourlightson.com/craft-sherlock).
 
 > Upgrades from Sherlock v1 for Craft CMS 2 purchased through StraightUpCraft are free! To get your license, please send your original purchase receipt to [info@putyourlightson.net](mailto:info@putyourlightson.net).
 
