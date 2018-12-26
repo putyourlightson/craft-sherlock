@@ -10,7 +10,7 @@ Learn more at [https://putyourlightson.com/craft-sherlock](https://putyourlights
 
 ## License
 
-This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $99 plus $29 per subsequent year for updates (optional).
+This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $99 plus $39 per subsequent year for updates (optional).
 
 ## Requirements
 
