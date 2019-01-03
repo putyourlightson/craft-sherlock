@@ -50,7 +50,7 @@ class SherlockService extends Component
         $request = Craft::$app->getRequest();
         $headers = Craft::$app->getResponse()->getHeaders();
 
-        if (!empty($this->_settings->headerProtection) and $this->_settings->headerProtection) {
+        if (!empty($this->_settings->headerProtection) && $this->_settings->headerProtection) {
             $headers->set('X-Frame-Options', 'SAMEORIGIN');
             $headers->set('X-Content-Type-Options', 'nosniff');
             $headers->set('X-Xss-Protection', '1; mode=block');
@@ -68,12 +68,20 @@ class SherlockService extends Component
     {
         $request = Craft::$app->getRequest();
 
-        if (!empty($this->_settings->restrictControlPanelIpAddresses) and $request->getIsCpRequest() and !Craft::$app->getUser()->getIsAdmin() and !in_array($request->getUserIP(), explode(PHP_EOL, $this->_settings->restrictControlPanelIpAddresses), true)) {
-            throw new HttpException(503);
+        if (!empty($this->_settings->restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
+            $ipAdresses = preg_split('/\R/', $this->_settings->restrictControlPanelIpAddresses);
+
+            if (!Craft::$app->getUser()->getIsAdmin() && !in_array($request->getUserIP(), $ipAdresses, true)) {
+                throw new HttpException(503);
+            }
         }
 
-        if (!empty($this->_settings->restrictFrontEndIpAddresses) and $request->getIsSiteRequest() and !Craft::$app->getUser()->getIsAdmin() and !in_array($request->getUserIP(), explode(PHP_EOL, $this->_settings->restrictFrontEndIpAddresses), true)) {
-            throw new HttpException(503);
+        if (!empty($this->_settings->restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
+            $ipAdresses = preg_split('/\R/', $this->_settings->restrictControlPanelIpAddresses);
+
+            if (!Craft::$app->getUser()->getIsAdmin() && !in_array($request->getUserIP(), $ipAdresses, true)) {
+                throw new HttpException(503);
+            }
         }
     }
 
@@ -88,11 +96,11 @@ class SherlockService extends Component
 
         if ($this->_settings->liveMode) {
             $userId = Craft::$app->getUser()->id;
-            if (Craft::$app->getEdition() == Craft::Solo or Craft::$app->getUser()->getIsAdmin() or in_array('accessplugin-sherlock', Craft::$app->getUserPermissions()->getPermissionsByUserId($userId), true)) {
+            if (Craft::$app->getEdition() == Craft::Solo || Craft::$app->getUser()->getIsAdmin() || in_array('accessplugin-sherlock', Craft::$app->getUserPermissions()->getPermissionsByUserId($userId), true)) {
                 $lastScan = $this->getLastScan();
 
-                if ($lastScan and !$lastScan->pass) {
-                    $alerts[] = 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan. <a href="'.UrlHelper::cpUrl('sherlock').'" class="go">View Last Scan</a>';
+                if ($lastScan && !$lastScan->pass) {
+                    $alerts[] = 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'st&&ard').' security scan. <a href="'.UrlHelper::cpUrl('sherlock').'" class="go">View Last Scan</a>';
                 }
             }
         }
@@ -184,7 +192,7 @@ class SherlockService extends Component
             // if last scan exists
             if ($lastScan) {
                 if ($lastScan->pass) {
-                    // send and log notification email
+                    // send && log notification email
                     $this->_sendLogNotificationEmail(
                         'Security Scan Failed',
                         'Sherlock security scan failed at the following site: ',
@@ -192,13 +200,13 @@ class SherlockService extends Component
                     );
                 }
 
-                // check critical updates and plugin vulnerabilities against last scan
+                // check critical updates && plugin vulnerabilities against last scan
                 if (
-                    (isset($scanModel->results['fail']['criticalCraftUpdates']) and empty($lastScan->results['fail']['criticalCraftUpdates'])) or
-                    (isset($scanModel->results['fail']['criticalPluginUpdates']) and empty($lastScan->results['fail']['criticalPluginUpdates'])) or
-                    (isset($scanModel->results['fail']['pluginVulnerabilities']) and empty($lastScan->results['fail']['pluginVulnerabilities']))
+                    (isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates'])) ||
+                    (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates'])) ||
+                    (isset($scanModel->results['fail']['pluginVulnerabilities']) && empty($lastScan->results['fail']['pluginVulnerabilities']))
                 ) {
-                    // send and log notification email
+                    // send && log notification email
                     $this->_sendLogNotificationEmail(
                         'Security Scan Critical Updates',
                         'Sherlock security scan detected critical updates at the following site: ',
@@ -208,7 +216,7 @@ class SherlockService extends Component
             }
         }
 
-        // Populate and save record
+        // Populate && save record
         $scanRecord = new ScanRecord;
         $scanRecord->setAttributes($scanModel->getAttributes(), false);
 
@@ -225,7 +233,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Send and Log Notification Email
+     * Send && Log Notification Email
      *
      * @param $subject
      * @param $message
@@ -234,8 +242,8 @@ class SherlockService extends Component
      */
     private function _sendLogNotificationEmail($subject, $message, $log)
     {
-        // If live mode and notification email addresses exist
-        if ($this->_settings->liveMode and !empty($this->_settings->notificationEmailAddresses)) {
+        // If live mode && notification email addresses exist
+        if ($this->_settings->liveMode && !empty($this->_settings->notificationEmailAddresses)) {
             $mailer = Craft::$app->getMailer();
 
             /** @var Message $message*/

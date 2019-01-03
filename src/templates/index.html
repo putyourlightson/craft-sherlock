@@ -30,7 +30,7 @@
             </h2>
 
             <h1>
-                <img width="32" height="32" src="{{ resourcesUrl ~ '/icons/' ~ (lastScan.pass ? 'pass' : 'fail') ~ '.svg' }}" />
+                <img width="32" height="32" src="{{ resourcesUrl ~ '/icons/' ~ (lastScan.pass ? 'pass' : 'fail') ~ '.svg' }}" alt="{{ (lastScan.pass ? 'Pass' : 'Fail')|t('sherlock') }}" />
                 This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.checkHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}
                 <span class="info">{{ "This security scan result is determined by a set of criteria used by Sherlock's standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner."|t('sherlock') }}</span>
             </h1>
@@ -51,7 +51,7 @@
                             {% set test = tests[testName] %}
                             <tr>
                                 <td>
-                                    <img src="{{ resourcesUrl ~ '/icons/' ~ resultType ~ '.svg' }}" title="{{ resultType|capitalize }}" />
+                                    <img src="{{ resourcesUrl ~ '/icons/' ~ resultType ~ '.svg' }}" title="{{ resultType|capitalize }}" alt="{{ resultType|capitalize }}" />
                                 </td>
                                 <td>
                                     <span class="{{ resultType == 'fail' ? 'fail' }}">{{ test.name|t('sherlock') }}</span>
@@ -111,7 +111,7 @@
                 <tbody>
                     {% for scan in allScans %}
                         <tr>
-                            <td><img src="{{ resourcesUrl ~ '/icons/' ~ (scan.pass ? 'pass' : 'fail') ~ '.svg' }}" /></td>
+                            <td><img src="{{ resourcesUrl ~ '/icons/' ~ (scan.pass ? 'pass' : 'fail') ~ '.svg' }}" alt="{{ (scan.pass ? 'Pass' : 'Fail')|t('sherlock') }}" /></td>
                             <td>{{ scan.pass ? 'Pass' ~ (scan.warning ? ' with warnings') : 'Fail' }}</td>
                             <td>{{ scan.highSecurityLevel ? 'High' : 'Standard' }}</td>
                             <td>{{ scan.results.fail is defined ? scan.results.fail|length : 0 }}</td>
