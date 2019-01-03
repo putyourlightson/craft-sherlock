@@ -26,7 +26,10 @@ abstract class BaseModel extends Model
     {
         $class = static::class;
 
-        $properties = array_keys((new $class())->getAttributes());
+        /** @var Model $model */
+        $model = new $class();
+
+        $properties = array_keys($model->getAttributes());
 
         /** @var Model $model */
         $model = new $class($values->toArray($properties));
@@ -54,7 +57,7 @@ abstract class BaseModel extends Model
 
                 if ($indexBy !== null)
                 {
-                    $models[$model->$indexBy] = $model;
+                    $models[$model->{$indexBy}] = $model;
                 }
                 else
                 {

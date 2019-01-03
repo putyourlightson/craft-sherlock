@@ -8,14 +8,15 @@ namespace putyourlightson\sherlock\services;
 use Craft;
 use craft\base\Component;
 use craft\base\Plugin;
-use craft\enums\PluginUpdateStatus;
-use craft\enums\VersionUpdateStatus;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use craft\models\Updates;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\TransferStats;
+use Psr\Http\Message\UriInterface;
+use putyourlightson\sherlock\models\SettingsModel;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
 use yii\web\HttpException;
@@ -30,10 +31,25 @@ class TestsService extends Component
     // Properties
     // =========================================================================
 
+    /**
+     * @var SettingsModel
+     */
     private $_settings;
+
+    /**
+     * @var array
+     */
     private $_headers;
+
+    /**
+     * @var UriInterface
+     */
     private $_effectiveUrl;
-    private $_updateModel;
+
+    /**
+     * @var Updates
+     */
+    private $_updates;
 
     // Public Methods
     // =========================================================================
@@ -98,18 +114,18 @@ class TestsService extends Component
         }
 
         // Get updates, forcing a refresh
-        if (empty($this->_updateModel))
+        if (empty($this->_updates))
         {
-            $this->_updateModel = Craft::$app->getUpdates()->getUpdates(true);
+            $this->_updates = Craft::$app->getUpdates()->getUpdates(true);
         }
 
-        $testModel = new TestModel($this->_settings->$test);
+        $testModel = new TestModel($this->_settings->{$test});
         $testModel->highSecurityLevel = $this->_settings->highSecurityLevel;
 
         switch ($test)
         {
             case 'pluginVulnerabilities':
-                if (!empty($this->_settings->pluginVulnerabilitiesFeedUrl) AND stripos($this->_settings->pluginVulnerabilitiesFeedUrl, 'https://') === 0)
+                if (!empty($this->_settings->pluginVulnerabilitiesFeedUrl) && stripos($this->_settings->pluginVulnerabilitiesFeedUrl, 'https://') === 0)
                 {
                     $pluginVulnerabilities = [];
                     $client = Craft::createGuzzleClient();
@@ -135,7 +151,7 @@ class TestsService extends Component
                                     /** @var Plugin $plugin */
                                     $plugin = Craft::$app->getPlugins()->getPlugin($vulnerability['handle']);
 
-                                    if (empty($vulnerability['fixedVersion']) OR version_compare($plugin->getVersion(), $vulnerability['fixedVersion'], '<'))
+                                    if (empty($vulnerability['fixedVersion']) || version_compare($plugin->getVersion(), $vulnerability['fixedVersion'], '<'))
                                     {
                                         $pluginVulnerabilities[] = '<a href="'.$vulnerability['url'].'" target="_blank">'.$plugin->name.' '.$vulnerability['version'].'</a> <span class="info">'.$vulnerability['description'].(isset($vulnerability['fixedVersion']) ? ' (fixed in version '.$vulnerability['fixedVersion'].')' : '').'</span>';
                                     }
@@ -203,7 +219,7 @@ class TestsService extends Component
                 break;
 
             case 'xFrameOptions':
-                if (empty($this->_headers['X-Frame-Options'][0]) OR ($this->_headers['X-Frame-Options'][0] != 'DENY' AND $this->_headers['X-Frame-Options'][0] != 'SAMEORIGIN'))
+                if (empty($this->_headers['X-Frame-Options'][0]) || ($this->_headers['X-Frame-Options'][0] != 'DENY' && $this->_headers['X-Frame-Options'][0] != 'SAMEORIGIN'))
                 {
                     $testModel->failTest();
                 }
@@ -216,7 +232,7 @@ class TestsService extends Component
                 break;
 
             case 'xContentTypeOptions':
-                if (empty($this->_headers['X-Content-Type-Options'][0]) OR $this->_headers['X-Content-Type-Options'][0] != 'nosniff')
+                if (empty($this->_headers['X-Content-Type-Options'][0]) || $this->_headers['X-Content-Type-Options'][0] != 'nosniff')
                 {
                     $testModel->failTest();
                 }
@@ -229,7 +245,7 @@ class TestsService extends Component
                 break;
 
             case 'xXssProtection':
-                if (empty($this->_headers['X-Xss-Protection'][0]) OR $this->_headers['X-Xss-Protection'][0] != '1; mode=block')
+                if (empty($this->_headers['X-Xss-Protection'][0]) || $this->_headers['X-Xss-Protection'][0] != '1; mode=block')
                 {
                     $testModel->failTest();
                 }
@@ -242,7 +258,7 @@ class TestsService extends Component
                 break;
 
             case 'strictTransportSecurity':
-                if (strpos($this->_effectiveUrl, 'https') === 0 AND empty($this->_headers['Strict-Transport-Security'][0]))
+                if (strpos($this->_effectiveUrl, 'https') === 0 && empty($this->_headers['Strict-Transport-Security'][0]))
                 {
                     $testModel->failTest();
                 }
@@ -350,29 +366,23 @@ class TestsService extends Component
                 break;
 
             case 'craftUpdates':
-                if (!empty($this->_updateModel->app) AND $this->_updateModel->app->versionUpdateStatus == VersionUpdateStatus::UpdateAvailable)
-                {
+                if ($this->_updates->cms->getHasReleases()) {
                     $testModel->failTest();
                 }
 
                 break;
 
             case 'criticalCraftUpdates':
-                $criticalCraftUpdates = [];
+                if ($this->_updates->cms->getHasCritical()) {
+                    $criticalCraftUpdates = [];
 
-                if (!empty($this->_updateModel->app->releases))
-				{
-                    foreach ($this->_updateModel->app->releases as $release)
-                    {
+                    foreach ($this->_updates->cms->releases as $release) {
                         if ($release->critical)
                         {
-                            $criticalCraftUpdates[] = '<a href="https://craftcms.com/changelog#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> <span class="info">Version '.$release->version.' is a critical update, released on '.$release->date.'.</span>';
+                            $criticalCraftUpdates[] = '<a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>';
                         }
                     }
-                }
 
-                if (!empty($criticalCraftUpdates))
-                {
                     $testModel->failTest();
                     $testModel->value = implode(' , ', $criticalCraftUpdates);
                 }
@@ -382,13 +392,18 @@ class TestsService extends Component
             case 'pluginUpdates':
                 $pluginUpdates = [];
 
-                if (!empty($this->_updateModel->plugins))
+                if (!empty($this->_updates->plugins))
                 {
-					foreach ($this->_updateModel->plugins as $plugin)
+					foreach ($this->_updates->plugins as $handle => $update)
 					{
-						if ($plugin->status == PluginUpdateStatus::UpdateAvailable AND !empty($plugin->releases))
+						if (!empty($update->releases))
 						{
-                            $pluginUpdates[] = '<a href="'.$plugin->manualDownloadEndpoint.'" target="_blank">'.$plugin->displayName.'</a> <span class="info">Local version '.$plugin->localVersion.' is '.count($plugin->releases).' release'.(count($plugin->releases) != 1 ? 's' : '').' behind latest version '.$plugin->latestVersion.', released on '.$plugin->latestDate.'.</span>';
+						    $latestRelease = $update->getLatest();
+
+						    /** @var Plugin $plugin */
+						    $plugin = Craft::$app->getPlugins()->getPlugin($handle);
+
+                            $pluginUpdates[] = '<a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>';
 						}
 					}
                 }
@@ -404,17 +419,20 @@ class TestsService extends Component
             case 'criticalPluginUpdates':
                 $criticalPluginUpdates = [];
 
-                if (!empty($this->_updateModel->plugins))
+                if (!empty($this->_updates->plugins))
                 {
-					foreach ($this->_updateModel->plugins as $plugin)
+					foreach ($this->_updates->plugins as $handle => $update)
 					{
-						if ($plugin->status == PluginUpdateStatus::UpdateAvailable AND !empty($plugin->releases))
+						if ($update->getHasCritical())
 						{
-                            foreach ($plugin->releases as $release)
+						    /** @var Plugin $plugin */
+						    $plugin = Craft::$app->getPlugins()->getPlugin($handle);
+
+                            foreach ($update->releases as $release)
             				{
             					if ($release->critical)
             					{
-            						$criticalPluginUpdates[] = '<a href="'.$plugin->manualDownloadEndpoint.'" target="_blank">'.$plugin->displayName.'</a> <span class="info">Version '.$release->version.' is a critical update, released on '.$release->date.'.</span>';
+            						$criticalPluginUpdates[] = '<a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>';
             					}
             				}
 						}
@@ -438,9 +456,9 @@ class TestsService extends Component
                 break;
 
             case 'devMode':
-                if (Craft::$app->getConfig()->getGeneral()->$test)
+                if (Craft::$app->getConfig()->getGeneral()->{$test})
                 {
-                    $testModel->pass = $testModel->forceFail ? false : !($testModel->canFail AND $this->_settings->liveMode);
+                    $testModel->pass = $testModel->forceFail ? false : !($testModel->canFail && $this->_settings->liveMode);
                     $testModel->warning = true;
                 }
 
@@ -450,7 +468,7 @@ class TestsService extends Component
             case 'useSecureCookies':
             case 'requireMatchingUserAgentForSession':
             case 'requireUserAgentAndIpForSession':
-                if (!Craft::$app->getConfig()->getGeneral()->$test)
+                if (!Craft::$app->getConfig()->getGeneral()->{$test})
                 {
                     $testModel->failTest();
                 }
@@ -459,7 +477,7 @@ class TestsService extends Component
 
             case 'translationDebugOutput':
             case 'testToEmailAddress':
-                if (Craft::$app->getConfig()->getGeneral()->$test)
+                if (Craft::$app->getConfig()->getGeneral()->{$test})
                 {
                     $testModel->failTest();
                 }
@@ -468,7 +486,7 @@ class TestsService extends Component
 
             case 'defaultFileMode':
             case 'defaultDirMode':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if ($value > $testModel->threshold)
                 {
@@ -484,7 +502,7 @@ class TestsService extends Component
 
             case 'defaultTokenDuration':
             case 'verificationCodeDuration':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 $interval = DateTimeHelper::secondsToInterval($value);
 
@@ -501,9 +519,9 @@ class TestsService extends Component
                 break;
 
             case 'securityKey4securityKey4':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
-                if ($value AND (strlen($value) < 10))
+                if ($value && (strlen($value) < 10))
                 {
                     $testModel->failTest();
                 }
@@ -511,7 +529,7 @@ class TestsService extends Component
                 break;
 
             case 'cpTrigger':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if ($value == 'admin')
                 {
@@ -521,7 +539,7 @@ class TestsService extends Component
                 break;
 
             case 'blowfishHashCost':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if ($value < $testModel->threshold)
                 {
@@ -536,7 +554,7 @@ class TestsService extends Component
                 break;
 
             case 'cooldownDuration':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
                 $interval = DateTimeHelper::secondsToInterval($value);
 
                 if ($interval->format($testModel->format) < $testModel->threshold)
@@ -552,7 +570,7 @@ class TestsService extends Component
                 break;
 
             case 'invalidLoginWindowDuration':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 $interval = DateTimeHelper::secondsToInterval($value);
 
@@ -569,7 +587,7 @@ class TestsService extends Component
                 break;
 
             case 'maxInvalidLogins':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if (!$value)
                 {
@@ -589,7 +607,7 @@ class TestsService extends Component
                 break;
 
             case 'rememberedUserSessionDuration':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if ($value)
                 {
@@ -609,7 +627,7 @@ class TestsService extends Component
                 break;
 
             case 'userSessionDuration':
-                $value = Craft::$app->getConfig()->getGeneral()->$test;
+                $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if (!$value)
                 {

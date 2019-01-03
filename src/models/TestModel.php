@@ -73,7 +73,7 @@ class TestModel extends BaseModel
      */
     public function failTest()
     {
-        $this->pass = $this->forceFail ? false : !($this->canFail AND $this->highSecurityLevel);
+        $this->pass = $this->forceFail ? false : !($this->canFail && $this->highSecurityLevel);
         $this->warning = true;
     }
 }
