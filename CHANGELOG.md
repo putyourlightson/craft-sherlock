@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.4 - 2019-02-07
+### Fixed
+- Fixed check for redirect of insecure front-end URL.
+
 ## 2.0.3 - 2019-02-07
 ### Changed
 - Improved feedback for insecure front-end URL connection errors. 
