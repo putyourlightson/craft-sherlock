@@ -34,6 +34,11 @@
     vertical-align: middle;
 }
 
+.sherlock table.data td:last-of-type {
+    min-width: 80px;
+    text-align: center;
+}
+
 .sherlock .fail {
     font-weight: bold;
 }

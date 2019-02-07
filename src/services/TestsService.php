@@ -12,6 +12,7 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\TransferStats;
@@ -35,6 +36,11 @@ class TestsService extends Component
      * @var SettingsModel
      */
     private $_settings;
+
+    /**
+     * @var Client
+     */
+    private $_client;
 
     /**
      * @var array
@@ -88,22 +94,31 @@ class TestsService extends Component
             $this->_settings = Sherlock::$plugin->getSettings();
         }
 
-        // Get site headers of insecure front-end site url
+        // Get client
+        if (empty($this->_client))
+        {
+            $this->_client = Craft::createGuzzleClient([
+    		    'timeout' => 10,
+            ]);
+        }
+
+        // Get site headers
         if (empty($this->_headers))
         {
-            $url = str_replace('https://', 'http://', UrlHelper::baseSiteUrl());
-    		$client = Craft::createGuzzleClient();
+            $url = UrlHelper::baseSiteUrl();
+            $url = 'https://staging.lanternpay.com';
 
             try {
-                $response = $client->get($url, [
-                    'timeout' => 10,
-                    'connect_timeout' => 5,
-                    'on_stats' => function(TransferStats $stats) {
-                        $this->_effectiveUrl = $stats->getEffectiveUri();
-                    },
-                ]);
+                $this->_headers = $this->_client->get($url)->getHeaders();
 
-                $this->_headers = $response->getHeaders();
+                // Get effective URL of insecure front-end site url
+                if (strpos($url, 'http://') === 0) {
+                    $this->_client->get(str_replace('https://', 'http://', $url), [
+                        'on_stats' => function(TransferStats $stats) {
+                            $this->_effectiveUrl = $stats->getEffectiveUri();
+                        },
+                    ]);
+                }
             }
             catch (ConnectException $e) {}
             catch (ServerException $e) {}
@@ -128,17 +143,11 @@ class TestsService extends Component
                 if (!empty($this->_settings->pluginVulnerabilitiesFeedUrl) && stripos($this->_settings->pluginVulnerabilitiesFeedUrl, 'https://') === 0)
                 {
                     $pluginVulnerabilities = [];
-                    $client = Craft::createGuzzleClient();
 
                     try
                     {
-                        $response = $client->get($this->_settings->pluginVulnerabilitiesFeedUrl, [
-                            'timeout' => 10,
-                            'connect_timeout' => 5,
-                        ]);
-
-                        $responseBody = $response->getBody();
-                        $vulnerabilities = Json::decode($responseBody);
+                        $response = $this->_client->get($this->_settings->pluginVulnerabilitiesFeedUrl)->getBody();
+                        $vulnerabilities = Json::decode($response);
 
                         if ($vulnerabilities)
                         {
@@ -403,7 +412,11 @@ class TestsService extends Component
 						    /** @var Plugin $plugin */
 						    $plugin = Craft::$app->getPlugins()->getPlugin($handle);
 
-                            $pluginUpdates[] = '<a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>';
+						    if ($plugin !== null) {
+                                $pluginUpdates[] = '
+                                <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
+                                <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>';
+                            }
 						}
 					}
                 }

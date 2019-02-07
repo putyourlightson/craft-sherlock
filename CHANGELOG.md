@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.3 - 2019-02-07
+### Changed
+- Improved feedback for insecure front-end URL connection errors. 
+- Improved formatting of test results.
+
 ## 2.0.2 - 2019-01-03
 ### Fixed
 - Fixed CMS and plugin update detection.
