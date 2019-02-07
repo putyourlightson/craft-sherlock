@@ -106,7 +106,6 @@ class TestsService extends Component
         if (empty($this->_headers))
         {
             $url = UrlHelper::baseSiteUrl();
-            $url = 'https://staging.lanternpay.com';
 
             try {
                 $this->_headers = $this->_client->get($url)->getHeaders();
