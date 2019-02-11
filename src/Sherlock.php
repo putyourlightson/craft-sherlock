@@ -113,7 +113,7 @@ class Sherlock extends Plugin
      */
     protected function settingsHtml()
     {
-        return Craft::$app->getView()->renderTemplate('sherlock/settings', [
+        return Craft::$app->getView()->renderTemplate('sherlock/_settings', [
             'settings' => $this->getSettings(),
             'config' => Craft::$app->getConfig()->getConfigFromFile('sherlock'),
         ]);
