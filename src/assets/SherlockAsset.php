@@ -28,7 +28,7 @@ class SherlockAsset extends AssetBundle
 
         // define the relative path to CSS/JS files that should be registered with the page when this asset bundle is registered
         $this->css = [
-            'css/style.css',
+            'css/cp.css',
         ];
         $this->js = [
             'js/script.js',

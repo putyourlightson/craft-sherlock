@@ -19,14 +19,38 @@
 
 return [
 
-    /**
-	 * Add tests to disable to the array
-	 *
-    'disabledTests' => [],
-	 */
+    // Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins.
+    //'liveMode' => false,
+
+    // Whether Sherlock should be extra critical of security issues and the resulting warnings.
+    //'highSecurityLevel' => false,
+
+    // Protects your site by setting HTTP response headers that provide added security.
+    //'headerProtection' => true,
+
+    // Enter the email addresses (separated by commas) that should be notified of security issues.
+    //'notificationEmailAddresses' => '',
+
+    // The URL of of a JSON feed URL containing known plugin vulnerabilities.
+    //'pluginVulnerabilitiesFeedUrl' => '',
+
+    // A random 32 character string that will allow calls to the plugin and must be set for calls to work.
+    //'apiKey' => '',
+
+    // A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.
+    //'secretKey' => '',
+
+    // Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).
+    //'restrictControlPanelIpAddresses' => '',
+
+    // Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access).
+    //'restrictFrontEndIpAddresses' => '',
+
+    // Add tests to disable to the array.
+    //'disabledTests' => [],
 
     /**
-	 * Individual test settings
+	 * Individual test settings.
 	 *
     'criticalCraftUpdates' => [
         'forceFail' => true,

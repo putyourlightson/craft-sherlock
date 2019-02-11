@@ -7,6 +7,7 @@ namespace putyourlightson\sherlock\models;
 
 use Craft;
 use craft\base\Model;
+use craft\behaviors\EnvAttributeParserBehavior;
 
 /**
  * SettingsModel
@@ -19,12 +20,12 @@ class SettingsModel extends Model
     /**
      * @var bool
      */
-    public $liveMode = true;
+    public $liveMode = false;
 
     /**
      * @var bool
      */
-    public $highSecurityLevel = true;
+    public $highSecurityLevel = false;
 
     /**
      * @var bool
@@ -236,7 +237,20 @@ class SettingsModel extends Model
     // =========================================================================
 
     /**
-     * @return array
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'parser' => [
+                'class' => EnvAttributeParserBehavior::class,
+                'attributes' => ['apiKey', 'secretKey'],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules(): array
     {

@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.1.0 - 2019-02-11
+### Added
+- Added welcome screen after the plugin is installed.
+- Added system email to default plugin settings.
+- Added environment variables to API settings.
+- Added config warnings to settings.
+
+### Changed
+- Changed minimum requirement of Craft to version 3.1.0.
+
+### Fixed
+- Fixed redirect to settings screen after the plugin is installed.
+
 ## 2.0.3 - 2019-02-07
 ### Changed
 - Improved feedback for insecure front-end URL connection errors. 

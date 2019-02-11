@@ -1,3 +1,12 @@
+.welcome {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.welcome .icon {
+    height: 180px;
+}
+
 .sherlock h1 {
     color: #000;
     font-size: 26px;
@@ -86,7 +95,6 @@
 
 .sherlock-settings .extra-instructions {
     margin-top: -15px;
-    font-size: 11px;
     line-height: 1.4;
     color: #8f98a3;
 }

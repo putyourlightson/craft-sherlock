@@ -1,11 +1,24 @@
 {% import '_includes/forms' as forms %}
 
+{% macro configWarning(setting) -%}
+    {{ "This is being overridden by the {setting} config setting."|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
+{%- endmacro %}
+
+{% from _self import configWarning %}
+
+{% do view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
+
+{% if craft.app.request.getParam('welcome') %}
+    {% include 'sherlock/_includes/welcome' %}
+{% endif %}
+
 <div class="sherlock-settings">
     {{ forms.lightswitchField({
         first: true,
         label: 'Live Mode'|t('sherlock'),
         name: 'liveMode',
         instructions: 'Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins.'|t('sherlock'),
+        warning: (config.liveMode is defined ? configWarning('liveMode')),
         on: settings.liveMode,
         errors: settings.getErrors('liveMode')
     }) }}
@@ -14,6 +27,7 @@
     	label: 'High Security Level'|t('sherlock'),
     	name: 'highSecurityLevel',
     	instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
+        warning: (config.highSecurityLevel is defined ? configWarning('highSecurityLevel')),
     	on: settings.highSecurityLevel,
     	errors: settings.getErrors('highSecurityLevel')
     }) }}
@@ -22,6 +36,7 @@
     	label: 'Header Protection'|t('sherlock'),
     	name: 'headerProtection',
     	instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
+        warning: (config.headerProtection is defined ? configWarning('headerProtection')),
     	on: settings.headerProtection,
     	errors: settings.getErrors('headerProtection')
     }) }}
@@ -32,6 +47,7 @@
     	label: 'Notification Email Addresses'|t('sherlock'),
     	name: 'notificationEmailAddresses',
     	instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues.'|t('sherlock'),
+        warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
     	value: settings.notificationEmailAddresses,
     	errors: settings.getErrors('notificationEmailAddresses')
     }) }}
@@ -40,14 +56,18 @@
     	label: 'Plugin Vulnerabilities Feed URL'|t('sherlock'),
     	name: 'pluginVulnerabilitiesFeedUrl',
     	instructions: 'The URL of of a JSON feed URL containing known plugin vulnerabilities (must begin with "https://", view the <a href="https://github.com/putyourlightson/craft-plugin-vulnerabilities" target="_blank">feed format</a>).'|t('sherlock')|raw,
+        warning: (config.pluginVulnerabilitiesFeedUrl is defined ? configWarning('pluginVulnerabilitiesFeedUrl')),
     	value: settings.pluginVulnerabilitiesFeedUrl,
     	errors: settings.getErrors('pluginVulnerabilitiesFeedUrl')
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
     	label: 'API Key'|t('sherlock'),
     	name: 'apiKey',
     	instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work.'|t('sherlock'),
+        warning: (config.apiKey is defined ? configWarning('apiKey')),
+        suggestEnvVars: true,
+        suggestions: craft.cp.getEnvSuggestions(),
     	value: settings.apiKey,
     	errors: settings.getErrors('apiKey')
     }) }}
@@ -55,13 +75,16 @@
     <p class="extra-instructions">
         {{ 'You can create a cron job to run scans on a regular basis. The method you use depends on your server environment. For example, this cron command will trigger a scan to be run every day at 8am:'|t('sherlock') }}
         <br/>
-        <code>0 8 * * *    /usr/bin/curl --silent --compressed {{ siteUrl(craft.app.config.general.actionTrigger ~ '/sherlock/scans/run-scan', { key: settings.apiKey }) }}</code>
+        <code>0 8 * * *    /usr/bin/curl --silent --compressed {{ siteUrl(craft.app.config.general.actionTrigger ~ '/sherlock/scans/run-scan', { key: settings.apiKey|replace('$', '') }) }}</code>
     </p>
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
     	label: 'Secret Key'|t('sherlock'),
     	name: 'secretKey',
     	instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.'|t('sherlock'),
+        warning: (config.secretKey is defined ? configWarning('secretKey')),
+        suggestEnvVars: true,
+        suggestions: craft.cp.getEnvSuggestions(),
     	value: settings.secretKey,
     	errors: settings.getErrors('secretKey')
     }) }}
@@ -73,6 +96,7 @@
         label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
         name: 'restrictControlPanelIpAddresses',
         instructions: 'Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).'|t('sherlock'),
+        warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
         rows: 3,
         value: settings.restrictControlPanelIpAddresses,
         errors: settings.getErrors('restrictControlPanelIpAddresses')
@@ -82,6 +106,7 @@
         label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
         name: 'restrictFrontEndIpAddresses',
         instructions: 'Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access).'|t('sherlock'),
+        warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
         rows: 3,
         value: settings.restrictFrontEndIpAddresses,
         errors: settings.getErrors('restrictFrontEndIpAddresses')

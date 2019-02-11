@@ -1,0 +1,11 @@
+<div class="welcome readable">
+    <div class="icon">
+        {% set icon = craft.app.plugins.getPluginIconSvg('sherlock') %}
+        {{ svg(icon, sanitize=true) }}
+    </div>
+    <h1>{{ 'Thanks for using Sherlock!'|t('sherlock') }}</h1>
+    <h3>
+        <a href="{{ cpUrl('sherlock') }}" class="go" >{{ 'Run your first security scan'|t('sherlock') }}</a>
+    </h3>
+    <p>{{ 'Read the <a href="{url}" class="go" target="_blank">documentation</a>'|t('sherlock', {url: 'https://github.com/putyourlightson/craft-sherlock'})|raw }}</p>
+</div>

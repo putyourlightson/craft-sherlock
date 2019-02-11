@@ -44,8 +44,10 @@ class ScansController extends Controller
     {
         $this->_verifyApiKey();
 
+        $secretKey = Craft::parseEnv($this->_settings->secretKey);
+
         // Check that secret key is set
-        if (empty($this->_settings->secretKey)) {
+        if (empty($secretKey)) {
             throw new HttpException(403, Craft::t('sherlock', 'Invalid secret key'));
         }
 
@@ -53,7 +55,7 @@ class ScansController extends Controller
         $scan = Json::encode(Sherlock::$plugin->sherlock->getLastScan());
 
         // Encrypt scan with secret key
-        $scan = Craft::$app->getSecurity()->encryptByKey($scan, $this->_settings->secretKey);
+        $scan = Craft::$app->getSecurity()->encryptByKey($scan, $secretKey);
 
         exit($scan);
     }
@@ -67,8 +69,10 @@ class ScansController extends Controller
     {
         $this->_verifyApiKey();
 
+        $secretKey = Craft::parseEnv($this->_settings->secretKey);
+
         // Check that secret key is set
-        if (empty($this->_settings->secretKey)) {
+        if (empty($secretKey)) {
             throw new HttpException(403, Craft::t('sherlock', 'Invalid secret key'));
         }
 
@@ -79,7 +83,7 @@ class ScansController extends Controller
         $scans = Json::encode(Sherlock::$plugin->sherlock->getAllScans($offsetId));
 
         // Encrypt scans with secret key
-        $scans = Craft::$app->getSecurity()->encryptByKey($scans, $this->_settings->secretKey);
+        $scans = Craft::$app->getSecurity()->encryptByKey($scans, $secretKey);
 
         exit($scans);
     }
@@ -91,8 +95,10 @@ class ScansController extends Controller
     {
         $this->_verifyApiKey();
 
+        $secretKey = Craft::parseEnv($this->_settings->secretKey);
+
         // Check that secret key is set
-        if (empty($this->_settings->secretKey)) {
+        if (empty($secretKey)) {
             throw new HttpException(403, Craft::t('sherlock', 'Invalid secret key'));
         }
 
@@ -100,7 +106,7 @@ class ScansController extends Controller
         $success = Json::encode(array('success' => 1));
 
         // Encrypt with secret key
-        $data = Craft::$app->getSecurity()->encryptByKey($success, $this->_settings->secretKey);
+        $data = Craft::$app->getSecurity()->encryptByKey($success, $secretKey);
 
         exit($data);
     }
@@ -142,8 +148,11 @@ class ScansController extends Controller
      */
     private function _verifyApiKey()
     {
-        // Verify API key against provided key
-        if (empty($this->_settings->apiKey) or $this->_settings->apiKey != Craft::$app->getRequest()->getParam('key')) {
+        $key = Craft::$app->getRequest()->getParam('key', '');
+        $apiKey = Craft::parseEnv($this->_settings->apiKey);
+
+        // Verify provided key against API key
+        if (empty($key) || empty($apiKey) || $key != $apiKey) {
             throw new HttpException(403, Craft::t('sherlock', 'Unauthorised API key'));
         }
     }

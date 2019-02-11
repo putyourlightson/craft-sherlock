@@ -8,8 +8,11 @@ namespace putyourlightson\sherlock;
 use Craft;
 use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
+use craft\events\PluginEvent;
+use craft\helpers\App;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
 use putyourlightson\sherlock\models\SettingsModel;
 use putyourlightson\sherlock\services\SherlockService;
@@ -66,6 +69,24 @@ class Sherlock extends Plugin
 
         // Check for site restrictions
         $this->sherlock->checkRestrictions();
+
+        // Register after install event
+        Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    // Create and save default settings
+                    $settings = $this->createSettingsModel();
+                    Craft::$app->plugins->savePluginSettings($this, $settings->getAttributes());
+
+                    // Redirect to settings page with welcome
+                    Craft::$app->getResponse()->redirect(
+                        UrlHelper::cpUrl('settings/plugins/sherlock', [
+                            'welcome' => 1,
+                        ])
+                    )->send();
+                }
+            }
+        );
     }
 
     // Protected Methods
@@ -77,8 +98,10 @@ class Sherlock extends Plugin
     protected function createSettingsModel(): SettingsModel
     {
         $settings = new SettingsModel();
+        $mailSettings = App::mailSettings();
 
         // Set defaults
+        $settings->notificationEmailAddresses = $mailSettings->fromEmail;
         $settings->apiKey = StringHelper::randomString(32);
         $settings->secretKey = StringHelper::randomString(32);
 
@@ -91,20 +114,8 @@ class Sherlock extends Plugin
     protected function settingsHtml()
     {
         return Craft::$app->getView()->renderTemplate('sherlock/settings', [
-            'settings' => $this->getSettings()
+            'settings' => $this->getSettings(),
+            'config' => Craft::$app->getConfig()->getConfigFromFile('sherlock'),
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function afterInstall()
-    {
-        // Create and save default settings
-        $settings = $this->createSettingsModel();
-        Craft::$app->plugins->savePluginSettings($this, $settings->getAttributes());
-
-        // Redirect to settings page
-        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('settings/plugins/sherlock'))->send();
     }
 }
