@@ -106,13 +106,12 @@ class TestsService extends Component
         if (empty($this->_headers))
         {
             $url = UrlHelper::baseSiteUrl();
-            $url = 'https://staging.lanternpay.com';
 
             try {
                 $this->_headers = $this->_client->get($url)->getHeaders();
 
                 // Get effective URL of insecure front-end site url
-                if (strpos($url, 'http://') === 0) {
+                if (strpos($url, 'https://') === 0) {
                     $this->_client->get(str_replace('https://', 'http://', $url), [
                         'on_stats' => function(TransferStats $stats) {
                             $this->_effectiveUrl = $stats->getEffectiveUri();
