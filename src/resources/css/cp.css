@@ -33,6 +33,14 @@
     font-size: 14px;
 }
 
+.sherlock table.data {
+    margin-bottom: 60px;
+}
+
+.sherlock table.data .flex {
+    flex-wrap: nowrap;
+}
+
 .sherlock table.data th:first-of-type {
     width: 20px;
 }
@@ -97,4 +105,8 @@
     margin-top: -15px;
     line-height: 1.4;
     color: #8f98a3;
+}
+
+.info-hud {
+    max-width: 485px;
 }

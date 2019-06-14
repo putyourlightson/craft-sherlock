@@ -26,6 +26,8 @@ use yii\base\Event;
  *
  * @property  SherlockService $sherlock
  * @property  TestsService $tests
+ *
+ * @property SettingsModel $settings
  */
 class Sherlock extends Plugin
 {

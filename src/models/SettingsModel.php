@@ -171,8 +171,7 @@ class SettingsModel extends Model
 
     public $defaultTokenDuration = [
         'canFail' => true,
-        'threshold' => 1,
-        'format' => '%d',
+        'threshold' => 86400, // 1 day
     ];
 
     public $enableCsrfProtection = [
@@ -194,13 +193,11 @@ class SettingsModel extends Model
     ];
 
     public $cooldownDuration = [
-        'threshold' => 5,
-        'format' => '%i',
+        'threshold' => 300, // 5 minutes
     ];
 
     public $invalidLoginWindowDuration = [
-        'threshold' => 1,
-        'format' => '%h',
+        'threshold' => 3600, // 1 hour
     ];
 
     public $maxInvalidLogins = [
@@ -209,8 +206,7 @@ class SettingsModel extends Model
     ];
 
     public $rememberedUserSessionDuration = [
-        'threshold' => 14,
-        'format' => '%d',
+        'threshold' => 12096004, // 14 days
     ];
 
     public $requireMatchingUserAgentForSession = [];
@@ -223,14 +219,12 @@ class SettingsModel extends Model
 
     public $userSessionDuration = [
         'canFail' => true,
-        'threshold' => 1,
-        'format' => '%h',
+        'threshold' => 3600, // 1 hour
     ];
 
     public $verificationCodeDuration = [
         'canFail' => true,
-        'threshold' => 1,
-        'format' => '%d',
+        'threshold' => 86400, // 1 day
     ];
 
     // Public Methods

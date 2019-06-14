@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.1 - 2019-06-14
+### Changed
+- Improved spacing and info tooltip sizing.
+- Changed duration settings from intervals to seconds. 
+
+### Fixed
+- Fixed duration tests that were failing incorrectly.
+
 ## 2.1.0 - 2019-02-11
 ### Added
 - Added welcome screen after the plugin is installed.

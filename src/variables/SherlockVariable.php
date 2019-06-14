@@ -41,7 +41,7 @@ class SherlockVariable
      */
     public function checkHighSecurityLevel(): string
     {
-        return Sherlock::$plugin->getSettings()->highSecurityLevel;
+        return Sherlock::$plugin->settings->highSecurityLevel;
     }
 
     /**

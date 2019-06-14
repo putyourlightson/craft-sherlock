@@ -148,20 +148,17 @@ return [
         'threshold' => 13,
     ],
     'cooldownDuration' => [
-        'threshold' => 5,
-        'format' => '%i',
+        'threshold' => 300, // 5 minutes
     ],
     'invalidLoginWindowDuration' => [
-        'threshold' => 1,
-        'format' => '%h',
+        'threshold' => 3600, // 1 hour
     ],
     'maxInvalidLogins' => [
         'canFail' => true,
         'threshold' => 5,
     ],
     'rememberedUserSessionDuration' => [
-        'threshold' => 14,
-        'format' => '%d',
+        'threshold' => 1209600, // 14 days
     ],
     'requireMatchingUserAgentForSession' => [],
     'requireUserAgentAndIpForSession' => [],
@@ -170,13 +167,11 @@ return [
     ],
     'userSessionDuration' => [
         'canFail' => true,
-        'threshold' => 1,
-        'format' => '%h',
+        'threshold' => 3600, // 1 hour
     ],
     'verificationCodeDuration' => [
         'canFail' => true,
-        'threshold' => 1,
-        'format' => '%d',
+        'threshold' => 86400, // 1 day
     ],
      */
 ];

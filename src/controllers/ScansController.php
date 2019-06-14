@@ -21,21 +21,8 @@ class ScansController extends Controller
 
     protected $allowAnonymous = array('get-last-scan', 'get-all-scans', 'verify', 'run-scan');
 
-    private $_settings;
-
     // Public Methods
     // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        // Get settings
-        $this->_settings = Sherlock::$plugin->getSettings();
-    }
 
     /**
      * Get last scan
@@ -44,7 +31,7 @@ class ScansController extends Controller
     {
         $this->_verifyApiKey();
 
-        $secretKey = Craft::parseEnv($this->_settings->secretKey);
+        $secretKey = Craft::parseEnv(Sherlock::$plugin->settings->secretKey);
 
         // Check that secret key is set
         if (empty($secretKey)) {
@@ -69,7 +56,7 @@ class ScansController extends Controller
     {
         $this->_verifyApiKey();
 
-        $secretKey = Craft::parseEnv($this->_settings->secretKey);
+        $secretKey = Craft::parseEnv(Sherlock::$plugin->settings->secretKey);
 
         // Check that secret key is set
         if (empty($secretKey)) {
@@ -95,7 +82,7 @@ class ScansController extends Controller
     {
         $this->_verifyApiKey();
 
-        $secretKey = Craft::parseEnv($this->_settings->secretKey);
+        $secretKey = Craft::parseEnv(Sherlock::$plugin->settings->secretKey);
 
         // Check that secret key is set
         if (empty($secretKey)) {
@@ -149,7 +136,7 @@ class ScansController extends Controller
     private function _verifyApiKey()
     {
         $key = Craft::$app->getRequest()->getParam('key', '');
-        $apiKey = Craft::parseEnv($this->_settings->apiKey);
+        $apiKey = Craft::parseEnv(Sherlock::$plugin->settings->apiKey);
 
         // Verify provided key against API key
         if (empty($key) || empty($apiKey) || $key != $apiKey) {

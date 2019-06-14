@@ -23,24 +23,8 @@ use yii\web\HttpException;
  */
 class SherlockService extends Component
 {
-    // Properties
-    // =========================================================================
-
-    private $_settings;
-
     // Public Methods
     // =========================================================================
-
-    /**
-    * Init
-    */
-    public function init()
-    {
-        parent::init();
-
-        // Get settings
-        $this->_settings = Sherlock::$plugin->getSettings();
-    }
 
     /**
      * Check Header Protection
@@ -50,7 +34,7 @@ class SherlockService extends Component
         $request = Craft::$app->getRequest();
         $headers = Craft::$app->getResponse()->getHeaders();
 
-        if (!empty($this->_settings->headerProtection) && $this->_settings->headerProtection) {
+        if (!empty(Sherlock::$plugin->settings->headerProtection) && Sherlock::$plugin->settings->headerProtection) {
             $headers->set('X-Frame-Options', 'SAMEORIGIN');
             $headers->set('X-Content-Type-Options', 'nosniff');
             $headers->set('X-Xss-Protection', '1; mode=block');
@@ -68,16 +52,16 @@ class SherlockService extends Component
     {
         $request = Craft::$app->getRequest();
 
-        if (!empty($this->_settings->restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
-            $ipAdresses = preg_split('/\R/', $this->_settings->restrictControlPanelIpAddresses);
+        if (!empty(Sherlock::$plugin->settings->restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
+            $ipAdresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictControlPanelIpAddresses);
 
             if (!Craft::$app->getUser()->getIsAdmin() && !in_array($request->getUserIP(), $ipAdresses, true)) {
                 throw new HttpException(503);
             }
         }
 
-        if (!empty($this->_settings->restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
-            $ipAdresses = preg_split('/\R/', $this->_settings->restrictControlPanelIpAddresses);
+        if (!empty(Sherlock::$plugin->settings->restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
+            $ipAdresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictControlPanelIpAddresses);
 
             if (!Craft::$app->getUser()->getIsAdmin() && !in_array($request->getUserIP(), $ipAdresses, true)) {
                 throw new HttpException(503);
@@ -94,7 +78,7 @@ class SherlockService extends Component
     {
         $alerts = [];
 
-        if ($this->_settings->liveMode) {
+        if (Sherlock::$plugin->settings->liveMode) {
             $userId = Craft::$app->getUser()->id;
             if (Craft::$app->getEdition() == Craft::Solo || Craft::$app->getUser()->getIsAdmin() || in_array('accessplugin-sherlock', Craft::$app->getUserPermissions()->getPermissionsByUserId($userId), true)) {
                 $lastScan = $this->getLastScan();
@@ -155,7 +139,7 @@ class SherlockService extends Component
     {
         // Create model
         $scanModel = new ScanModel([
-            'highSecurityLevel' => (bool)$this->_settings->highSecurityLevel,
+            'highSecurityLevel' => (bool)Sherlock::$plugin->settings->highSecurityLevel,
         ]);
 
         $results = $scanModel->results;
@@ -243,19 +227,19 @@ class SherlockService extends Component
     private function _sendLogNotificationEmail($subject, $message, $log)
     {
         // If live mode && notification email addresses exist
-        if ($this->_settings->liveMode && !empty($this->_settings->notificationEmailAddresses)) {
+        if (Sherlock::$plugin->settings->liveMode && !empty(Sherlock::$plugin->settings->notificationEmailAddresses)) {
             $mailer = Craft::$app->getMailer();
 
             /** @var Message $message*/
             $message = $mailer->compose()
-                ->setTo($this->_settings->notificationEmailAddresses)
+                ->setTo(Sherlock::$plugin->settings->notificationEmailAddresses)
                 ->setSubject(Craft::$app->getSites()->getCurrentSite()->name.' - '.$subject)
                 ->setHtmlBody($message.UrlHelper::cpUrl('sherlock'));
 
             $message->send();
 
             // Log notification email
-            Craft::info($log.$this->_settings->notificationEmailAddresses, 'sherlock');
+            Craft::info($log.Sherlock::$plugin->settings->notificationEmailAddresses, 'sherlock');
         }
     }
 }

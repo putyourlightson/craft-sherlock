@@ -8,7 +8,7 @@ namespace putyourlightson\sherlock\services;
 use Craft;
 use craft\base\Component;
 use craft\base\Plugin;
-use craft\helpers\DateTimeHelper;
+use craft\helpers\ConfigHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
@@ -31,11 +31,6 @@ class TestsService extends Component
 {
     // Properties
     // =========================================================================
-
-    /**
-     * @var SettingsModel
-     */
-    private $_settings;
 
     /**
      * @var Client
@@ -71,7 +66,7 @@ class TestsService extends Component
         $tests = ['criticalCraftUpdates', 'criticalPluginUpdates', 'pluginVulnerabilities', 'httpsControlPanel', 'httpsFrontEnd', 'cors', 'xFrameOptions', 'xContentTypeOptions', 'xXssProtection', 'strictTransportSecurity', 'craftFoldersAboveWebRoot', 'craftFolderPermissions', 'craftFilePermissions', 'phpVersion', 'craftUpdates', 'pluginUpdates', 'requireEmailVerification', 'devMode', 'translationDebugOutput', 'defaultFileMode', 'defaultDirMode', 'defaultTokenDuration', 'enableCsrfProtection', 'useSecureCookies', 'securityKey', 'cpTrigger', 'blowfishHashCost', 'cooldownDuration', 'invalidLoginWindowDuration', 'maxInvalidLogins', 'rememberedUserSessionDuration', 'requireMatchingUserAgentForSession', 'requireUserAgentAndIpForSession', 'testToEmailAddress', 'userSessionDuration', 'verificationCodeDuration'];
 
         // Remove disabled tests
-        $disabledTests = Sherlock::$plugin->getSettings()->disabledTests;
+        $disabledTests = Sherlock::$plugin->settings->disabledTests;
         if (is_array($disabledTests)) {
             $tests = array_values(array_diff($tests, $disabledTests));
         }
@@ -88,12 +83,6 @@ class TestsService extends Component
      */
     public function runTest($test): TestModel
     {
-        // Get settings
-        if (empty($this->_settings))
-        {
-            $this->_settings = Sherlock::$plugin->getSettings();
-        }
-
         // Get client
         if (empty($this->_client))
         {
@@ -133,19 +122,19 @@ class TestsService extends Component
             $this->_updates = Craft::$app->getUpdates()->getUpdates(true);
         }
 
-        $testModel = new TestModel($this->_settings->{$test});
-        $testModel->highSecurityLevel = $this->_settings->highSecurityLevel;
+        $testModel = new TestModel(Sherlock::$plugin->settings->{$test});
+        $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
 
         switch ($test)
         {
             case 'pluginVulnerabilities':
-                if (!empty($this->_settings->pluginVulnerabilitiesFeedUrl) && stripos($this->_settings->pluginVulnerabilitiesFeedUrl, 'https://') === 0)
+                if (!empty(Sherlock::$plugin->settings->pluginVulnerabilitiesFeedUrl) && stripos(Sherlock::$plugin->settings->pluginVulnerabilitiesFeedUrl, 'https://') === 0)
                 {
                     $pluginVulnerabilities = [];
 
                     try
                     {
-                        $response = $this->_client->get($this->_settings->pluginVulnerabilitiesFeedUrl)->getBody();
+                        $response = $this->_client->get(Sherlock::$plugin->settings->pluginVulnerabilitiesFeedUrl)->getBody();
                         $vulnerabilities = Json::decode($response);
 
                         if ($vulnerabilities)
@@ -470,7 +459,7 @@ class TestsService extends Component
             case 'devMode':
                 if (Craft::$app->getConfig()->getGeneral()->{$test})
                 {
-                    $testModel->pass = $testModel->forceFail ? false : !($testModel->canFail && $this->_settings->liveMode);
+                    $testModel->pass = $testModel->forceFail ? false : !($testModel->canFail && Sherlock::$plugin->settings->liveMode);
                     $testModel->warning = true;
                 }
 
@@ -515,10 +504,9 @@ class TestsService extends Component
             case 'defaultTokenDuration':
             case 'verificationCodeDuration':
                 $value = Craft::$app->getConfig()->getGeneral()->{$test};
+                $seconds = ConfigHelper::durationInSeconds($value);
 
-                $interval = DateTimeHelper::secondsToInterval($value);
-
-                if ($interval->format($testModel->format) > $testModel->threshold)
+                if ($seconds > $testModel->threshold)
                 {
                     $testModel->failTest();
                 }
@@ -566,27 +554,11 @@ class TestsService extends Component
                 break;
 
             case 'cooldownDuration':
-                $value = Craft::$app->getConfig()->getGeneral()->{$test};
-                $interval = DateTimeHelper::secondsToInterval($value);
-
-                if ($interval->format($testModel->format) < $testModel->threshold)
-                {
-                    $testModel->failTest();
-                }
-
-                else
-                {
-                    $testModel->value = $value;
-                }
-
-                break;
-
             case 'invalidLoginWindowDuration':
                 $value = Craft::$app->getConfig()->getGeneral()->{$test};
+                $seconds = ConfigHelper::durationInSeconds($value);
 
-                $interval = DateTimeHelper::secondsToInterval($value);
-
-                if ($interval->format($testModel->format) < $testModel->threshold)
+                if ($seconds < $testModel->threshold)
                 {
                     $testModel->failTest();
                 }
@@ -623,9 +595,9 @@ class TestsService extends Component
 
                 if ($value)
                 {
-                    $interval = DateTimeHelper::secondsToInterval($value);
+                    $seconds = ConfigHelper::durationInSeconds($value);
 
-                    if ($interval->format($testModel->format) > $testModel->threshold)
+                    if ($seconds > $testModel->threshold)
                     {
                         $testModel->failTest();
                     }
@@ -648,9 +620,9 @@ class TestsService extends Component
 
                 else
                 {
-                    $interval = DateTimeHelper::secondsToInterval($value);
+                    $seconds = ConfigHelper::durationInSeconds($value);
 
-                    if ($interval->format($testModel->format) > $testModel->threshold)
+                    if ($seconds > $testModel->threshold)
                     {
                         $testModel->warning = true;
                     }
