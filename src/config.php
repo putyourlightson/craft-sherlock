@@ -131,8 +131,7 @@ return [
     ],
     'defaultTokenDuration' => [
         'canFail' => true,
-        'threshold' => 1,
-        'format' => '%d',
+        'threshold' => 86400, // 1 day
     ],
     'enableCsrfProtection' => [
         'canFail' => true,

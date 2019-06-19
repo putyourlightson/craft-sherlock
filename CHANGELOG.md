@@ -1,12 +1,17 @@
 # Changelog
 
+## 2.1.2 - 2019-06-19
+### Fixed
+- Fixed migration issue that could happen with project config ([#7](https://github.com/putyourlightson/craft-sherlock/issues/7)).
+- Fixed `defaultTokenDuration` test that was failing incorrectly ([#8](https://github.com/putyourlightson/craft-sherlock/issues/8)).
+
 ## 2.1.1 - 2019-06-14
 ### Changed
 - Improved spacing and info tooltip sizing.
 - Changed duration settings from intervals to seconds. 
 
 ### Fixed
-- Fixed duration tests that were failing incorrectly.
+- Fixed duration tests that were failing incorrectly  ([#7](https://github.com/putyourlightson/craft-sherlock/issues/7)).
 
 ## 2.1.0 - 2019-02-11
 ### Added
