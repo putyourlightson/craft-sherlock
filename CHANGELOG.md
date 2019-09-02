@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.3 - 2019-09-02
+### Fixed
+- Fixed an error that could occur when running a scan using the API key ([#10](https://github.com/putyourlightson/craft-sherlock/issues/10)).
+
 ## 2.1.2 - 2019-06-19
 ### Fixed
 - Fixed migration issue that could happen with project config ([#7](https://github.com/putyourlightson/craft-sherlock/issues/7)).

@@ -165,7 +165,7 @@ class SherlockService extends Component
         // Log scan
         $user = Craft::$app->getUser()->getIdentity();
         Craft::info(
-            'Scan run by '.$user->username.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
+            'Scan run by '.($user ? $user->username : 'API').' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
             'sherlock'
         );
 
@@ -204,7 +204,7 @@ class SherlockService extends Component
         $scanRecord = new ScanRecord;
         $scanRecord->setAttributes($scanModel->getAttributes(), false);
 
-        // Simlplify results
+        // Simplify results
         $results = array();
         foreach ($scanRecord->results as $key => $result) {
             foreach ($result as $test => $testModel) {
