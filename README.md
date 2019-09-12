@@ -4,13 +4,11 @@
 
 Sherlock is a security scanner and monitor to keep your site and [Craft CMS](https://craftcms.com/) secure.
 
-Learn more at [https://putyourlightson.com/craft-sherlock](https://putyourlightson.com/craft-sherlock).
-
-> Upgrades from Sherlock v1 for Craft CMS 2 purchased through StraightUpCraft are free! To get your license, please send your original purchase receipt to [info@putyourlightson.net](mailto:info@putyourlightson.net).
+Learn more and read the documentation at [putyourlightson.com/plugins/sherlock »](https://putyourlightson.com/plugins/sherlock)
 
 ## License
 
-This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $99 plus $39 per subsequent year for updates (optional).
+This plugin requires a commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/sherlock). The license fee is **$99** plus **$39** per subsequent year for updates (optional).
 
 ## Requirements
 
