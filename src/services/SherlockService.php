@@ -53,17 +53,17 @@ class SherlockService extends Component
         $request = Craft::$app->getRequest();
 
         if (!empty(Sherlock::$plugin->settings->restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
-            $ipAdresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictControlPanelIpAddresses);
+            $ipAddresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictControlPanelIpAddresses);
 
-            if (!Craft::$app->getUser()->getIsAdmin() && !in_array($request->getUserIP(), $ipAdresses, true)) {
+            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($ipAddresses, $request->getUserIP())) {
                 throw new HttpException(503);
             }
         }
 
         if (!empty(Sherlock::$plugin->settings->restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
-            $ipAdresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictControlPanelIpAddresses);
+            $ipAddresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictFrontEndIpAddresses);
 
-            if (!Craft::$app->getUser()->getIsAdmin() && !in_array($request->getUserIP(), $ipAdresses, true)) {
+            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($ipAddresses, $request->getUserIP())) {
                 throw new HttpException(503);
             }
         }
@@ -214,6 +214,32 @@ class SherlockService extends Component
 
         $scanRecord->results = $results;
         $scanRecord->save();
+    }
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * Match IP addresses
+     *
+     * @param string[] $ipAddresses
+     * @param string $userIp
+     *
+     * @return bool
+     */
+    private function _matchIpAddresses(array $ipAddresses, string $userIp): bool
+    {
+        $found = false;
+
+        foreach ($ipAddresses as $ipAddress) {
+            $ipAddress = str_replace(['\*', '\?'], ['.*', '.'], preg_quote($ipAddress));
+            if (preg_match('/^'.$ipAddress.'$/', $userIp)) {
+                $found = true;
+                break;
+            }
+        }
+
+        return $found;
     }
 
     /**

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.0 - 2019-09-30
+### Added
+- Added the ability to add `*` and `?` wildcards to restricted IP addresses ([#11](https://github.com/putyourlightson/craft-sherlock/issues/11)).
+
+### Fixed
+- Fixed bug in restriction of IP addresses to the front-end.
+
 ## 2.1.3 - 2019-09-02
 ### Fixed
 - Fixed an error that could occur when running a scan using the API key ([#10](https://github.com/putyourlightson/craft-sherlock/issues/10)).
