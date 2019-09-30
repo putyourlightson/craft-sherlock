@@ -95,7 +95,7 @@
     {{ forms.textareaField({
         label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
         name: 'restrictControlPanelIpAddresses',
-        instructions: 'Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).'|t('sherlock'),
+        instructions: 'Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access). The `*` and `?` wildcards are supported.'|t('sherlock'),
         warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
         rows: 3,
         value: settings.restrictControlPanelIpAddresses,
@@ -105,7 +105,7 @@
     {{ forms.textareaField({
         label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
         name: 'restrictFrontEndIpAddresses',
-        instructions: 'Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access).'|t('sherlock'),
+        instructions: 'Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access). The `*` and `?` wildcards are supported.'|t('sherlock'),
         warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
         rows: 3,
         value: settings.restrictFrontEndIpAddresses,
