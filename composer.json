@@ -31,6 +31,7 @@
         "handle": "sherlock",
         "developer": "PutYourLightsOn",
         "developerUrl": "https://putyourlightson.com/",
+        "documentationUrl": "https://putyourlightson.com/plugins/sherlock",
         "schemaVersion": "2.1.2",
         "hasCpSettings": true,
         "hasCpSection": true,
