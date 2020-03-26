@@ -176,7 +176,7 @@ class SherlockService extends Component
             // if last scan exists
             if ($lastScan) {
                 if ($lastScan->pass) {
-                    // send && log notification email
+                    // send & log notification email
                     $this->_sendLogNotificationEmail(
                         'Security Scan Failed',
                         'Sherlock security scan failed at the following site: ',
@@ -190,7 +190,7 @@ class SherlockService extends Component
                     (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates'])) ||
                     (isset($scanModel->results['fail']['pluginVulnerabilities']) && empty($lastScan->results['fail']['pluginVulnerabilities']))
                 ) {
-                    // send && log notification email
+                    // send & log notification email
                     $this->_sendLogNotificationEmail(
                         'Security Scan Critical Updates',
                         'Sherlock security scan detected critical updates at the following site: ',
@@ -200,7 +200,7 @@ class SherlockService extends Component
             }
         }
 
-        // Populate && save record
+        // Populate & save record
         $scanRecord = new ScanRecord;
         $scanRecord->setAttributes($scanModel->getAttributes(), false);
 
@@ -210,6 +210,11 @@ class SherlockService extends Component
             foreach ($result as $test => $testModel) {
                 $results[$key][$test] = $testModel->value;
             }
+        }
+
+        // Unset ID if null to avoid Postgres throwing an error
+        if (Craft::$app->getDb()->getIsPgsql()) {
+            unset($scanRecord->id);
         }
 
         $scanRecord->results = $results;
@@ -223,11 +228,11 @@ class SherlockService extends Component
      * Match IP addresses
      *
      * @param string[] $ipAddresses
-     * @param string $userIp
+     * @param string|null $userIp
      *
      * @return bool
      */
-    private function _matchIpAddresses(array $ipAddresses, string $userIp): bool
+    private function _matchIpAddresses(array $ipAddresses, $userIp = null): bool
     {
         $found = false;
 

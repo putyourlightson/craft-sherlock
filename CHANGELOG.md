@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1 - 2020-03-26
+### Fixed
+- Fixed a bug when running a scan and using Postgres ([#12](https://github.com/putyourlightson/craft-sherlock/issues/12)).
+
 ## 2.2.0 - 2019-09-30
 ### Added
 - Added the ability to add `*` and `?` wildcards to restricted IP addresses ([#11](https://github.com/putyourlightson/craft-sherlock/issues/11)).
