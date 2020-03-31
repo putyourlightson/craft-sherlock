@@ -17,7 +17,6 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\UriInterface;
-use putyourlightson\sherlock\models\SettingsModel;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
 use yii\web\HttpException;
@@ -63,7 +62,44 @@ class TestsService extends Component
     public function getTestNames(): array
     {
         // Default tests
-        $tests = ['criticalCraftUpdates', 'criticalPluginUpdates', 'pluginVulnerabilities', 'httpsControlPanel', 'httpsFrontEnd', 'cors', 'xFrameOptions', 'xContentTypeOptions', 'xXssProtection', 'strictTransportSecurity', 'craftFoldersAboveWebRoot', 'craftFolderPermissions', 'craftFilePermissions', 'phpVersion', 'craftUpdates', 'pluginUpdates', 'requireEmailVerification', 'devMode', 'translationDebugOutput', 'defaultFileMode', 'defaultDirMode', 'defaultTokenDuration', 'enableCsrfProtection', 'useSecureCookies', 'securityKey', 'cpTrigger', 'blowfishHashCost', 'cooldownDuration', 'invalidLoginWindowDuration', 'maxInvalidLogins', 'rememberedUserSessionDuration', 'requireMatchingUserAgentForSession', 'requireUserAgentAndIpForSession', 'testToEmailAddress', 'userSessionDuration', 'verificationCodeDuration'];
+        $tests = [
+            'criticalCraftUpdates',
+            'criticalPluginUpdates',
+            'pluginVulnerabilities',
+            'httpsControlPanel',
+            'httpsFrontEnd',
+            'cors',
+            'xFrameOptions',
+            'xContentTypeOptions',
+            'xXssProtection',
+            'strictTransportSecurity',
+            'craftFoldersAboveWebRoot',
+            'craftFolderPermissions',
+            'craftFilePermissions',
+            'phpVersion',
+            'craftUpdates',
+            'pluginUpdates',
+            'requireEmailVerification',
+            'devMode',
+            'translationDebugOutput',
+            'defaultFileMode',
+            'defaultDirMode',
+            'defaultTokenDuration',
+            'enableCsrfProtection',
+            'useSecureCookies',
+            'securityKey',
+            'cpTrigger',
+            'blowfishHashCost',
+            'cooldownDuration',
+            'invalidLoginWindowDuration',
+            'maxInvalidLogins',
+            'rememberedUserSessionDuration',
+            'requireMatchingUserAgentForSession',
+            'requireUserAgentAndIpForSession',
+            'testToEmailAddress',
+            'userSessionDuration',
+            'verificationCodeDuration',
+        ];
 
         // Remove disabled tests
         $disabledTests = Sherlock::$plugin->settings->disabledTests;

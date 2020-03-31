@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2 - 2020-03-31
+### Fixed
+- Fixed a bug in which scans could throw an error with recent versions of Craft ([#13](https://github.com/putyourlightson/craft-sherlock/issues/13)).
+
 ## 2.2.1 - 2020-03-26
 ### Fixed
 - Fixed a bug when running a scan and using Postgres ([#12](https://github.com/putyourlightson/craft-sherlock/issues/12)).

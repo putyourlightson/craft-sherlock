@@ -8,6 +8,7 @@ namespace putyourlightson\sherlock\services;
 use Craft;
 use craft\base\Component;
 use craft\errors\SiteNotFoundException;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
 use putyourlightson\sherlock\models\ScanModel;
@@ -142,7 +143,6 @@ class SherlockService extends Component
             'highSecurityLevel' => (bool)Sherlock::$plugin->settings->highSecurityLevel,
         ]);
 
-        $results = $scanModel->results;
         $tests = Sherlock::$plugin->tests->getTestNames();
 
         foreach ($tests as $test) {
@@ -157,10 +157,8 @@ class SherlockService extends Component
             }
 
             $status = !$testModel->pass ? 'fail' : ($testModel->warning ? 'warning' : 'pass');
-            $results[$status][$test] = $testModel;
+            $scanModel->results[$status][$test] = $testModel;
         }
-
-        $scanModel->results = $results;
 
         // Log scan
         $user = Craft::$app->getUser()->getIdentity();
@@ -205,19 +203,22 @@ class SherlockService extends Component
         $scanRecord->setAttributes($scanModel->getAttributes(), false);
 
         // Simplify results
-        $results = array();
-        foreach ($scanRecord->results as $key => $result) {
+        $results = [];
+
+        // Use results from scan model as the results on scan record may be json encoded
+        foreach ($scanModel->results as $key => $result) {
             foreach ($result as $test => $testModel) {
                 $results[$key][$test] = $testModel->value;
             }
         }
+
+        $scanRecord->results = $results;
 
         // Unset ID if null to avoid Postgres throwing an error
         if (Craft::$app->getDb()->getIsPgsql()) {
             unset($scanRecord->id);
         }
 
-        $scanRecord->results = $results;
         $scanRecord->save();
     }
 
