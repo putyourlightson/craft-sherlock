@@ -3,6 +3,7 @@
 ## 2.2.3 - 2020-07-02
 ### Changed
 - Headers are now correctly detected regardless of whether in normal or lower case.
+- Headers are now stripped of tags to ensure they are safe to output to the browser.
 
 ## 2.2.2 - 2020-03-31
 ### Fixed
