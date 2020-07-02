@@ -103,6 +103,7 @@ class TestsService extends Component
 
         // Remove disabled tests
         $disabledTests = Sherlock::$plugin->settings->disabledTests;
+
         if (is_array($disabledTests)) {
             $tests = array_values(array_diff($tests, $disabledTests));
         }
@@ -265,7 +266,7 @@ class TestsService extends Component
                 break;
 
             case 'xXssProtection':
-                $value = $this->_getHeaderValue('X-Xss-Protection');
+                $value = $this->_getHeaderValue('X-XSS-Protection');
 
                 // Remove spaces and convert to lower case for comparison
                 $compareValue = strtolower(str_replace(' ', '', $value));

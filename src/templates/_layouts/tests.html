@@ -92,14 +92,14 @@
         'url': 'https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options',
     },
     'xXssProtection': {
-        'name': 'X-Xss-Protection Header',
+        'name': 'X-XSS-Protection Header',
         'type': 'header',
         'typeName': 'HTTP Header',
         'details': {
-            'pass': 'X-Xss-Protection header is set to',
-            'warning': 'Set X-Xss-Protection header to "1; mode=block"',
+            'pass': 'X-XSS-Protection header is set to',
+            'warning': 'Set X-XSS-Protection header to "1; mode=block"',
         },
-        'info': 'The X-Xss-Protection header is used to configure the built in reflective XSS protection found in browsers. Setting the header to "1; mode=block" tells the browser to block the response if it detects an attack rather than sanitising the script.',
+        'info': 'The X-XSS-Protection header is used to configure the built in reflective XSS protection found in browsers. Setting the header to "1; mode=block" tells the browser to block the response if it detects an attack rather than sanitising the script.',
         'url': 'https://scotthelme.co.uk/hardening-your-http-response-headers/#x-xss-protection',
     },
     'strictTransportSecurity': {
