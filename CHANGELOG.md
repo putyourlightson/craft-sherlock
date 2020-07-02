@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.4 - 2020-07-02
+### Fixed
+- Fixed X-Xss-Protection test.
+
 ## 2.2.3 - 2020-07-02
 ### Changed
 - Headers are now correctly detected regardless of whether in normal or lower case.

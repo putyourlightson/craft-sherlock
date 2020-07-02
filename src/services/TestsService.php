@@ -268,7 +268,7 @@ class TestsService extends Component
                 $value = $this->_getHeaderValue('X-Xss-Protection');
 
                 // Remove spaces and convert to lower case for comparison
-                $compareValue = strtolower(str_replace(' ', '', ' '));
+                $compareValue = strtolower(str_replace(' ', '', $value));
 
                 if ($compareValue != '1;mode=block') {
                     $testModel->failTest();
