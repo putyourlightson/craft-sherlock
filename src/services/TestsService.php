@@ -639,6 +639,9 @@ class TestsService extends Component
             $value = $value[0] ?? '';
         }
 
+        // Strip tags to make it safe to output raw
+        $value = strip_tags($value);
+
         return $value;
     }
 }
