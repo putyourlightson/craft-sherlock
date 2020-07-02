@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.3 - 2020-07-02
+### Changed
+- Headers are now correctly detected regardless of whether in normal or lower case.
+
 ## 2.2.2 - 2020-03-31
 ### Fixed
 - Fixed a bug in which scans could throw an error with recent versions of Craft ([#13](https://github.com/putyourlightson/craft-sherlock/issues/13)).
