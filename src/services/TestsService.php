@@ -266,7 +266,10 @@ class TestsService extends Component
                 break;
 
             case 'xXssProtection':
-                $value = $this->_getHeaderValue('X-XSS-Protection');
+                $value = $this->_getHeaderValue('X-Xss-Protection');
+
+                // If not set then check alternative case
+                $value = $value ?: $this->_getHeaderValue('X-XSS-Protection');
 
                 // Remove spaces and convert to lower case for comparison
                 $compareValue = strtolower(str_replace(' ', '', $value));
@@ -640,8 +643,8 @@ class TestsService extends Component
             $value = $value[0] ?? '';
         }
 
-        // Strip tags to make it safe to output raw
-        $value = strip_tags($value);
+        // URL decode and strip tags to make it safe to output raw
+        $value = strip_tags(urldecode($value));
 
         return $value;
     }

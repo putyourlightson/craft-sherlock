@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.5 - Unreleased
+### Fixed
+- Fixed `X-XSS-Protection` case issue ([#16](https://github.com/putyourlightson/craft-sherlock/issues/16)).
+
 ## 2.2.4 - 2020-07-02
 ### Changed
 - Minor UI improvements.
