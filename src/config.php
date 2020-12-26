@@ -139,9 +139,6 @@ return [
     'useSecureCookies' => [
         'canFail' => true,
     ],
-    'securityKey' => [
-        'canFail' => true,
-    ],
     'cpTrigger' => [],
     'blowfishHashCost' => [
         'threshold' => 13,

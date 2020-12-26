@@ -12,7 +12,7 @@ Learn more and read the documentation at [putyourlightson.com/plugins/sherlock Â
 
 ## License
 
-This plugin requires a commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/sherlock). The license fee is **$99** plus **$49** per subsequent year for updates (optional).
+This plugin requires a commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/sherlock).
 
 ## Requirements
 

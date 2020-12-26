@@ -87,7 +87,6 @@ class TestsService extends Component
             'defaultTokenDuration',
             'enableCsrfProtection',
             'useSecureCookies',
-            'securityKey',
             'cpTrigger',
             'blowfishHashCost',
             'cooldownDuration',
@@ -514,15 +513,6 @@ class TestsService extends Component
 
                 else {
                     $testModel->value = $value;
-                }
-
-                break;
-
-            case 'securityKey4securityKey4':
-                $value = Craft::$app->getConfig()->getGeneral()->{$test};
-
-                if ($value && (strlen($value) < 10)) {
-                    $testModel->failTest();
                 }
 
                 break;

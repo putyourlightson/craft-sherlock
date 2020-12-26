@@ -182,10 +182,6 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
-    public $securityKey = [
-        'canFail' => true,
-    ];
-
     public $cpTrigger = [];
 
     public $blowfishHashCost = [
