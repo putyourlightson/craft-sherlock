@@ -17,7 +17,7 @@
         first: true,
         label: 'Live Mode'|t('sherlock'),
         name: 'liveMode',
-        instructions: 'Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins.'|t('sherlock'),
+        instructions: 'Whether the site is live. If enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins.'|t('sherlock'),
         warning: (config.liveMode is defined ? configWarning('liveMode')),
         on: settings.liveMode,
         errors: settings.getErrors('liveMode')
