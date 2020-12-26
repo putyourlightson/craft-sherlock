@@ -31,7 +31,7 @@
 
             <h1>
                 <img width="32" height="32" src="{{ resourcesUrl ~ '/icons/' ~ (lastScan.pass ? 'pass' : 'fail') ~ '.svg' }}" alt="{{ (lastScan.pass ? 'Pass' : 'Fail')|t('sherlock') }}" />
-                This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.checkHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}
+                <span>This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.checkHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}</span>
                 <span class="info">{{ "This security scan result is determined by a set of criteria used by Sherlock's standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner."|t('sherlock') }}</span>
             </h1>
 
@@ -73,7 +73,7 @@
                                         {{ value ? value|raw }}
                                     </span>
                                     {% if test.info and not (testName == 'pluginVulnerabilities' and resultType == 'fail') %}
-                                        <span class="info">{{ test.info|t('sherlock')|raw }}</span>
+                                        <span class="info">{{ test.info|t('sherlock') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>

@@ -197,7 +197,7 @@
             'warning': 'Disable dev mode',
         },
         'info': 'Dev mode is intended for testing and debugging your site and outputs performance related data on the front-end. It should never be enabled in live production environments.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-devmode',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#devmode',
     },
     'translationDebugOutput': {
         'name': 'Translation Debug Output',
@@ -207,8 +207,8 @@
             'pass': 'Translation debug output is disabled',
             'warning': 'Set translation debug output to false',
         },
-        'info': 'If enabled, this setting will wrap all strings that are run through Craft::t() or the |translate filter with "@" symbols. It is intended for debugging and should be disabled in live production environments.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-translationdebugoutput',
+        'info': 'If enabled, this setting will wrap all strings that are run through `Craft::t()` or the `|translate` filter with "@" symbols. It is intended for debugging and should be disabled in live production environments.',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#translationdebugoutput',
     },
     'defaultFileMode': {
         'name': 'Default File Permissions',
@@ -219,7 +219,7 @@
             'warning': 'Set default file permissions to 0664',
         },
         'info': 'The permissions Craft will use when creating a new file on the file system. Set this to at most 0664, which will grant read and write for the owner and group, read for everyone else.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-defaultfilemode',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#defaultfilemode',
     },
     'defaultDirMode': {
         'name': 'Default Folder Permissions',
@@ -230,7 +230,7 @@
             'warning': 'Set default folder permissions to 0775',
         },
         'info': 'The permissions Craft will use when creating a new folder on the file system. Set this to at most 0775, which will grant everything for the owner and group, read and execute for everyone else.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-defaultdirmode',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#defaultdirmode',
     },
     'defaultTokenDuration': {
         'name': 'Default Token Duration',
@@ -241,7 +241,7 @@
             'warning': 'Set default token duration to P1D or less',
         },
         'info': 'The duration that system tokens should last for. Setting this to P1D or less will ensure that system tokens expire after at most 1 day.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-defaulttokenduration',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#defaulttokenduration',
     },
     'enableCsrfProtection': {
         'name': 'CSRF Protection',
@@ -252,7 +252,7 @@
             'warning': 'Enable CSRF protection',
         },
         'info': 'Cross-Site Request Forgery (CSRF) protection ensures that all POST requests to Craft must be accompanied by a CSRF token, otherwise the request will be rejected with a 400 error. This helps to prevent attacks that force unwanted actions to be executed on behalf of a user that is authenticated and logged in to Craft.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-enablecsrfprotection',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#enablecsrfprotection',
     },
     'useSecureCookies': {
         'name': 'Use Secure Cookies',
@@ -263,7 +263,7 @@
             'warning': 'Set secure cookies to "on" or "auto"',
         },
         'info': 'Whether Craft should set the secure flag on its cookies, limiting them to only be sent on secure (SSL) requests. Setting this to "on" or "auto" will ensure that the secure flag is set.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-usesecurecookies',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#usesecurecookies',
     },
     'cpTrigger': {
         'name': 'Control Panel Trigger',
@@ -274,7 +274,7 @@
             'warning': 'Change control panel trigger to something other than "admin"',
         },
         'info': 'This is the URI segment that triggers Craft to load the control panel rather than the front-end website. Changing this to something other than the default "admin" can help prevent people from guessing the access point to your site’s control panel.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-cptrigger',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#cptrigger',
     },
     'blowfishHashCost': {
         'name': 'Blowfish Hash Cost',
@@ -285,7 +285,7 @@
             'warning': 'Set blowfish hash cost to at least 13',
         },
         'info': 'The higher the cost value, the longer it takes to generate a password hash and to verify against it. For best protection against brute force attacks, set it to the highest value that is tolerable on your server.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-blowfishhashcost',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#blowfishhashcost',
     },
     'cooldownDuration': {
         'name': 'Cooldown Duration',
@@ -296,7 +296,7 @@
             'warning': 'Set cooldown duration to false or at least PT5M',
         },
         'info': 'The amount of time a user must wait before re-attempting to log in after their account is locked due to too many failed login attempts. Setting this to false will keep the account locked indefinitely. Setting this to PT5M will keep the account locked for 5 minutes.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-cooldownduration',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#cooldownduration',
     },
     'invalidLoginWindowDuration': {
         'name': 'Invalid Login Window Duration',
@@ -307,7 +307,7 @@
             'warning': 'Set invalid login window duration to at least PT1H',
         },
         'info': 'The amount of time to track invalid login attempts for a user, for determining if Craft should lock an account. Setting this to at least PT1H will ensure that invalid login attempts are tracked for at least 1 hour.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-invalidloginwindowduration',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#invalidloginwindowduration',
     },
     'maxInvalidLogins': {
         'name': 'Max Invalid Logins',
@@ -318,7 +318,7 @@
             'warning': 'Set max invalid logins to 5 or less',
         },
         'info': 'The number of invalid login attempts Craft will allow within the specified duration before the account gets locked. Set this to 5 or less to help prevent a brute force attack.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-maxinvalidlogins',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#maxinvalidlogins',
     },
     'rememberedUserSessionDuration': {
         'name': 'Remembered User Session Duration',
@@ -329,7 +329,7 @@
             'warning': 'Set remembered user session duration to P2W or less',
         },
         'info': 'The amount of time a user stays logged in if "Remember Me" is checked on the login page. Setting this to P2W or less will ensure that users are remembered for at most 2 weeks.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-rememberedusersessionduration',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#rememberedusersessionduration',
     },
     'requireMatchingUserAgentForSession': {
         'name': 'Require Matching User Agent For Session',
@@ -340,7 +340,7 @@
             'warning': 'Set require matching user agent for session to true',
         },
         'info': 'Whether Craft should require a matching user agent string when restoring a user session from a cookie. Keeping this enabled will prevent users switching to different browsers/devices while remaining logged in.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-requirematchinguseragentforsession',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#requirematchinguseragentforsession',
     },
     'requireUserAgentAndIpForSession': {
         'name': 'Require User Agent And IP For Session',
@@ -351,7 +351,7 @@
             'warning': 'Set require user agent and IP for session to true',
         },
         'info': 'Whether Craft should require the existence of a user agent string and IP address when creating a new user session. Keeping this enabled will help prevent user sessions being created for bots.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-requireuseragentandipforsession',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#requireuseragentandipforsession',
     },
     'testToEmailAddress': {
         'name': 'Test Email Address',
@@ -362,7 +362,7 @@
             'warning': 'Remove test email address',
         },
         'info': 'If set, all system emails will be sent to this email address. It is intended for testing and should be disabled in live production environments.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-testtoemailaddress',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#testtoemailaddress',
     },
     'userSessionDuration': {
         'name': 'Remembered User Session Duration',
@@ -373,7 +373,7 @@
             'warning': 'Set user session duration to PT1H or less',
         },
         'info': 'The amount of time a user stays logged in. Setting this to false will allow users to stay logged in as long as their browser is open. Setting this to PT1H or less will allow users to stay logged in for at most 1 hour.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-usersessionduration',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#usersessionduration',
     },
     'verificationCodeDuration': {
         'name': 'Verification Code Duration',
@@ -384,6 +384,28 @@
             'warning': 'Set verification code duration to P1D or less',
         },
         'info': 'The amount of time a user verification code can be used before expiring. Setting this to P1D or less will ensure that the user verification code expires after at most 1 day.',
-        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#property-verificationcodeduration',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#verificationcodeduration',
+    },
+    'preventUserEnumeration': {
+        'name': 'Prevent User Enumeration',
+        'type': 'settings',
+        'typeName': 'Config Setting',
+        'details': {
+            'pass': 'Prevent user enumeration is enabled',
+            'warning': 'Set prevent user enumeration to true',
+        },
+        'info': 'When true, Craft will always return a successful response in the “forgot password” flow, making it difficult to enumerate users.',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#preventuserenumeration',
+    },
+    'sanitizeSvgUploads': {
+        'name': 'Sanitize SVG Uploads',
+        'type': 'settings',
+        'typeName': 'Config Setting',
+        'details': {
+            'pass': 'Sanitizing uploaded SVG files is enabled',
+            'warning': 'Set sanitize SVG uploads to true',
+        },
+        'info': 'Whether Craft should sanitize uploaded SVG files and strip out potential malicious-looking content.',
+        'url': 'https://craftcms.com/docs/3.x/config/config-settings.html#sanitizesvguploads',
     }
 } %}

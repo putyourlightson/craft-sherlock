@@ -1,7 +1,12 @@
 # Changelog
 
-## 2.2.6 - 2020-12-26
+## 2.3.0 - 2020-12-26
+### Added
+- Added prevent user enumeration test.
+- Added sanitize SVG uploads test.
+
 ### Changed
+- Minor UI improvements.
 - Removed security key test.
 
 ## 2.2.5 - 2020-08-24

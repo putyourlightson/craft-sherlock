@@ -169,5 +169,11 @@ return [
         'canFail' => true,
         'threshold' => 86400, // 1 day
     ],
+    'preventUserEnumeration' => [
+        'canFail' => true,
+    ],
+    'sanitizeSvgUploads' => [
+        'canFail' => true,
+    ],
      */
 ];

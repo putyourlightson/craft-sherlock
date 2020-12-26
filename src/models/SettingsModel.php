@@ -223,6 +223,14 @@ class SettingsModel extends Model
         'threshold' => 86400, // 1 day
     ];
 
+    public $preventUserEnumeration = [
+        'canFail' => true,
+    ];
+
+    public $sanitizeSvgUploads = [
+        'canFail' => true,
+    ];
+
     // Public Methods
     // =========================================================================
 

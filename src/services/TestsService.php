@@ -98,6 +98,8 @@ class TestsService extends Component
             'testToEmailAddress',
             'userSessionDuration',
             'verificationCodeDuration',
+            'preventUserEnumeration',
+            'sanitizeSvgUploads',
         ];
 
         // Remove disabled tests
@@ -474,6 +476,8 @@ class TestsService extends Component
             case 'useSecureCookies':
             case 'requireMatchingUserAgentForSession':
             case 'requireUserAgentAndIpForSession':
+            case 'preventUserEnumeration':
+            case 'sanitizeSvgUploads':
                 if (!Craft::$app->getConfig()->getGeneral()->{$test}) {
                     $testModel->failTest();
                 }
