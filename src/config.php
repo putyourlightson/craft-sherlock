@@ -50,8 +50,8 @@ return [
     //'disabledTests' => [],
 
     /**
-	 * Individual test settings.
-	 *
+     * Individual test settings.
+     *
     'criticalCraftUpdates' => [
         'forceFail' => true,
     ],
@@ -104,6 +104,9 @@ return [
             '7.0' => '2018-12-03',
             '7.1' => '2019-12-01',
             '7.2' => '2020-11-30',
+            '7.3' => '2021-12-06',
+            '7.4' => '2022-11-28',
+            '8.0' => '2023-11-26',
         ],
     ],
     'craftUpdates' => [
@@ -146,12 +149,23 @@ return [
     'cooldownDuration' => [
         'threshold' => 300, // 5 minutes
     ],
+    'deferPublicRegistrationPassword' => [],
+    'elevatedSessionDuration' => [
+        'canFail' => true,
+        'threshold' => 300, // 5 minutes
+    ],
     'invalidLoginWindowDuration' => [
         'threshold' => 3600, // 1 hour
     ],
     'maxInvalidLogins' => [
         'canFail' => true,
         'threshold' => 5,
+    ],
+    'preventUserEnumeration' => [
+        'canFail' => true,
+    ],
+    'sanitizeSvgUploads' => [
+        'canFail' => true,
     ],
     'rememberedUserSessionDuration' => [
         'threshold' => 1209600, // 14 days

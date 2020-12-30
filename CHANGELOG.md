@@ -51,7 +51,7 @@
 - Added the ability to add `*` and `?` wildcards to restricted IP addresses ([#11](https://github.com/putyourlightson/craft-sherlock/issues/11)).
 
 ### Fixed
-- Fixed bug in restriction of IP addresses to the front-end.
+- Fixed a bug in the restriction of IP addresses on the front-end.
 
 ## 2.1.3 - 2019-09-02
 ### Fixed
