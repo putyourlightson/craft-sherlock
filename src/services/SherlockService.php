@@ -85,7 +85,7 @@ class SherlockService extends Component
                 $lastScan = $this->getLastScan();
 
                 if ($lastScan && !$lastScan->pass) {
-                    $alerts[] = 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'st&&ard').' security scan. <a href="'.UrlHelper::cpUrl('sherlock').'" class="go">View Last Scan</a>';
+                    $alerts[] = 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan. <a href="'.UrlHelper::cpUrl('sherlock').'" class="go">View Last Scan</a>';
                 }
             }
         }
