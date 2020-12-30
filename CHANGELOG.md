@@ -5,6 +5,7 @@
 - Added defer public registration password test.
 - Added elevated session duration test.
 - Added PHP version support thresholds up until PHP 8.0.
+- Added the `sherlock/scans/run` console command.
 
 ### Changed
 - Improved test threshold explanations.
