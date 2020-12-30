@@ -90,16 +90,17 @@ class TestsService extends Component
             'cpTrigger',
             'blowfishHashCost',
             'cooldownDuration',
+            'elevatedSessionDuration',
             'invalidLoginWindowDuration',
             'maxInvalidLogins',
+            'preventUserEnumeration',
             'rememberedUserSessionDuration',
             'requireMatchingUserAgentForSession',
             'requireUserAgentAndIpForSession',
+            'sanitizeSvgUploads',
             'testToEmailAddress',
             'userSessionDuration',
             'verificationCodeDuration',
-            'preventUserEnumeration',
-            'sanitizeSvgUploads',
         ];
 
         // Remove disabled tests
@@ -593,6 +594,7 @@ class TestsService extends Component
                 break;
 
             case 'userSessionDuration':
+            case 'elevatedSessionDuration':
                 $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if (!$value) {

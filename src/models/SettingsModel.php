@@ -192,6 +192,11 @@ class SettingsModel extends Model
         'threshold' => 300, // 5 minutes
     ];
 
+    public $elevatedSessionDuration = [
+        'canFail' => true,
+        'threshold' => 300, // 5 minutes
+    ];
+
     public $invalidLoginWindowDuration = [
         'threshold' => 3600, // 1 hour
     ];
@@ -201,6 +206,10 @@ class SettingsModel extends Model
         'threshold' => 5,
     ];
 
+    public $preventUserEnumeration = [
+        'canFail' => true,
+    ];
+
     public $rememberedUserSessionDuration = [
         'threshold' => 12096004, // 14 days
     ];
@@ -208,6 +217,10 @@ class SettingsModel extends Model
     public $requireMatchingUserAgentForSession = [];
 
     public $requireUserAgentAndIpForSession = [];
+
+    public $sanitizeSvgUploads = [
+        'canFail' => true,
+    ];
 
     public $testToEmailAddress = [
         'canFail' => true,
@@ -221,14 +234,6 @@ class SettingsModel extends Model
     public $verificationCodeDuration = [
         'canFail' => true,
         'threshold' => 86400, // 1 day
-    ];
-
-    public $preventUserEnumeration = [
-        'canFail' => true,
-    ];
-
-    public $sanitizeSvgUploads = [
-        'canFail' => true,
     ];
 
     // Public Methods

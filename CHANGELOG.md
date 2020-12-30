@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.4.0 - Unreleased
+### Added
+- Added elevated session duration test.
+
+### Fixed
+- Fixed wording of user session duration test.
+
 ## 2.3.0 - 2020-12-26
 ### Added
 - Added prevent user enumeration test.

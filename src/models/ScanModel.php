@@ -6,6 +6,7 @@
 namespace putyourlightson\sherlock\models;
 
 use craft\helpers\Json;
+use DateTime;
 use putyourlightson\sherlock\base\BaseModel;
 
 /**
@@ -46,7 +47,7 @@ class ScanModel extends BaseModel
     ];
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     public $dateCreated;
 
