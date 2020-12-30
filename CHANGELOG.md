@@ -3,6 +3,7 @@
 ## 2.4.0 - Unreleased
 ### Added
 - Added elevated session duration test.
+- Added PHP version support thresholds up until PHP 8.0.
 
 ### Fixed
 - Fixed wording of user session duration test.
