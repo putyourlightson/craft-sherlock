@@ -90,6 +90,7 @@ class TestsService extends Component
             'cpTrigger',
             'blowfishHashCost',
             'cooldownDuration',
+            'deferPublicRegistrationPassword',
             'elevatedSessionDuration',
             'invalidLoginWindowDuration',
             'maxInvalidLogins',
@@ -487,6 +488,7 @@ class TestsService extends Component
 
             case 'translationDebugOutput':
             case 'testToEmailAddress':
+            case 'deferPublicRegistrationPassword':
                 if (Craft::$app->getConfig()->getGeneral()->{$test}) {
                     $testModel->failTest();
                 }

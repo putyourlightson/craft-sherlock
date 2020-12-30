@@ -195,6 +195,8 @@ class SettingsModel extends Model
         'threshold' => 300, // 5 minutes
     ];
 
+    public $deferPublicRegistrationPassword = [];
+
     public $elevatedSessionDuration = [
         'canFail' => true,
         'threshold' => 300, // 5 minutes

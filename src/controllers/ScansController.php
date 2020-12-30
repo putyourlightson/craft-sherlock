@@ -26,6 +26,8 @@ class ScansController extends Controller
 
     /**
      * Get last scan
+     *
+     * @throws HttpException
      */
     public function actionGetLastScan()
     {
@@ -77,6 +79,8 @@ class ScansController extends Controller
 
     /**
      * Verify
+     *
+     * @throws HttpException
      */
     public function actionVerify()
     {
@@ -100,6 +104,8 @@ class ScansController extends Controller
 
     /**
      * Run scan
+     *
+     * @throws HttpException
      */
     public function actionRunScan()
     {
@@ -112,6 +118,8 @@ class ScansController extends Controller
 
     /**
      * Run scan AJAX
+     *
+     * @throws HttpException
      */
     public function actionRunScanAjax()
     {
@@ -132,6 +140,8 @@ class ScansController extends Controller
 
     /**
      * Verify API key
+     *
+     * @throws HttpException
      */
     private function _verifyApiKey()
     {

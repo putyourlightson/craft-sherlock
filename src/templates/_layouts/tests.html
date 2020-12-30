@@ -298,6 +298,17 @@
         'info': 'The amount of time a user must wait before re-attempting to log in after their account is locked due to too many failed login attempts. Setting this to false will keep the account locked indefinitely. Setting this to PT5M (300) will keep the account locked for 5 minutes.',
         'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#cooldownduration',
     },
+    'deferPublicRegistrationPassword': {
+        'name': 'Defer Public Registration Password',
+        'type': 'settings',
+        'typeName': 'Config Setting',
+        'details': {
+            'pass': 'Defer public registration password is disabled',
+            'warning': 'Defer public registration password to false',
+        },
+        'info': 'By default, Craft will require a password field to be submitted on front-end, public user registrations. Setting this to true will no longer require it on the initial registration form. If you have email verification enabled, new users will set their password once they’ve clicked on the verification link in the email. If you don’t, the only way they can set their password is to go through your forgot password workflow.',
+        'url': 'https://docs.craftcms.com/api/v3/craft-config-generalconfig.html#deferpublicregistrationpassword',
+    },
     'elevatedSessionDuration': {
         'name': 'Elevated Session Duration',
         'type': 'settings',

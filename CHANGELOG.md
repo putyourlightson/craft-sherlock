@@ -2,8 +2,12 @@
 
 ## 2.4.0 - Unreleased
 ### Added
+- Added defer public registration password test.
 - Added elevated session duration test.
 - Added PHP version support thresholds up until PHP 8.0.
+
+### Changed
+- Improved test threshold explanations.
 
 ### Fixed
 - Fixed wording of user session duration test.
