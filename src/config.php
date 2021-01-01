@@ -18,176 +18,174 @@
  */
 
 return [
+    '*' => [
+        // Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if security updates are detected in installed plugins.
+        //'liveMode' => false,
 
-    // Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins.
-    //'liveMode' => false,
+        // Whether Sherlock should be extra critical of security issues and the resulting warnings.
+        //'highSecurityLevel' => false,
 
-    // Whether Sherlock should be extra critical of security issues and the resulting warnings.
-    //'highSecurityLevel' => false,
+        // Protects your site by setting HTTP response headers that provide added security.
+        //'headerProtection' => true,
 
-    // Protects your site by setting HTTP response headers that provide added security.
-    //'headerProtection' => true,
+        // Enter the email addresses (separated by commas) that should be notified of security issues.
+        //'notificationEmailAddresses' => '',
 
-    // Enter the email addresses (separated by commas) that should be notified of security issues.
-    //'notificationEmailAddresses' => '',
+        // A random 32 character string that will allow calls to the plugin and must be set for calls to work.
+        //'apiKey' => '',
 
-    // The URL of of a JSON feed URL containing known plugin vulnerabilities.
-    //'pluginVulnerabilitiesFeedUrl' => '',
+        // A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.
+        //'secretKey' => '',
 
-    // A random 32 character string that will allow calls to the plugin and must be set for calls to work.
-    //'apiKey' => '',
+        // Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).
+        //'restrictControlPanelIpAddresses' => '',
 
-    // A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.
-    //'secretKey' => '',
+        // Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access).
+        //'restrictFrontEndIpAddresses' => '',
 
-    // Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).
-    //'restrictControlPanelIpAddresses' => '',
+        // Add tests to disable to the array.
+        //'disabledTests' => [],
 
-    // Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access).
-    //'restrictFrontEndIpAddresses' => '',
-
-    // Add tests to disable to the array.
-    //'disabledTests' => [],
-
-    /**
-     * Individual test settings.
-     *
-    'criticalCraftUpdates' => [
-        'forceFail' => true,
-    ],
-    'criticalPluginUpdates' => [
-        'forceFail' => true,
-    ],
-    'pluginVulnerabilities' => [
-        'forceFail' => true,
-    ],
-    'httpsControlPanel' => [
-        'forceFail' => true,
-    ],
-    'httpsFrontEnd' => [
-        'canFail' => true,
-    ],
-    'cors' => [
-        'forceFail' => true,
-    ],
-    'xFrameOptions' => [
-        'canFail' => true,
-    ],
-    'xContentTypeOptions' => [
-        'canFail' => true,
-    ],
-    'xXssProtection' => [
-        'canFail' => true,
-    ],
-    'strictTransportSecurity' => [
-        'canFail' => true,
-    ],
-    'craftFoldersAboveWebRoot' => [
-        'canFail' => true,
-    ],
-    'craftFolderPermissions' => [
-        'canFail' => true,
-    ],
-    'craftFilePermissions' => [
-        'canFail' => true,
-    ],
-    'phpVersion' => [
-        'canFail' => true,
-        'thresholds' => [
-            '5.0' => '2005-09-05',
-            '5.1' => '2006-07-24',
-            '5.2' => '2011-01-06',
-            '5.3' => '2014-07-14',
-            '5.4' => '2015-09-03',
-            '5.5' => '2016-07-10',
-            '5.6' => '2018-12-31',
-            '7.0' => '2018-12-03',
-            '7.1' => '2019-12-01',
-            '7.2' => '2020-11-30',
-            '7.3' => '2021-12-06',
-            '7.4' => '2022-11-28',
-            '8.0' => '2023-11-26',
+        /**
+         * Individual test settings.
+         *
+        'criticalCraftUpdates' => [
+            'forceFail' => true,
         ],
+        'criticalPluginUpdates' => [
+            'forceFail' => true,
+        ],
+        'securityUpdates' => [
+            'forceFail' => true,
+        ],
+        'httpsControlPanel' => [
+            'forceFail' => true,
+        ],
+        'httpsFrontEnd' => [
+            'canFail' => true,
+        ],
+        'cors' => [
+            'forceFail' => true,
+        ],
+        'xFrameOptions' => [
+            'canFail' => true,
+        ],
+        'xContentTypeOptions' => [
+            'canFail' => true,
+        ],
+        'xXssProtection' => [
+            'canFail' => true,
+        ],
+        'strictTransportSecurity' => [
+            'canFail' => true,
+        ],
+        'craftFoldersAboveWebRoot' => [
+            'canFail' => true,
+        ],
+        'craftFolderPermissions' => [
+            'canFail' => true,
+        ],
+        'craftFilePermissions' => [
+            'canFail' => true,
+        ],
+        'phpVersion' => [
+            'canFail' => true,
+            'thresholds' => [
+                '5.0' => '2005-09-05',
+                '5.1' => '2006-07-24',
+                '5.2' => '2011-01-06',
+                '5.3' => '2014-07-14',
+                '5.4' => '2015-09-03',
+                '5.5' => '2016-07-10',
+                '5.6' => '2018-12-31',
+                '7.0' => '2018-12-03',
+                '7.1' => '2019-12-01',
+                '7.2' => '2020-11-30',
+                '7.3' => '2021-12-06',
+                '7.4' => '2022-11-28',
+                '8.0' => '2023-11-26',
+            ],
+        ],
+        'craftUpdates' => [
+            'canFail' => true,
+        ],
+        'pluginUpdates' => [
+            'canFail' => true,
+        ],
+        'requireEmailVerification' => [
+            'canFail' => true,
+        ],
+        'devMode' => [
+            'canFail' => true,
+        ],
+        'translationDebugOutput' => [
+            'canFail' => true,
+        ],
+        'defaultFileMode' => [
+            'canFail' => true,
+            'threshold' => 0664,
+        ],
+        'defaultDirMode' => [
+            'canFail' => true,
+            'threshold' => 0775,
+        ],
+        'defaultTokenDuration' => [
+            'canFail' => true,
+            'threshold' => 86400, // 1 day
+        ],
+        'enableCsrfProtection' => [
+            'canFail' => true,
+        ],
+        'useSecureCookies' => [
+            'canFail' => true,
+        ],
+        'cpTrigger' => [],
+        'blowfishHashCost' => [
+            'threshold' => 13,
+        ],
+        'cooldownDuration' => [
+            'threshold' => 300, // 5 minutes
+        ],
+        'deferPublicRegistrationPassword' => [],
+        'elevatedSessionDuration' => [
+            'canFail' => true,
+            'threshold' => 300, // 5 minutes
+        ],
+        'invalidLoginWindowDuration' => [
+            'threshold' => 3600, // 1 hour
+        ],
+        'maxInvalidLogins' => [
+            'canFail' => true,
+            'threshold' => 5,
+        ],
+        'preventUserEnumeration' => [
+            'canFail' => true,
+        ],
+        'sanitizeSvgUploads' => [
+            'canFail' => true,
+        ],
+        'rememberedUserSessionDuration' => [
+            'threshold' => 1209600, // 14 days
+        ],
+        'requireMatchingUserAgentForSession' => [],
+        'requireUserAgentAndIpForSession' => [],
+        'testToEmailAddress' => [
+            'canFail' => true,
+        ],
+        'userSessionDuration' => [
+            'canFail' => true,
+            'threshold' => 3600, // 1 hour
+        ],
+        'verificationCodeDuration' => [
+            'canFail' => true,
+            'threshold' => 86400, // 1 day
+        ],
+        'preventUserEnumeration' => [
+            'canFail' => true,
+        ],
+        'sanitizeSvgUploads' => [
+            'canFail' => true,
+        ],
+         */
     ],
-    'craftUpdates' => [
-        'canFail' => true,
-    ],
-    'pluginUpdates' => [
-        'canFail' => true,
-    ],
-    'requireEmailVerification' => [
-        'canFail' => true,
-    ],
-    'devMode' => [
-        'canFail' => true,
-    ],
-    'translationDebugOutput' => [
-        'canFail' => true,
-    ],
-    'defaultFileMode' => [
-        'canFail' => true,
-        'threshold' => 0664,
-    ],
-    'defaultDirMode' => [
-        'canFail' => true,
-        'threshold' => 0775,
-    ],
-    'defaultTokenDuration' => [
-        'canFail' => true,
-        'threshold' => 86400, // 1 day
-    ],
-    'enableCsrfProtection' => [
-        'canFail' => true,
-    ],
-    'useSecureCookies' => [
-        'canFail' => true,
-    ],
-    'cpTrigger' => [],
-    'blowfishHashCost' => [
-        'threshold' => 13,
-    ],
-    'cooldownDuration' => [
-        'threshold' => 300, // 5 minutes
-    ],
-    'deferPublicRegistrationPassword' => [],
-    'elevatedSessionDuration' => [
-        'canFail' => true,
-        'threshold' => 300, // 5 minutes
-    ],
-    'invalidLoginWindowDuration' => [
-        'threshold' => 3600, // 1 hour
-    ],
-    'maxInvalidLogins' => [
-        'canFail' => true,
-        'threshold' => 5,
-    ],
-    'preventUserEnumeration' => [
-        'canFail' => true,
-    ],
-    'sanitizeSvgUploads' => [
-        'canFail' => true,
-    ],
-    'rememberedUserSessionDuration' => [
-        'threshold' => 1209600, // 14 days
-    ],
-    'requireMatchingUserAgentForSession' => [],
-    'requireUserAgentAndIpForSession' => [],
-    'testToEmailAddress' => [
-        'canFail' => true,
-    ],
-    'userSessionDuration' => [
-        'canFail' => true,
-        'threshold' => 3600, // 1 hour
-    ],
-    'verificationCodeDuration' => [
-        'canFail' => true,
-        'threshold' => 86400, // 1 day
-    ],
-    'preventUserEnumeration' => [
-        'canFail' => true,
-    ],
-    'sanitizeSvgUploads' => [
-        'canFail' => true,
-    ],
-     */
 ];

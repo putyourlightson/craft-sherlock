@@ -8,6 +8,7 @@
 - Added the `sherlock/scans/run` console command.
 
 ### Changed
+- Replaced plugin vulnerabilities JSON feed with [security updates JSON feed](https://github.com/putyourlightson/craft-sherlock/blob/v2/security-updates.json).
 - Improved test threshold explanations.
 
 ### Fixed

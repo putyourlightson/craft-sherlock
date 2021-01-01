@@ -15,25 +15,25 @@
     },
     'criticalPluginUpdates': {
         'name': 'Critical Plugin Updates',
-        'type': 'upload',
-        'typeName': 'Software Update',
+        'type': 'plugin',
+        'typeName': 'Plugins',
         'details': {
             'pass': 'No critical plugin updates available',
             'warning': 'Apply critical plugin updates:',
         },
         'info': 'Critical plugin updates should be given immediate attention as soon as they are released as they can contain important security fixes.',
     },
-    'pluginVulnerabilities': {
-        'name': 'Plugin Vulnerabilities',
-        'type': 'plugin',
-        'typeName': 'Plugins',
+    'securityUpdates': {
+        'name': 'Security Updates',
+        'type': 'upload',
+        'typeName': 'Software Update',
         'details': {
-            'pass': 'No known plugin vulnerabilities',
-            'warning': 'Missing or invalid JSON feed URL',
-            'fail': 'Fix known plugin vulnerabilities:',
+            'pass': 'No known security updates',
+            'warning': 'Unable to connect to JSON feed URL',
+            'fail': 'Apply security updates:',
         },
-        'info': 'Plugins with known vulnerabilities that are installed on your site and that have been reported in the JSON feed URL setting will be shown here.',
-        'url': 'https://github.com/putyourlightson/craft-plugin-vulnerabilities',
+        'info': 'Security updates to Craft and to plugins that are installed on your site should be given immediate attention as soon as they are released, even if not marked as critical.',
+        'url': 'https://putyourlightson.com/plugins/sherlock',
     },
     'httpsControlPanel': {
         'name': 'HTTPS In Control Panel',
@@ -170,8 +170,8 @@
     },
     'pluginUpdates': {
         'name': 'Plugin Updates',
-        'type': 'upload',
-        'typeName': 'Software Update',
+        'type': 'plugin',
+        'typeName': 'Plugins',
         'details': {
             'pass': 'No plugin updates available',
             'warning': 'Update plugins to latest versions:',

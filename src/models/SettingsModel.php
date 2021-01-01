@@ -40,11 +40,6 @@ class SettingsModel extends Model
     /**
      * @var string
      */
-    public $pluginVulnerabilitiesFeedUrl = 'https://raw.githubusercontent.com/putyourlightson/craft-plugin-vulnerabilities/master/vulnerabilities.json';
-
-    /**
-     * @var string
-     */
     public $apiKey;
 
     /**
@@ -79,7 +74,7 @@ class SettingsModel extends Model
         'forceFail' => true,
     ];
 
-    public $pluginVulnerabilities = [
+    public $securityUpdates = [
         'forceFail' => true,
     ];
 

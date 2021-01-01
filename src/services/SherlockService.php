@@ -8,7 +8,6 @@ namespace putyourlightson\sherlock\services;
 use Craft;
 use craft\base\Component;
 use craft\errors\SiteNotFoundException;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
 use putyourlightson\sherlock\models\ScanModel;
@@ -48,6 +47,8 @@ class SherlockService extends Component
 
     /**
      * Check Restrictions
+     *
+     * @throws HttpException
      */
     public function checkRestrictions()
     {
@@ -182,11 +183,10 @@ class SherlockService extends Component
                     );
                 }
 
-                // check critical updates && plugin vulnerabilities against last scan
-                if (
-                    (isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates'])) ||
-                    (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates'])) ||
-                    (isset($scanModel->results['fail']['pluginVulnerabilities']) && empty($lastScan->results['fail']['pluginVulnerabilities']))
+                // check critical updates && security updates against last scan
+                if ((isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates']))
+                    || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
+                    || (isset($scanModel->results['fail']['securityUpdates']) && empty($lastScan->results['fail']['securityUpdates']))
                 ) {
                     // send & log notification email
                     $this->_sendLogNotificationEmail(

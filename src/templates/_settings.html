@@ -17,59 +17,50 @@
         first: true,
         label: 'Live Mode'|t('sherlock'),
         name: 'liveMode',
-        instructions: 'Whether the site is live. If enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if known vulnerabilities are detected in installed plugins.'|t('sherlock'),
+        instructions: 'Whether the site is live. If enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if security updates are detected in installed plugins.'|t('sherlock'),
         warning: (config.liveMode is defined ? configWarning('liveMode')),
         on: settings.liveMode,
         errors: settings.getErrors('liveMode')
     }) }}
 
     {{ forms.lightswitchField({
-    	label: 'High Security Level'|t('sherlock'),
-    	name: 'highSecurityLevel',
-    	instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
+        label: 'High Security Level'|t('sherlock'),
+        name: 'highSecurityLevel',
+        instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
         warning: (config.highSecurityLevel is defined ? configWarning('highSecurityLevel')),
-    	on: settings.highSecurityLevel,
-    	errors: settings.getErrors('highSecurityLevel')
+        on: settings.highSecurityLevel,
+        errors: settings.getErrors('highSecurityLevel')
     }) }}
 
     {{ forms.lightswitchField({
-    	label: 'Header Protection'|t('sherlock'),
-    	name: 'headerProtection',
-    	instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
+        label: 'Header Protection'|t('sherlock'),
+        name: 'headerProtection',
+        instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
         warning: (config.headerProtection is defined ? configWarning('headerProtection')),
-    	on: settings.headerProtection,
-    	errors: settings.getErrors('headerProtection')
+        on: settings.headerProtection,
+        errors: settings.getErrors('headerProtection')
     }) }}
 
     <hr />
 
     {{ forms.textField({
-    	label: 'Notification Email Addresses'|t('sherlock'),
-    	name: 'notificationEmailAddresses',
-    	instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues.'|t('sherlock'),
+        label: 'Notification Email Addresses'|t('sherlock'),
+        name: 'notificationEmailAddresses',
+        instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues.'|t('sherlock'),
         warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
-    	value: settings.notificationEmailAddresses,
-    	errors: settings.getErrors('notificationEmailAddresses')
-    }) }}
-
-    {{ forms.textField({
-    	label: 'Plugin Vulnerabilities Feed URL'|t('sherlock'),
-    	name: 'pluginVulnerabilitiesFeedUrl',
-    	instructions: 'The URL of of a JSON feed URL containing known plugin vulnerabilities (must begin with "https://", view the <a href="https://github.com/putyourlightson/craft-plugin-vulnerabilities" target="_blank">feed format</a>).'|t('sherlock')|raw,
-        warning: (config.pluginVulnerabilitiesFeedUrl is defined ? configWarning('pluginVulnerabilitiesFeedUrl')),
-    	value: settings.pluginVulnerabilitiesFeedUrl,
-    	errors: settings.getErrors('pluginVulnerabilitiesFeedUrl')
+        value: settings.notificationEmailAddresses,
+        errors: settings.getErrors('notificationEmailAddresses')
     }) }}
 
     {{ forms.autosuggestField({
-    	label: 'API Key'|t('sherlock'),
-    	name: 'apiKey',
-    	instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work.'|t('sherlock'),
+        label: 'API Key'|t('sherlock'),
+        name: 'apiKey',
+        instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work.'|t('sherlock'),
         warning: (config.apiKey is defined ? configWarning('apiKey')),
         suggestEnvVars: true,
         suggestions: craft.cp.getEnvSuggestions(),
-    	value: settings.apiKey,
-    	errors: settings.getErrors('apiKey')
+        value: settings.apiKey,
+        errors: settings.getErrors('apiKey')
     }) }}
 
     <p class="extra-instructions">
@@ -79,14 +70,14 @@
     </p>
 
     {{ forms.autosuggestField({
-    	label: 'Secret Key'|t('sherlock'),
-    	name: 'secretKey',
-    	instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.'|t('sherlock'),
+        label: 'Secret Key'|t('sherlock'),
+        name: 'secretKey',
+        instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.'|t('sherlock'),
         warning: (config.secretKey is defined ? configWarning('secretKey')),
         suggestEnvVars: true,
         suggestions: craft.cp.getEnvSuggestions(),
-    	value: settings.secretKey,
-    	errors: settings.getErrors('secretKey')
+        value: settings.secretKey,
+        errors: settings.getErrors('secretKey')
     }) }}
 
 

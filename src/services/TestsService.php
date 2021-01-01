@@ -28,6 +28,8 @@ use yii\web\HttpException;
  */
 class TestsService extends Component
 {
+    const SECURITY_UPDATES_FEED_URL = 'https://github.com/putyourlightson/craft-sherlock/blob/v2/security-updates.json';
+
     // Properties
     // =========================================================================
 
@@ -65,7 +67,7 @@ class TestsService extends Component
         $tests = [
             'criticalCraftUpdates',
             'criticalPluginUpdates',
-            'pluginVulnerabilities',
+            'securityUpdates',
             'httpsControlPanel',
             'httpsFrontEnd',
             'cors',
@@ -120,6 +122,7 @@ class TestsService extends Component
      * @param $test
      *
      * @return TestModel
+     * @throws HttpException
      */
     public function runTest($test): TestModel
     {
@@ -165,47 +168,32 @@ class TestsService extends Component
         $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
 
         switch ($test) {
-            case 'pluginVulnerabilities':
-                if (!empty(Sherlock::$plugin->settings->pluginVulnerabilitiesFeedUrl)
-                    && stripos(Sherlock::$plugin->settings->pluginVulnerabilitiesFeedUrl, 'https://') === 0
-                ) {
-                    $pluginVulnerabilities = [];
+            case 'securityUpdates':
+                $securityUpdates = [];
 
-                    try {
-                        $response = $this->_client->get(Sherlock::$plugin->settings->pluginVulnerabilitiesFeedUrl)->getBody();
-                        $vulnerabilities = Json::decode($response);
+                try {
+                    $response = $this->_client->get(self::SECURITY_UPDATES_FEED_URL)->getBody();
+                    $packages = Json::decode($response) ?: [];
 
-                        if ($vulnerabilities) {
-                            $installedPlugins = Craft::$app->getPlugins()->getAllPlugins();
+                    foreach ($packages as $package) {
+                        /** @var Plugin $plugin */
+                        $plugin = Craft::$app->getPlugins()->getPlugin($package['handle']);
+                        $pluginVersion = $plugin->getVersion();
 
-                            foreach ($vulnerabilities as $vulnerability) {
-                                if (isset($installedPlugins[$vulnerability['handle']])) {
-                                    /** @var Plugin $plugin */
-                                    $plugin = Craft::$app->getPlugins()->getPlugin($vulnerability['handle']);
-
-                                    if (empty($vulnerability['fixedVersion'])
-                                        || version_compare($plugin->getVersion(), $vulnerability['fixedVersion'], '<')
-                                    ) {
-                                        $pluginVulnerabilities[] = '<a href="'.$vulnerability['url'].'" target="_blank">'.$plugin->name.' '.$vulnerability['version'].'</a> <span class="info">'.$vulnerability['description'].(isset($vulnerability['fixedVersion']) ? ' (fixed in version '.$vulnerability['fixedVersion'].')' : '').'</span>';
-                                    }
-                                }
+                        foreach ($package['versions'] as $version) {
+                            if (version_compare($pluginVersion, $version, '<')) {
+                                $securityUpdates[] = '<a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.' '.$version.'</a>';
                             }
                         }
-                        else {
-                            $testModel->warning = true;
-                        }
-                    }
-                    catch (ConnectException $e) {
-                        $testModel->warning = true;
-                    }
-
-                    if (!empty($pluginVulnerabilities)) {
-                        $testModel->failTest();
-                        $testModel->value = implode(' , ', $pluginVulnerabilities);
                     }
                 }
-                else {
+                catch (ConnectException $e) {
                     $testModel->warning = true;
+                }
+
+                if (!empty($securityUpdates)) {
+                    $testModel->failTest();
+                    $testModel->value = implode(', ', $securityUpdates);
                 }
 
                 break;
