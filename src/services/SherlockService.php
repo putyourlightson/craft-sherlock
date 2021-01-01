@@ -183,10 +183,9 @@ class SherlockService extends Component
                     );
                 }
 
-                // check critical updates && security updates against last scan
+                // check critical updates against last scan
                 if ((isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates']))
                     || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
-                    || (isset($scanModel->results['fail']['securityUpdates']) && empty($lastScan->results['fail']['securityUpdates']))
                 ) {
                     // send & log notification email
                     $this->_sendLogNotificationEmail(

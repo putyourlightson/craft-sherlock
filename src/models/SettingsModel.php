@@ -74,10 +74,6 @@ class SettingsModel extends Model
         'forceFail' => true,
     ];
 
-    public $securityUpdates = [
-        'forceFail' => true,
-    ];
-
     public $httpsControlPanel = [
         'forceFail' => true,
     ];
@@ -137,13 +133,9 @@ class SettingsModel extends Model
         ],
     ];
 
-    public $craftUpdates = [
-        'canFail' => true,
-    ];
+    public $craftUpdates = [];
 
-    public $pluginUpdates = [
-        'canFail' => true,
-    ];
+    public $pluginUpdates = [];
 
     public $requireEmailVerification = [
         'canFail' => true,

@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Component;
 use craft\base\Plugin;
 use craft\helpers\ConfigHelper;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
 use GuzzleHttp\Client;
@@ -28,8 +27,6 @@ use yii\web\HttpException;
  */
 class TestsService extends Component
 {
-    const SECURITY_UPDATES_FEED_URL = 'https://github.com/putyourlightson/craft-sherlock/blob/v2/security-updates.json';
-
     // Properties
     // =========================================================================
 
@@ -67,7 +64,6 @@ class TestsService extends Component
         $tests = [
             'criticalCraftUpdates',
             'criticalPluginUpdates',
-            'securityUpdates',
             'httpsControlPanel',
             'httpsFrontEnd',
             'cors',
@@ -168,36 +164,6 @@ class TestsService extends Component
         $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
 
         switch ($test) {
-            case 'securityUpdates':
-                $securityUpdates = [];
-
-                try {
-                    $response = $this->_client->get(self::SECURITY_UPDATES_FEED_URL)->getBody();
-                    $packages = Json::decode($response) ?: [];
-
-                    foreach ($packages as $package) {
-                        /** @var Plugin $plugin */
-                        $plugin = Craft::$app->getPlugins()->getPlugin($package['handle']);
-                        $pluginVersion = $plugin->getVersion();
-
-                        foreach ($package['versions'] as $version) {
-                            if (version_compare($pluginVersion, $version, '<')) {
-                                $securityUpdates[] = '<a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.' '.$version.'</a>';
-                            }
-                        }
-                    }
-                }
-                catch (ConnectException $e) {
-                    $testModel->warning = true;
-                }
-
-                if (!empty($securityUpdates)) {
-                    $testModel->failTest();
-                    $testModel->value = implode(', ', $securityUpdates);
-                }
-
-                break;
-
             case 'httpsControlPanel':
                 if (strpos(UrlHelper::cpUrl(), 'https') !== 0) {
                     $testModel->failTest();

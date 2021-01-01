@@ -8,8 +8,9 @@
 - Added the `sherlock/scans/run` console command.
 
 ### Changed
-- Replaced plugin vulnerabilities JSON feed with [security updates JSON feed](https://github.com/putyourlightson/craft-sherlock/blob/v2/security-updates.json).
+- Craft and plugin updates now display warnings instead of failures in high security mode.
 - Improved test threshold explanations.
+- Removed plugin vulnerabilities JSON feed.
 
 ### Fixed
 - Fixed wording of user session duration test.

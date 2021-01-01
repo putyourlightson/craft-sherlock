@@ -32,7 +32,7 @@
         "developer": "PutYourLightsOn",
         "developerUrl": "https://putyourlightson.com/",
         "documentationUrl": "https://putyourlightson.com/plugins/sherlock",
-        "schemaVersion": "2.1.2",
+        "schemaVersion": "2.4.0",
         "hasCpSettings": true,
         "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-sherlock/v2/CHANGELOG.md",

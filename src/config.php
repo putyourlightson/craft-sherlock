@@ -19,7 +19,7 @@
 
 return [
     '*' => [
-        // Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if security updates are detected in installed plugins.
+        // Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.
         //'liveMode' => false,
 
         // Whether Sherlock should be extra critical of security issues and the resulting warnings.
@@ -53,9 +53,6 @@ return [
             'forceFail' => true,
         ],
         'criticalPluginUpdates' => [
-            'forceFail' => true,
-        ],
-        'securityUpdates' => [
             'forceFail' => true,
         ],
         'httpsControlPanel' => [
@@ -106,12 +103,8 @@ return [
                 '8.0' => '2023-11-26',
             ],
         ],
-        'craftUpdates' => [
-            'canFail' => true,
-        ],
-        'pluginUpdates' => [
-            'canFail' => true,
-        ],
+        'craftUpdates' => [],
+        'pluginUpdates' => [],
         'requireEmailVerification' => [
             'canFail' => true,
         ],
