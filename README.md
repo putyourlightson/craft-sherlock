@@ -4,7 +4,7 @@
 
 Sherlock is a security scanner and monitor to keep your site and [Craft CMS](https://craftcms.com/) secure.
 
-![Sherlock plugin](https://putyourlightson.com/assets/images/plugins/sherlock-scan.png)
+![Sherlock plugin](https://putyourlightson.com/assets/images/plugins/sherlock-scan-high-fail.png)
 
 ## Documentation
 
