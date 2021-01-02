@@ -5,6 +5,8 @@
 - Added the `sherlock/scans/run` console command.
 - Added defer public registration password test.
 - Added elevated session duration test.
+- Added `Content-Security-Policy` header test.
+- Added `Permissions-Policy` header test.
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
 
 ### Changed

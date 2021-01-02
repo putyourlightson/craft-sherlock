@@ -74,6 +74,12 @@ return [
         'strictTransportSecurity' => [
             'canFail' => true,
         ],
+        'contentSecurityPolicy' => [
+            'canFail' => true,
+        ],
+        'permissionsPolicy' => [
+            'canFail' => true,
+        ],
         'craftFoldersAboveWebRoot' => [
             'canFail' => true,
         ],

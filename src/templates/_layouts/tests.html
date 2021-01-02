@@ -101,6 +101,28 @@
         'info': 'The Strict-Transport-Security header allows a web server to enforce the use of TLS in a web browser. It allows for a more effective implementation of TLS by ensuring all communication takes place over a secure transport layer on the client side. It should be set for communication over HTTPS connections only.',
         'url': 'https://scotthelme.co.uk/hsts-the-missing-link-in-tls/',
     },
+    'contentSecurityPolicy': {
+        'name': 'Content-Security-Policy Header',
+        'type': 'header',
+        'typeName': 'HTTP Header',
+        'details': {
+            'pass': 'Content-Security-Policy header is set',
+            'warning': 'Set the Content-Security-Policy header',
+        },
+        'info': 'The Content-Security-Policy header is an effective measure to protect your site from XSS attacks. By whitelisting sources of approved content, you can prevent the browser from loading malicious assets.',
+        'url': 'https://scotthelme.co.uk/content-security-policy-an-introduction/',
+    },
+    'permissionsPolicy': {
+        'name': 'Permissions-Policy Header',
+        'type': 'header',
+        'typeName': 'HTTP Header',
+        'details': {
+            'pass': 'Permissions-Policy header is set',
+            'warning': 'Set the Permissions-Policy header',
+        },
+        'info': 'The Permissions-Policy header allows a site to control which features and APIs can be used in the browser.',
+        'url': 'https://scotthelme.co.uk/goodbye-feature-policy-and-hello-permissions-policy/',
+    },
     'craftFoldersAboveWebRoot': {
         'name': 'Craft Folders Above Web Root',
         'typeName': 'File/Folder System',

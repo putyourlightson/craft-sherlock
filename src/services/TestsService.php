@@ -71,6 +71,8 @@ class TestsService extends Component
             'xContentTypeOptions',
             'xXssProtection',
             'strictTransportSecurity',
+            'contentSecurityPolicy',
+            'permissionsPolicy',
             'craftFoldersAboveWebRoot',
             'craftFolderPermissions',
             'craftFilePermissions',
@@ -244,6 +246,24 @@ class TestsService extends Component
                 $value = $this->_getHeaderValue('Strict-Transport-Security');
 
                 if (strpos($this->_effectiveUrl, 'https') === 0 && empty($value)) {
+                    $testModel->failTest();
+                }
+
+                break;
+
+            case 'contentSecurityPolicy':
+                $value = $this->_getHeaderValue('Content-Security-Policy');
+
+                if (empty($value)) {
+                    $testModel->failTest();
+                }
+
+                break;
+
+            case 'permissionsPolicy':
+                $value = $this->_getHeaderValue('Permissions-Policy');
+
+                if (empty($value)) {
                     $testModel->failTest();
                 }
 
