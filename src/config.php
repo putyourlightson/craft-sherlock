@@ -61,28 +61,29 @@ return [
         'httpsFrontEnd' => [
             'canFail' => true,
         ],
+        'contentSecurityPolicy' => [
+            'canFail' => true,
+        ],
         'cors' => [
             'forceFail' => true,
         ],
-        'xFrameOptions' => [
+        'expectCT' => [
+            'canFail' => true,
+        ],
+        'permissionsPolicy' => [],
+        'referrerPolicy' => [
+            'canFail' => true,
+        ],
+        'strictTransportSecurity' => [
             'canFail' => true,
         ],
         'xContentTypeOptions' => [
             'canFail' => true,
         ],
+        'xFrameOptions' => [
+            'canFail' => true,
+        ],
         'xXssProtection' => [],
-        'strictTransportSecurity' => [
-            'canFail' => true,
-        ],
-        'referrerPolicy' => [
-            'canFail' => true,
-        ],
-        'contentSecurityPolicy' => [
-            'canFail' => true,
-        ],
-        'permissionsPolicy' => [
-            'canFail' => true,
-        ],
         'craftFoldersAboveWebRoot' => [
             'canFail' => true,
         ],

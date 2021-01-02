@@ -104,13 +104,15 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
+    public $expectCT = [
+        'canFail' => true,
+    ];
+
     public $contentSecurityPolicy = [
         'canFail' => true,
     ];
 
-    public $permissionsPolicy = [
-        'canFail' => true,
-    ];
+    public $permissionsPolicy = [];
 
     public $craftFoldersAboveWebRoot = [
         'canFail' => true,

@@ -61,25 +61,39 @@ class TestsService extends Component
     public function getTestNames(): array
     {
         $tests = [
+            // Critical updates
             'criticalCraftUpdates',
             'criticalPluginUpdates',
+
+            // HTTPS
             'httpsControlPanel',
             'httpsFrontEnd',
-            'cors',
-            'xFrameOptions',
-            'xContentTypeOptions',
-            'xXssProtection',
-            'strictTransportSecurity',
-            'referrerPolicy',
+
+            // Headers
             'contentSecurityPolicy',
+            'cors',
+            'expectCT',
+            'referrerPolicy',
             'permissionsPolicy',
+            'strictTransportSecurity',
+            'xContentTypeOptions',
+            'xFrameOptions',
+            'xXssProtection',
+
+            // System
             'craftFoldersAboveWebRoot',
             'craftFolderPermissions',
             'craftFilePermissions',
             'phpVersion',
+
+            // Regular updates
             'craftUpdates',
             'pluginUpdates',
+
+            // User settings
             'requireEmailVerification',
+
+            // General config settings
             'devMode',
             'translationDebugOutput',
             'defaultFileMode',
@@ -200,10 +214,58 @@ class TestsService extends Component
 
                 break;
 
-            case 'xFrameOptions':
-                $value = $this->_getHeaderValue('X-Frame-Options');
+            case 'contentSecurityPolicy':
+                $value = $this->_getHeaderValue('Content-Security-Policy');
 
-                if ($value != 'DENY' && $value != 'SAMEORIGIN') {
+                if (empty($value)) {
+                    $testModel->failTest();
+                }
+                else {
+                    $testModel->value = '"'.$value.'"';
+                }
+
+                break;
+
+            case 'expectCT':
+                $value = $this->_getHeaderValue('Expect-CT');
+
+                if (empty($value)) {
+                    $testModel->failTest();
+                }
+                else {
+                    $testModel->value = '"'.$value.'"';
+                }
+
+                break;
+
+            case 'permissionsPolicy':
+                $value = $this->_getHeaderValue('Permissions-Policy');
+
+                if (empty($value)) {
+                    $testModel->failTest();
+                }
+                else {
+                    $testModel->value = '"'.$value.'"';
+                }
+
+                break;
+
+            case 'referrerPolicy':
+                $value = $this->_getHeaderValue('Referrer-Policy');
+
+                if (empty($value)) {
+                    $testModel->failTest();
+                }
+                else {
+                    $testModel->value = '"'.$value.'"';
+                }
+
+                break;
+
+            case 'strictTransportSecurity':
+                $value = $this->_getHeaderValue('Strict-Transport-Security');
+
+                if (empty($value)) {
                     $testModel->failTest();
                 }
                 else {
@@ -216,6 +278,18 @@ class TestsService extends Component
                 $value = $this->_getHeaderValue('X-Content-Type-Options');
 
                 if ($value != 'nosniff') {
+                    $testModel->failTest();
+                }
+                else {
+                    $testModel->value = '"'.$value.'"';
+                }
+
+                break;
+
+            case 'xFrameOptions':
+                $value = $this->_getHeaderValue('X-Frame-Options');
+
+                if ($value != 'DENY' && $value != 'SAMEORIGIN') {
                     $testModel->failTest();
                 }
                 else {
@@ -238,45 +312,6 @@ class TestsService extends Component
                 }
                 else {
                     $testModel->value = '"'.$value.'"';
-                }
-
-                break;
-
-            case 'strictTransportSecurity':
-                $value = $this->_getHeaderValue('Strict-Transport-Security');
-
-                if (empty($value)) {
-                    $testModel->failTest();
-                }
-                else {
-                    $testModel->value = '"'.$value.'"';
-                }
-
-                break;
-
-            case 'referrerPolicy':
-                $value = $this->_getHeaderValue('Referrer-Policy');
-
-                if (empty($value)) {
-                    $testModel->failTest();
-                }
-
-                break;
-
-            case 'contentSecurityPolicy':
-                $value = $this->_getHeaderValue('Content-Security-Policy');
-
-                if (empty($value)) {
-                    $testModel->failTest();
-                }
-
-                break;
-
-            case 'permissionsPolicy':
-                $value = $this->_getHeaderValue('Permissions-Policy');
-
-                if (empty($value)) {
-                    $testModel->failTest();
                 }
 
                 break;

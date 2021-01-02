@@ -2,18 +2,19 @@
 
 ## 2.4.0 - Unreleased
 ### Added
-- Added the `sherlock/scans/run` console command.
+- Added `Content-Security-Policy` header test.
+- Added `Expect-CT` header test.
+- Added `Permissions-Policy` header test.
+- Added `Referrer-Policy` header test.
 - Added defer public registration password test.
 - Added elevated session duration test.
-- Added `Referrer-Policy` header test.
-- Added `Content-Security-Policy` header test.
-- Added `Permissions-Policy` header test.
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
+- Added the `sherlock/scans/run` console command.
 
 ### Changed
 - Craft and plugin updates now display warnings instead of failures in high security mode.
 - The `X-XSS-Protection` header now only display a warning instead of a failure ([reasoning](https://scotthelme.co.uk/security-headers-updates/#removing-the-x-xss-protection-header)). 
-- Improved test threshold explanations.
+- Improved test explanations, thresholds and documentation links.
 - Removed plugin vulnerabilities JSON feed.
 
 ### Fixed
