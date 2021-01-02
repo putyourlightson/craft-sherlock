@@ -414,7 +414,7 @@ class TestsService extends Component
                 break;
 
             case 'requireEmailVerification':
-                if (Craft::$app->getSystemSettings()->getSetting('users', 'requireEmailVerification') === false) {
+                if (Craft::$app->getProjectConfig()->get('users.requireEmailVerification') === false) {
                     $testModel->failTest();
                 }
 
@@ -582,7 +582,7 @@ class TestsService extends Component
      *
      * @return string
      */
-    public function _getHeaderValue($name): string
+    public function _getHeaderValue(string $name): string
     {
         // Use lower-case name if it exists in the header
         if (!empty($this->_headers[strtolower($name)])) {

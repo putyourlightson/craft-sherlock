@@ -25,13 +25,9 @@ abstract class BaseModel extends Model
     public static function populateModel($values): Model
     {
         $class = static::class;
-
-        /** @var Model $model */
         $model = new $class();
 
         $properties = array_keys($model->getAttributes());
-
-        /** @var Model $model */
         $model = new $class($values->toArray($properties));
 
         return $model;
@@ -49,7 +45,7 @@ abstract class BaseModel extends Model
     {
         $models = [];
 
-        if (\is_array($data))
+        if (is_array($data))
         {
             foreach ($data as $values)
             {

@@ -17,7 +17,7 @@ class SherlockVariable
     /**
      * Get last scan
      *
-	 * @return ScanModel
+     * @return ScanModel
      */
     public function getLastScan(): ScanModel
     {
@@ -27,7 +27,7 @@ class SherlockVariable
     /**
      * Get all scans
      *
-	 * @return array
+     * @return array
      */
     public function getAllScans(): array
     {
@@ -37,7 +37,7 @@ class SherlockVariable
     /**
      * Check High Security Level
      *
-	 * @return string
+     * @return string
      */
     public function checkHighSecurityLevel(): string
     {
