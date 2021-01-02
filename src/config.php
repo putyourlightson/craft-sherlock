@@ -74,6 +74,9 @@ return [
         'strictTransportSecurity' => [
             'canFail' => true,
         ],
+        'referrerPolicy' => [
+            'canFail' => true,
+        ],
         'contentSecurityPolicy' => [
             'canFail' => true,
         ],

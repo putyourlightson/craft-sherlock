@@ -71,6 +71,7 @@ class TestsService extends Component
             'xContentTypeOptions',
             'xXssProtection',
             'strictTransportSecurity',
+            'referrerPolicy',
             'contentSecurityPolicy',
             'permissionsPolicy',
             'craftFoldersAboveWebRoot',
@@ -246,6 +247,15 @@ class TestsService extends Component
                 $value = $this->_getHeaderValue('Strict-Transport-Security');
 
                 if (strpos($this->_effectiveUrl, 'https') === 0 && empty($value)) {
+                    $testModel->failTest();
+                }
+
+                break;
+
+            case 'referrerPolicy':
+                $value = $this->_getHeaderValue('Referrer-Policy');
+
+                if (empty($value)) {
                     $testModel->failTest();
                 }
 

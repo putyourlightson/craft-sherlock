@@ -100,6 +100,10 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
+    public $referrerPolicy = [
+        'canFail' => true,
+    ];
+
     public $contentSecurityPolicy = [
         'canFail' => true,
     ];
