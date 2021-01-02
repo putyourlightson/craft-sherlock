@@ -60,7 +60,6 @@ class TestsService extends Component
      */
     public function getTestNames(): array
     {
-        // Default tests
         $tests = [
             'criticalCraftUpdates',
             'criticalPluginUpdates',
@@ -246,8 +245,11 @@ class TestsService extends Component
             case 'strictTransportSecurity':
                 $value = $this->_getHeaderValue('Strict-Transport-Security');
 
-                if (strpos($this->_effectiveUrl, 'https') === 0 && empty($value)) {
+                if (empty($value)) {
                     $testModel->failTest();
+                }
+                else {
+                    $testModel->value = '"'.$value.'"';
                 }
 
                 break;
@@ -523,7 +525,6 @@ class TestsService extends Component
                 if ($value < $testModel->threshold) {
                     $testModel->failTest();
                 }
-
                 else {
                     $testModel->value = $value;
                 }
@@ -538,7 +539,6 @@ class TestsService extends Component
                 if ($seconds < $testModel->threshold) {
                     $testModel->failTest();
                 }
-
                 else {
                     $testModel->value = $value;
                 }
@@ -551,11 +551,9 @@ class TestsService extends Component
                 if (!$value) {
                     $testModel->failTest();
                 }
-
-                else if ($value > $testModel->threshold) {
+                elseif ($value > $testModel->threshold) {
                     $testModel->warning = true;
                 }
-
                 else {
                     $testModel->value = $value;
                 }
@@ -571,7 +569,6 @@ class TestsService extends Component
                     if ($seconds > $testModel->threshold) {
                         $testModel->failTest();
                     }
-
                     else {
                         $testModel->value = $value;
                     }
@@ -586,14 +583,12 @@ class TestsService extends Component
                 if (!$value) {
                     $testModel->failTest();
                 }
-
                 else {
                     $seconds = ConfigHelper::durationInSeconds($value);
 
                     if ($seconds > $testModel->threshold) {
                         $testModel->warning = true;
                     }
-
                     else {
                         $testModel->value = $value;
                     }
