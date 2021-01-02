@@ -6,7 +6,7 @@ use Craft;
 use craft\db\Migration;
 use putyourlightson\sherlock\Sherlock;
 
-class m210101_120000_disable_updates_can_fail extends Migration
+class m210102_120000_disable_tests_can_fail extends Migration
 {
     // Public Methods
     // =========================================================================
@@ -26,6 +26,7 @@ class m210101_120000_disable_updates_can_fail extends Migration
         $settings = Sherlock::$plugin->settings;
         $settings->craftUpdates = [];
         $settings->pluginUpdates = [];
+        $settings->xXssProtection = [];
 
         Craft::$app->getPlugins()->savePluginSettings(Sherlock::$plugin, $settings->getAttributes());
 

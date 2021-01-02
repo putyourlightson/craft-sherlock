@@ -5,10 +5,11 @@
 - Added the `sherlock/scans/run` console command.
 - Added defer public registration password test.
 - Added elevated session duration test.
-- Added PHP version support thresholds up until PHP 8.0.
+- Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
 
 ### Changed
 - Craft and plugin updates now display warnings instead of failures in high security mode.
+- The `X-XSS-Protection` header now only display a warning instead of a failure ([reasoning](https://scotthelme.co.uk/security-headers-updates/#removing-the-x-xss-protection-header)). 
 - Improved test threshold explanations.
 - Removed plugin vulnerabilities JSON feed.
 

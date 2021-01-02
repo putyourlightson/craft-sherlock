@@ -70,9 +70,7 @@ return [
         'xContentTypeOptions' => [
             'canFail' => true,
         ],
-        'xXssProtection' => [
-            'canFail' => true,
-        ],
+        'xXssProtection' => [],
         'strictTransportSecurity' => [
             'canFail' => true,
         ],

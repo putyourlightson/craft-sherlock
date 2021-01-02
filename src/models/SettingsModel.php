@@ -94,9 +94,7 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
-    public $xXssProtection = [
-        'canFail' => true,
-    ];
+    public $xXssProtection = [];
 
     public $strictTransportSecurity = [
         'canFail' => true,
