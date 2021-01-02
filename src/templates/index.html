@@ -10,7 +10,7 @@
 
 {% block content %}
 
-    {% set allScans = craft.sherlock.allScans %}
+    {% set allScans = craft.sherlock.getAllScans() %}
 
     {% if allScans|length %}
 
