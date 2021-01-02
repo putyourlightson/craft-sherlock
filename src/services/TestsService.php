@@ -458,7 +458,7 @@ class TestsService extends Component
                 }
 
                 else {
-                    $testModel->value = '0'.decoct($value);
+                    $testModel->value = $value ? '0'.decoct($value) : 'null';
                 }
 
                 break;

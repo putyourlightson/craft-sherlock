@@ -2,10 +2,10 @@
 
 ## 2.4.0 - Unreleased
 ### Added
+- Added the `sherlock/scans/run` console command.
 - Added defer public registration password test.
 - Added elevated session duration test.
 - Added PHP version support thresholds up until PHP 8.0.
-- Added the `sherlock/scans/run` console command.
 
 ### Changed
 - Craft and plugin updates now display warnings instead of failures in high security mode.
@@ -14,6 +14,7 @@
 
 ### Fixed
 - Fixed wording of user session duration test.
+- Fixed output of default file permissions test.
 
 ## 2.3.0 - 2020-12-26
 ### Added
