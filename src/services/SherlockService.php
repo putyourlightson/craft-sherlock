@@ -31,7 +31,7 @@ class SherlockService extends Component
         $request = Craft::$app->getRequest();
 
         if (!empty(Sherlock::$plugin->settings->restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
-            $ipAddresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictControlPanelIpAddresses);
+            $ipAddresses = Sherlock::$plugin->settings->restrictControlPanelIpAddresses;
 
             if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($ipAddresses, $request->getUserIP())) {
                 throw new HttpException(503);
@@ -39,7 +39,7 @@ class SherlockService extends Component
         }
 
         if (!empty(Sherlock::$plugin->settings->restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
-            $ipAddresses = preg_split('/\R/', Sherlock::$plugin->settings->restrictFrontEndIpAddresses);
+            $ipAddresses = Sherlock::$plugin->settings->restrictFrontEndIpAddresses;
 
             if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($ipAddresses, $request->getUserIP())) {
                 throw new HttpException(503);

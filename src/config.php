@@ -48,11 +48,11 @@ return [
         //    'directives' => [],
         //],
 
-        // Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).
-        //'restrictControlPanelIpAddresses' => '',
+        // Restrict access to the control panel to the following IP addresses (logged in admins always have access).
+        //'restrictControlPanelIpAddresses' =>  = [],
 
-        // Restrict access to the front-end to the following IP addresses (one IP address per line, logged in admins always have access).
-        //'restrictFrontEndIpAddresses' => '',
+        // Restrict access to the front-end to the following IP addresses (logged in admins always have access).
+        //'restrictFrontEndIpAddresses' =>  = [],
 
         // Add tests to disable to the array.
         //'disabledTests' => [],

@@ -45,46 +45,46 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for resultType, results in lastScan.results %}
-                    {% for testName, value in results %}
-                        {% if tests[testName] is defined %}
-                            {% set test = tests[testName] %}
-                            <tr>
-                                <td>
-                                    <img src="{{ resourcesUrl ~ '/icons/' ~ resultType ~ '.svg' }}" title="{{ resultType|capitalize }}" alt="{{ resultType|capitalize }}" />
-                                </td>
-                                <td class="flex">
-                                    {% if faIcons[test.type] is defined %}
-                                        <i class="type fa {{ faIcons[test.type] }}" title="{{ test.typeName|t('sherlock') }}"></i>
-                                    {% else %}
-                                        <i class="type" data-icon="{{ test.type }}" title="{{ test.typeName|t('sherlock') }}"></i>
-                                    {% endif %}
-                                    <span class="{{ resultType == 'fail' ? 'fail' }}">{{ test.name|t('sherlock') }}</span>
-                                </td>
-                                <td>
-                                    <span class="result {{ resultType == 'fail' ? 'fail' }}">
-                                        {% if resultType == 'pass' %}
-                                            {{ test.details.pass|t('sherlock')|raw }}
-                                        {% elseif resultType == 'warning' %}
-                                            {{ test.details.warning|t('sherlock')|raw }}
+                    {% for resultType, results in lastScan.results %}
+                        {% for testName, value in results %}
+                            {% if tests[testName] is defined %}
+                                {% set test = tests[testName] %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ resourcesUrl ~ '/icons/' ~ resultType ~ '.svg' }}" title="{{ resultType|capitalize }}" alt="{{ resultType|capitalize }}" />
+                                    </td>
+                                    <td class="flex">
+                                        {% if faIcons[test.type] is defined %}
+                                            <i class="type fa {{ faIcons[test.type] }}" title="{{ test.typeName|t('sherlock') }}"></i>
                                         {% else %}
-                                            {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t('sherlock')|raw }}
+                                            <i class="type" data-icon="{{ test.type }}" title="{{ test.typeName|t('sherlock') }}"></i>
                                         {% endif %}
-                                        {{ value ? value|raw }}
-                                    </span>
-                                    {% if test.info and not (testName == 'pluginVulnerabilities' and resultType == 'fail') %}
-                                        <span class="info">{{ test.info|t('sherlock') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if test.url is defined %}
-                                        <a href="{{ test.url }}" class="go" target="_blank">{{ "Docs"|t('sherlock') }}</a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endif %}
+                                        <span class="{{ resultType == 'fail' ? 'fail' }}">{{ test.name|t('sherlock') }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="result {{ resultType == 'fail' ? 'fail' }}">
+                                            {% if resultType == 'pass' %}
+                                                {{ test.details.pass|t('sherlock')|raw }}
+                                            {% elseif resultType == 'warning' %}
+                                                {{ test.details.warning|t('sherlock')|raw }}
+                                            {% else %}
+                                                {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t('sherlock')|raw }}
+                                            {% endif %}
+                                            {{ value ? value|raw }}
+                                        </span>
+                                        {% if test.info and not (testName == 'pluginVulnerabilities' and resultType == 'fail') %}
+                                            <span class="info">{{ test.info|t('sherlock') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if test.url is defined %}
+                                            <a href="{{ test.url }}" class="go" target="_blank">{{ "Docs"|t('sherlock') }}</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
                 </tbody>
             </table>
 

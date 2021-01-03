@@ -51,14 +51,14 @@ class SettingsModel extends Model
     ];
 
     /**
-     * @var string|null
+     * @var array
      */
-    public $restrictControlPanelIpAddresses;
+    public $restrictControlPanelIpAddresses = [];
 
     /**
-     * @var string|null
+     * @var array
      */
-    public $restrictFrontEndIpAddresses;
+    public $restrictFrontEndIpAddresses = [];
 
     /**
      * @var mixed

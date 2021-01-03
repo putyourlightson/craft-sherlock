@@ -66,9 +66,11 @@ class Sherlock extends Plugin
             $variable->set('sherlock', SherlockVariable::class);
         });
 
-        $this->sherlock->applyRestrictions();
-        $this->sherlock->applyHeaderProtection();
-        $this->sherlock->applyContentSecurityPolicy();
+        if (!Craft::$app->getRequest()->isConsoleRequest) {
+            $this->sherlock->applyRestrictions();
+            $this->sherlock->applyHeaderProtection();
+            $this->sherlock->applyContentSecurityPolicy();
+        }
 
         // Register after install event
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,

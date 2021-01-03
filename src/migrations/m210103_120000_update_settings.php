@@ -29,6 +29,12 @@ class m210103_120000_update_settings extends Migration
         $headerProtection = Craft::$app->getProjectConfig()->get('sherlock.settings.headerProtection');
         $settings->headerProtectionSettings['enabled'] = (bool)$headerProtection;
 
+        // Update restricted IP addresses
+        $restrictControlPanelIpAddresses = Craft::$app->getProjectConfig()->get('sherlock.settings.restrictControlPanelIpAddresses');
+        $settings->restrictControlPanelIpAddresses = $restrictControlPanelIpAddresses ? explode("\n", $restrictControlPanelIpAddresses) : [];
+        $restrictFrontEndIpAddresses = Craft::$app->getProjectConfig()->get('sherlock.settings.restrictFrontEndIpAddresses');
+        $settings->restrictFrontEndIpAddresses = $restrictFrontEndIpAddresses ? explode("\n", $restrictFrontEndIpAddresses) : [];
+
         // Update tests
         $settings->craftUpdates = [];
         $settings->pluginUpdates = [];
