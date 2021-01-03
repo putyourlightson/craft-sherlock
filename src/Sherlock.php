@@ -7,7 +7,6 @@ namespace putyourlightson\sherlock;
 
 use Craft;
 use craft\base\Plugin;
-use craft\console\Application as ConsoleApplication;
 use craft\events\PluginEvent;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
@@ -16,6 +15,7 @@ use craft\web\twig\variables\CraftVariable;
 use putyourlightson\sherlock\models\SettingsModel;
 use putyourlightson\sherlock\services\SherlockService;
 use putyourlightson\sherlock\services\TestsService;
+use putyourlightson\sherlock\twigextensions\SherlockTwigExtension;
 use putyourlightson\sherlock\variables\SherlockVariable;
 use yii\base\Event;
 
@@ -46,41 +46,17 @@ class Sherlock extends Plugin
             'tests' => TestsService::class,
         ]);
 
-        // Console request
-        if (Craft::$app instanceof ConsoleApplication) {
+        if (Craft::$app->getRequest()->isConsoleRequest) {
             return;
         }
 
-        // Register variable
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
-            /** @var CraftVariable $variable */
-            $variable = $event->sender;
-            $variable->set('sherlock', SherlockVariable::class);
-        });
+        $this->sherlock->applyRestrictions();
+        $this->sherlock->applyHeaderProtection();
+        $this->sherlock->applyContentSecurityPolicy();
 
-        if (!Craft::$app->getRequest()->isConsoleRequest) {
-            $this->sherlock->applyRestrictions();
-            $this->sherlock->applyHeaderProtection();
-            $this->sherlock->applyContentSecurityPolicy();
-        }
-
-        // Register after install event
-        Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    // Create and save default settings
-                    $settings = $this->createSettingsModel();
-                    Craft::$app->plugins->savePluginSettings($this, $settings->getAttributes());
-
-                    // Redirect to settings page with welcome
-                    Craft::$app->getResponse()->redirect(
-                        UrlHelper::cpUrl('settings/plugins/sherlock', [
-                            'welcome' => 1,
-                        ])
-                    )->send();
-                }
-            }
-        );
+        $this->_registerTwigExtensions();
+        $this->_registerVariables();
+        $this->_registerAfterInstallEvent();
     }
 
     /**
@@ -88,10 +64,10 @@ class Sherlock extends Plugin
      */
     protected function createSettingsModel(): SettingsModel
     {
-        $settings = new SettingsModel();
         $mailSettings = App::mailSettings();
 
-        // Set defaults
+        // Set default settings
+        $settings = new SettingsModel();
         $settings->notificationEmailAddresses = $mailSettings->fromEmail;
 
         return $settings;
@@ -106,5 +82,54 @@ class Sherlock extends Plugin
             'settings' => $this->getSettings(),
             'config' => Craft::$app->getConfig()->getConfigFromFile('sherlock'),
         ]);
+    }
+
+    /**
+     * Registers Twig extensions
+     */
+    private function _registerTwigExtensions()
+    {
+        Craft::$app->getView()->registerTwigExtension(new SherlockTwigExtension());
+    }
+
+    /**
+     * Registers variables.
+     */
+    private function _registerVariables()
+    {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
+            /** @var CraftVariable $variable */
+            $variable = $event->sender;
+            $variable->set('sherlock', SherlockVariable::class);
+        });
+    }
+
+    /**
+     * Registers after install event.
+     */
+    private function _registerAfterInstallEvent()
+    {
+        Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    // Don't proceed if plugin exists in incoming project config, otherwise updates won't be applied
+                    // https://github.com/putyourlightson/craft-campaign/issues/191
+                    if (Craft::$app->projectConfig->get('plugins.sherlock', true) !== null) {
+                        return;
+                    }
+
+                    // Create and save default settings
+                    $settings = $this->createSettingsModel();
+                    Craft::$app->plugins->savePluginSettings($this, $settings->getAttributes());
+
+                    // Redirect to settings page with welcome
+                    Craft::$app->getResponse()->redirect(
+                        UrlHelper::cpUrl('settings/plugins/sherlock', [
+                            'welcome' => 1,
+                        ])
+                    )->send();
+                }
+            }
+        );
     }
 }

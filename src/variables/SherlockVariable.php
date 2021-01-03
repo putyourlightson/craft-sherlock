@@ -14,6 +14,16 @@ use putyourlightson\sherlock\Sherlock;
 class SherlockVariable
 {
     /**
+     * Returns a nonce.
+     *
+     * @return string
+     */
+    public function getNonce(): string
+    {
+        return Sherlock::$plugin->sherlock->getNonce();
+    }
+
+    /**
      * Get last scan
      *
      * @return ScanModel

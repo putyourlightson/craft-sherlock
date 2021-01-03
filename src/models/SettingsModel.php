@@ -45,7 +45,7 @@ class SettingsModel extends Model
      */
     public $contentSecurityPolicySettings = [
         'enabled' => false,
-        'reportOnly' => false,
+        'enforce' => false,
         'header' => false,
         'directives' => [[]],
     ];

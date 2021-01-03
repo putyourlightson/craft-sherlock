@@ -40,10 +40,10 @@ return [
         //],
 
         // Enables a content security policy on the front-end of your site.
-        // https://content-security-policy.com/
+        // See https://content-security-policy.com/
         //'contentSecurityPolicySettings' => [
         //    'enabled' => false,
-        //    'reportOnly' => false,
+        //    'enforce' => false,
         //    'header' => false,
         //    'directives' => [[]],
         //],

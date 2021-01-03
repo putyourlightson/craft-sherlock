@@ -8,6 +8,7 @@ namespace putyourlightson\sherlock\services;
 use Craft;
 use craft\base\Component;
 use craft\errors\SiteNotFoundException;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
 use putyourlightson\sherlock\models\ScanModel;
@@ -22,7 +23,12 @@ use yii\web\HttpException;
 class SherlockService extends Component
 {
     /**
-     * Applies restrictions
+     * @var string
+     */
+    private $_nonce;
+
+    /**
+     * Applies restrictions.
      *
      * @throws HttpException
      */
@@ -48,7 +54,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Applies header protection
+     * Applies header protection.
      */
     public function applyHeaderProtection()
     {
@@ -64,7 +70,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Applies content security policy
+     * Applies content security policy.
      */
     public function applyContentSecurityPolicy()
     {
@@ -73,12 +79,13 @@ class SherlockService extends Component
         if ($settings['enabled']) {
             if (Craft::$app->getRequest()->getIsSiteRequest()) {
                 $name = 'Content-Security-Policy';
-                $name .= $settings['reportOnly'] ? '-Report-Only' : '';
-
+                $name .= $settings['enforce'] ? '' : '-Report-Only';
                 $value = '';
+                $nonce = $this->getNonce();
 
                 foreach ($settings['directives'] as $directive) {
                     if ($directive[0]) {
+                        $directive[2] = str_replace('{nonce}', 'nonce-'.$nonce, $directive[2]);
                         $value .= trim($directive[1]).' '.trim($directive[2]).'; ';
                     }
                 }
@@ -97,7 +104,21 @@ class SherlockService extends Component
     }
 
     /**
-     * Get CP alerts
+     * Returns or generates a nonce.
+     *
+     * @return string
+     */
+    public function getNonce(): string
+    {
+        if ($this->_nonce === null) {
+            $this->_nonce = base64_encode(StringHelper::randomString());
+        }
+
+        return $this->_nonce;
+    }
+
+    /**
+     * Returns CP alerts.
      *
      * @return array
      */
@@ -120,7 +141,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Get last scan
+     * Returns the last scan.
      *
      * @return ScanModel|null
      */
@@ -142,7 +163,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Get all scans
+     * Returns all scans.
      *
      * @param int|null $offsetId
      *
@@ -160,7 +181,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Run scan
+     * Runs a scan.
      */
     public function runScan()
     {
@@ -247,7 +268,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Match IP addresses
+     * Matches IP addresses.
      *
      * @param string[] $ipAddresses
      * @param string|null $userIp
@@ -269,7 +290,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Sends and logs notification email
+     * Sends and logs notification email.
      *
      * @param $subject
      * @param $message
