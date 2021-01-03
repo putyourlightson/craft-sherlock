@@ -38,6 +38,11 @@ class TestsService extends Component
     private $_headers;
 
     /**
+     * @var string
+     */
+    private $_body;
+
+    /**
      * @var UriInterface
      */
     private $_effectiveUrl;
@@ -144,7 +149,9 @@ class TestsService extends Component
             $url = UrlHelper::baseSiteUrl();
 
             try {
-                $this->_headers = $this->_client->get($url)->getHeaders();
+                $response = $this->_client->get($url);
+                $this->_headers = $response->getHeaders();
+                $this->_body = $response->getBody()->getContents();
 
                 // Get effective URL of insecure front-end site url
                 if (strpos($url, 'https://') === 0) {
@@ -192,10 +199,10 @@ class TestsService extends Component
                 $value = $this->_getHeaderValue('Content-Security-Policy');
 
                 if (empty($value)) {
-                    $testModel->failTest();
-                }
-                else {
-                    $testModel->value = '"'.$value.'"';
+                    // Look for meta tag
+                    if (!preg_match('/<meta http-equiv=[\'"]Content-Security-Policy[\'"]/', $this->_body)) {
+                        $testModel->failTest();
+                    }
                 }
 
                 break;
