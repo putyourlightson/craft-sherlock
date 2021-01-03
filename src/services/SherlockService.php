@@ -56,7 +56,9 @@ class SherlockService extends Component
 
         if ($settings['enabled']) {
             foreach ($settings['headers'] as $header) {
-                Craft::$app->getResponse()->getHeaders()->set($header[0], $header[1]);
+                if ($header[0]) {
+                    Craft::$app->getResponse()->getHeaders()->set(trim($header[1]), trim($header[2]));
+                }
             }
         }
     }
@@ -73,18 +75,13 @@ class SherlockService extends Component
                 $name = 'Content-Security-Policy';
                 $name .= $settings['reportOnly'] ? '-Report-Only' : '';
 
-                $directives = [];
+                $value = '';
 
                 foreach ($settings['directives'] as $directive) {
-                    if (is_array($directive)) {
-                        $directives[] = join(' ', $directive);
-                    }
-                    else {
-                        $directives[] = $directive;
+                    if ($directive[0]) {
+                        $value .= trim($directive[1]).' '.trim($directive[2]).'; ';
                     }
                 }
-
-                $value = join('; ', $directives);
 
                 if ($settings['header']) {
                     Craft::$app->getResponse()->getHeaders()->add($name, $value);
@@ -196,14 +193,14 @@ class SherlockService extends Component
             'sherlock'
         );
 
-        // check failed scan against last scan
+        // Check failed scan against last scan
         if (!$scanModel->pass) {
             $lastScan = $this->getLastScan();
 
-            // if last scan exists
+            // If last scan exists
             if ($lastScan) {
                 if ($lastScan->pass) {
-                    // send & log notification email
+                    // Send & log notification email
                     $this->_sendLogNotificationEmail(
                         'Security Scan Failed',
                         'Sherlock security scan failed at the following site: ',
@@ -211,11 +208,11 @@ class SherlockService extends Component
                     );
                 }
 
-                // check critical updates against last scan
+                // Check critical updates against last scan
                 if ((isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates']))
                     || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
                 ) {
-                    // send & log notification email
+                    // Send & log notification email
                     $this->_sendLogNotificationEmail(
                         'Security Scan Critical Updates',
                         'Sherlock security scan detected critical updates at the following site: ',
@@ -249,9 +246,6 @@ class SherlockService extends Component
         $scanRecord->save();
     }
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * Match IP addresses
      *
@@ -276,7 +270,7 @@ class SherlockService extends Component
     }
 
     /**
-     * Send && Log Notification Email
+     * Sends and logs notification email
      *
      * @param $subject
      * @param $message
@@ -285,7 +279,7 @@ class SherlockService extends Component
      */
     private function _sendLogNotificationEmail($subject, $message, $log)
     {
-        // If live mode && notification email addresses exist
+        // If live mode and notification email addresses exist
         if (Sherlock::$plugin->settings->liveMode && !empty(Sherlock::$plugin->settings->notificationEmailAddresses)) {
             $mailer = Craft::$app->getMailer();
 

@@ -67,6 +67,11 @@
             warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
             cols: [
                 {
+                    type: 'lightswitch',
+                    heading: 'Enabled'|t('sherlock'),
+                    thin: true,
+                },
+                {
                     type: 'singleline',
                     heading: 'Name'|t('sherlock'),
                     placeholder: 'X-Frame-Options',
@@ -123,10 +128,15 @@
             warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
             cols: [
                 {
+                    type: 'lightswitch',
+                    heading: 'Enabled'|t('sherlock'),
+                    thin: true,
+                },
+                {
                     type: 'singleline',
                     heading: 'Directive'|t('sherlock'),
                     placeholder: 'default-src',
-                    width: '25%',
+                    width: '20%',
                     code: true,
                 },
                 {

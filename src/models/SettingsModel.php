@@ -5,18 +5,13 @@
 
 namespace putyourlightson\sherlock\models;
 
-use Craft;
 use craft\base\Model;
-use craft\behaviors\EnvAttributeParserBehavior;
 
 /**
  * SettingsModel
  */
 class SettingsModel extends Model
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var bool
      */
@@ -38,10 +33,10 @@ class SettingsModel extends Model
     public $headerProtectionSettings = [
         'enabled' => true,
         'headers' => [
-            ['Strict-Transport-Security', 'max-age=31536000'],
-            ['X-Content-Type-Options', 'nosniff'],
-            ['X-Frame-Options', 'SAMEORIGIN'],
-            ['X-Xss-Protection', '1; mode=block'],
+            [true, 'Strict-Transport-Security', 'max-age=31536000'],
+            [true, 'X-Content-Type-Options', 'nosniff'],
+            [true, 'X-Frame-Options', 'SAMEORIGIN'],
+            [true, 'X-Xss-Protection', '1; mode=block'],
         ],
     ];
 
@@ -52,7 +47,7 @@ class SettingsModel extends Model
         'enabled' => false,
         'reportOnly' => false,
         'header' => false,
-        'directives' => [[]],
+        'directives' => [],
     ];
 
     /**

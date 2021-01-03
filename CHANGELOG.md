@@ -2,7 +2,7 @@
 
 ## 3.0.0 - Unreleased
 > {warning} The API has been replaced by a console command. Update any scheduled cron jobs to run the `sherlock/scans/run` console command instead of using the API.
-> 
+
 ### Added
 - Added the `sherlock/scans/run` console command.
 - Added the ability to add a Content Security Policy in the plugin settings.

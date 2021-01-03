@@ -32,10 +32,10 @@ return [
         //'headerProtectionSettings' => [
         //    'enabled' => true,
         //    'headers' => [
-        //        ['Strict-Transport-Security', 'max-age=31536000'],
-        //        ['X-Content-Type-Options', 'nosniff'],
-        //        ['X-Frame-Options', 'SAMEORIGIN'],
-        //        ['X-Xss-Protection', '1; mode=block'],
+        //        [true, 'Strict-Transport-Security', 'max-age=31536000'],
+        //        [true, 'X-Content-Type-Options', 'nosniff'],
+        //        [true, 'X-Frame-Options', 'SAMEORIGIN'],
+        //        [true, 'X-Xss-Protection', '1; mode=block'],
         //    ]
         //],
 
@@ -45,7 +45,7 @@ return [
         //    'enabled' => false,
         //    'reportOnly' => false,
         //    'header' => false,
-        //    'directives' => [[]],
+        //    'directives' => [],
         //],
 
         // Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).
