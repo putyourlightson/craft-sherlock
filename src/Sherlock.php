@@ -66,11 +66,9 @@ class Sherlock extends Plugin
             $variable->set('sherlock', SherlockVariable::class);
         });
 
-        // Check for header protection
-        $this->sherlock->checkHeaderProtection();
-
-        // Check for site restrictions
-        $this->sherlock->checkRestrictions();
+        $this->sherlock->applyRestrictions();
+        $this->sherlock->applyHeaderProtection();
+        $this->sherlock->applyContentSecurityPolicy();
 
         // Register after install event
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,

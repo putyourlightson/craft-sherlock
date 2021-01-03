@@ -33,6 +33,16 @@ class SettingsModel extends Model
     public $headerProtection = true;
 
     /**
+     * @var array
+     */
+    public $contentSecurityPolicySettings = [
+        'enabled' => false,
+        'header' => false,
+        'reportOnly' => false,
+        'policies' => [],
+    ];
+
+    /**
      * @var mixed
      */
     public $notificationEmailAddresses;

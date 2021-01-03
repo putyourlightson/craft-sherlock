@@ -194,6 +194,18 @@ class TestsService extends Component
 
                 break;
 
+            case 'contentSecurityPolicy':
+                $value = $this->_getHeaderValue('Content-Security-Policy');
+
+                if (empty($value)) {
+                    $testModel->failTest();
+                }
+                else {
+                    $testModel->value = '"'.$value.'"';
+                }
+
+                break;
+
             case 'cors':
                 $value = $this->_getHeaderValue('Access-Control-Allow-Origin');
 
@@ -209,18 +221,6 @@ class TestsService extends Component
                         $testModel->warning = true;
                     }
 
-                    $testModel->value = '"'.$value.'"';
-                }
-
-                break;
-
-            case 'contentSecurityPolicy':
-                $value = $this->_getHeaderValue('Content-Security-Policy');
-
-                if (empty($value)) {
-                    $testModel->failTest();
-                }
-                else {
                     $testModel->value = '"'.$value.'"';
                 }
 

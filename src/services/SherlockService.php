@@ -16,41 +16,17 @@ use putyourlightson\sherlock\Sherlock;
 use yii\web\HttpException;
 
 /**
- * Sherlock Service
- *
  * @property ScanModel|null $lastScan
  * @property array $cpAlerts
  */
 class SherlockService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Check Header Protection
-     */
-    public function checkHeaderProtection()
-    {
-        $request = Craft::$app->getRequest();
-        $headers = Craft::$app->getResponse()->getHeaders();
-
-        if (!empty(Sherlock::$plugin->settings->headerProtection) && Sherlock::$plugin->settings->headerProtection) {
-            $headers->set('X-Frame-Options', 'SAMEORIGIN');
-            $headers->set('X-Content-Type-Options', 'nosniff');
-            $headers->set('X-Xss-Protection', '1; mode=block');
-
-            if ($request->getIsSecureConnection()) {
-                $headers->set('Strict-Transport-Security', 'max-age=31536000');
-            }
-        }
-    }
-
-    /**
-     * Check Restrictions
+     * Applies restrictions
      *
      * @throws HttpException
      */
-    public function checkRestrictions()
+    public function applyRestrictions()
     {
         $request = Craft::$app->getRequest();
 
@@ -67,6 +43,69 @@ class SherlockService extends Component
 
             if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($ipAddresses, $request->getUserIP())) {
                 throw new HttpException(503);
+            }
+        }
+    }
+
+    /**
+     * Applies header protection
+     */
+    public function applyHeaderProtection()
+    {
+        $headers = Craft::$app->getResponse()->getHeaders();
+
+        if (Sherlock::$plugin->settings->headerProtection) {
+            $headers->set('X-Frame-Options', 'SAMEORIGIN');
+            $headers->set('X-Content-Type-Options', 'nosniff');
+            $headers->set('X-Xss-Protection', '1; mode=block');
+
+            if (Craft::$app->getRequest()->getIsSecureConnection()) {
+                $headers->set('Strict-Transport-Security', 'max-age=31536000');
+            }
+        }
+    }
+
+    /**
+     * Applies content security policy
+     */
+    public function applyContentSecurityPolicy()
+    {
+        $settings = Sherlock::$plugin->settings->contentSecurityPolicySettings;
+
+        if ($settings['enabled']) {
+            if (Craft::$app->getRequest()->getIsSiteRequest()) {
+                $name = 'Content-Security-Policy';
+                $name .= $settings['reportOnly'] ? '-Report-Only' : '';
+
+                $policies = [];
+
+                foreach ($settings['policies'] as $policy) {
+                    if (is_array($policy)) {
+                        $policies[] = join(' ', $policy);
+                    }
+                    else {
+                        $policies[] = $policy;
+                    }
+                }
+
+                $value = join('; ', $policies);
+
+//                $values = [
+//                    "default-src 'self'",
+//                    "img-src 'self' res.cloudinary.com",
+//                    "script-src 'self' 'unsafe-inline' https://unpkg.com https://www.google-analytics.com",
+//                    "style-src 'self' 'unsafe-inline' 'unsafe-eval'",
+//                ];
+
+                if ($settings['header']) {
+                    Craft::$app->getResponse()->getHeaders()->add($name, $value);
+                }
+                else {
+                    Craft::$app->getView()->registerMetaTag([
+                        'http-equiv' => 'Content-Security-Policy',
+                        'content' => $value,
+                    ]);
+                }
             }
         }
     }
