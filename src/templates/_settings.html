@@ -163,8 +163,8 @@
                 {
                     type: 'singleline',
                     heading: 'Value'|t('sherlock'),
-                    placeholder: "'self' '{nonce}' cdn.example.com",
-                    info: 'A nonce an be added to the value below using `{nonce}`, and to templates using the `{{ nonce }}` or `{{ craft.sprig.nonce }}` template tags.'|t('sherlock'),
+                    placeholder: "'self' '{nonce}' 'sha256-xyz...' cdn.example.com",
+                    info: 'A nonce can be added to the value below using `{nonce}`, and to templates using the `{{ nonce }}` or `{{ craft.sprig.nonce }}` template tags. Never use a nonce for statically cached sites, instead use a [hash]({url}).'|t('sherlock', {url: 'https://content-security-policy.com/hash/'}),
                     code: true,
                 },
             ],

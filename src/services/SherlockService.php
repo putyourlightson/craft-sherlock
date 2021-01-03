@@ -7,6 +7,7 @@ namespace putyourlightson\sherlock\services;
 
 use Craft;
 use craft\base\Component;
+use craft\elements\User;
 use craft\errors\SiteNotFoundException;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
@@ -17,8 +18,9 @@ use putyourlightson\sherlock\Sherlock;
 use yii\web\HttpException;
 
 /**
- * @property ScanModel|null $lastScan
- * @property array $cpAlerts
+ * @property-read string $nonce
+ * @property-read array $cpAlerts
+ * @property-read ScanModel|null $lastScan
  */
 class SherlockService extends Component
 {
@@ -74,6 +76,14 @@ class SherlockService extends Component
      */
     public function applyContentSecurityPolicy()
     {
+        /** @var User|null $user */
+        $user = Craft::$app->getUser()->getIdentity();
+
+        // Exit if the debug toolbar is enabled
+        if ($user && $user->getPreference('enableDebugToolbarForSite')) {
+            return;
+        }
+
         $settings = Sherlock::$plugin->settings->contentSecurityPolicySettings;
 
         if ($settings['enabled']) {
