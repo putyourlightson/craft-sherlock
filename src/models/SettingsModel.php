@@ -47,7 +47,7 @@ class SettingsModel extends Model
         'enabled' => false,
         'reportOnly' => false,
         'header' => false,
-        'directives' => [],
+        'directives' => [[]],
     ];
 
     /**

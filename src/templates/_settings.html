@@ -158,7 +158,7 @@
     {{ forms.editableTableField({
         label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
         name: 'restrictControlPanelIpAddresses',
-        instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The `*` and `?` wildcards are supported.'|t('sherlock'),
+        instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
         warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
         cols: [
             {
@@ -175,7 +175,7 @@
     {{ forms.editableTableField({
         label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
         name: 'restrictFrontEndIpAddresses',
-        instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The `*` and `?` wildcards are supported.'|t('sherlock'),
+        instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
         warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
         cols: [
             {

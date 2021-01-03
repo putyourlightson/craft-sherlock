@@ -45,7 +45,7 @@ return [
         //    'enabled' => false,
         //    'reportOnly' => false,
         //    'header' => false,
-        //    'directives' => [],
+        //    'directives' => [[]],
         //],
 
         // Restrict access to the control panel to the following IP addresses (logged in admins always have access).
