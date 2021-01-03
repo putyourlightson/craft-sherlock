@@ -14,9 +14,6 @@ use putyourlightson\sherlock\base\BaseModel;
  */
 class ScanModel extends BaseModel
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var int
      */
@@ -50,9 +47,6 @@ class ScanModel extends BaseModel
      * @var DateTime
      */
     public $dateCreated;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

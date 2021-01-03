@@ -27,9 +27,6 @@ use yii\web\HttpException;
  */
 class TestsService extends Component
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Client
      */
@@ -49,9 +46,6 @@ class TestsService extends Component
      * @var Updates
      */
     private $_updates;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Get test names

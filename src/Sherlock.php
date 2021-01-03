@@ -10,7 +10,6 @@ use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
 use craft\events\PluginEvent;
 use craft\helpers\App;
-use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
@@ -19,7 +18,6 @@ use putyourlightson\sherlock\services\SherlockService;
 use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\variables\SherlockVariable;
 use yii\base\Event;
-
 
 /**
  * Sherlock Plugin
@@ -31,16 +29,10 @@ use yii\base\Event;
  */
 class Sherlock extends Plugin
 {
-    // Static Properties
-    // =========================================================================
-
     /**
      * @var Sherlock
      */
     public static $plugin;
-
-    // Public Methods
-    // =========================================================================
 
     public function init()
     {
@@ -90,9 +82,6 @@ class Sherlock extends Plugin
             }
         );
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

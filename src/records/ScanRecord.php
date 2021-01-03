@@ -18,9 +18,6 @@ use craft\db\ActiveRecord;
  */
 class ScanRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
      /**
      * @inheritdoc
      *

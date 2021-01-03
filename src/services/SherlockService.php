@@ -30,18 +30,18 @@ class SherlockService extends Component
     {
         $request = Craft::$app->getRequest();
 
-        if (!empty(Sherlock::$plugin->settings->restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
-            $ipAddresses = Sherlock::$plugin->settings->restrictControlPanelIpAddresses;
+        $restrictControlPanelIpAddresses = Sherlock::$plugin->settings->restrictControlPanelIpAddresses;
 
-            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($ipAddresses, $request->getUserIP())) {
+        if (!empty($restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
+            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($restrictControlPanelIpAddresses, $request->getUserIP())) {
                 throw new HttpException(503);
             }
         }
 
-        if (!empty(Sherlock::$plugin->settings->restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
-            $ipAddresses = Sherlock::$plugin->settings->restrictFrontEndIpAddresses;
+        $restrictFrontEndIpAddresses = Sherlock::$plugin->settings->restrictFrontEndIpAddresses;
 
-            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($ipAddresses, $request->getUserIP())) {
+        if (!empty($restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
+            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($restrictFrontEndIpAddresses, $request->getUserIP())) {
                 throw new HttpException(503);
             }
         }
@@ -256,17 +256,16 @@ class SherlockService extends Component
      */
     private function _matchIpAddresses(array $ipAddresses, $userIp = null): bool
     {
-        $found = false;
-
         foreach ($ipAddresses as $ipAddress) {
+            $ipAddress = is_array($ipAddress) ? $ipAddress[0] : $ipAddress;
             $ipAddress = str_replace(['\*', '\?'], ['.*', '.'], preg_quote($ipAddress));
+
             if (preg_match('/^'.$ipAddress.'$/', $userIp)) {
-                $found = true;
-                break;
+                return true;
             }
         }
 
-        return $found;
+        return false;
     }
 
     /**

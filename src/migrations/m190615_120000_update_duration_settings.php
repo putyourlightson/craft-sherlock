@@ -9,9 +9,6 @@ use putyourlightson\sherlock\Sherlock;
 
 class m190615_120000_update_duration_settings extends Migration
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

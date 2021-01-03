@@ -18,9 +18,6 @@ use putyourlightson\sherlock\Sherlock;
  */
 class ScansController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

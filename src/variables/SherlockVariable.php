@@ -8,7 +8,6 @@ namespace putyourlightson\sherlock\variables;
 use putyourlightson\sherlock\models\ScanModel;
 use putyourlightson\sherlock\Sherlock;
 
-
 /**
  * Sherlock Variable
  */
@@ -35,7 +34,7 @@ class SherlockVariable
     }
 
     /**
-     * Check High Security Level
+     * Check high security level
      *
      * @return string
      */

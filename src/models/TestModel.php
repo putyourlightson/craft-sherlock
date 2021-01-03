@@ -12,9 +12,6 @@ use putyourlightson\sherlock\base\BaseModel;
  */
 class TestModel extends BaseModel
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var string
      */
@@ -64,9 +61,6 @@ class TestModel extends BaseModel
      * @var bool
      */
     public $highSecurityLevel = false;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Fail test

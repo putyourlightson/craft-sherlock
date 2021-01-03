@@ -12,9 +12,6 @@ use craft\base\Model;
 */
 abstract class BaseModel extends Model
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Populates a new model instance with a given set of attributes.
      *
@@ -45,10 +42,8 @@ abstract class BaseModel extends Model
     {
         $models = [];
 
-        if (is_array($data))
-        {
-            foreach ($data as $values)
-            {
+        if (is_array($data)) {
+            foreach ($data as $values) {
                 $model = self::populateModel($values);
 
                 if ($indexBy !== null)

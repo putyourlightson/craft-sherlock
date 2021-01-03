@@ -13,9 +13,6 @@ use craft\db\Migration;
  */
 class Install extends Migration
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @return boolean
      */
