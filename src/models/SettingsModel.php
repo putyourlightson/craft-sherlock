@@ -23,39 +23,37 @@ class SettingsModel extends Model
     public $liveMode = false;
 
     /**
+     * @var mixed
+     */
+    public $notificationEmailAddresses;
+
+    /**
      * @var bool
      */
     public $highSecurityLevel = false;
 
     /**
-     * @var bool
+     * @var array
      */
-    public $headerProtection = true;
+    public $headerProtectionSettings = [
+        'enabled' => true,
+        'headers' => [
+            ['Strict-Transport-Security', 'max-age=31536000'],
+            ['X-Content-Type-Options', 'nosniff'],
+            ['X-Frame-Options', 'SAMEORIGIN'],
+            ['X-Xss-Protection', '1; mode=block'],
+        ],
+    ];
 
     /**
      * @var array
      */
     public $contentSecurityPolicySettings = [
         'enabled' => false,
-        'header' => false,
         'reportOnly' => false,
-        'policies' => [],
+        'header' => false,
+        'directives' => [[]],
     ];
-
-    /**
-     * @var mixed
-     */
-    public $notificationEmailAddresses;
-
-    /**
-     * @var string
-     */
-    public $apiKey;
-
-    /**
-     * @var string
-     */
-    public $secretKey;
 
     /**
      * @var string|null
@@ -249,43 +247,4 @@ class SettingsModel extends Model
         'canFail' => true,
         'threshold' => 86400, // 1 day
     ];
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'parser' => [
-                'class' => EnvAttributeParserBehavior::class,
-                'attributes' => ['apiKey', 'secretKey'],
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules(): array
-    {
-        return [
-            [['apiKey', 'secretKey'], 'string', 'length' => [32]],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels(): array
-    {
-        $labels = parent::attributeLabels();
-
-        // Set the field labels
-        $labels['apiKey'] = Craft::t('sherlock', 'API Key');
-
-        return $labels;
-    }
 }

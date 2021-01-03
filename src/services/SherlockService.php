@@ -52,15 +52,11 @@ class SherlockService extends Component
      */
     public function applyHeaderProtection()
     {
-        $headers = Craft::$app->getResponse()->getHeaders();
+        $settings = Sherlock::$plugin->settings->headerProtectionSettings;
 
-        if (Sherlock::$plugin->settings->headerProtection) {
-            $headers->set('X-Frame-Options', 'SAMEORIGIN');
-            $headers->set('X-Content-Type-Options', 'nosniff');
-            $headers->set('X-Xss-Protection', '1; mode=block');
-
-            if (Craft::$app->getRequest()->getIsSecureConnection()) {
-                $headers->set('Strict-Transport-Security', 'max-age=31536000');
+        if ($settings['enabled']) {
+            foreach ($settings['headers'] as $header) {
+                Craft::$app->getResponse()->getHeaders()->set($header[0], $header[1]);
             }
         }
     }
@@ -77,25 +73,18 @@ class SherlockService extends Component
                 $name = 'Content-Security-Policy';
                 $name .= $settings['reportOnly'] ? '-Report-Only' : '';
 
-                $policies = [];
+                $directives = [];
 
-                foreach ($settings['policies'] as $policy) {
-                    if (is_array($policy)) {
-                        $policies[] = join(' ', $policy);
+                foreach ($settings['directives'] as $directive) {
+                    if (is_array($directive)) {
+                        $directives[] = join(' ', $directive);
                     }
                     else {
-                        $policies[] = $policy;
+                        $directives[] = $directive;
                     }
                 }
 
-                $value = join('; ', $policies);
-
-//                $values = [
-//                    "default-src 'self'",
-//                    "img-src 'self' res.cloudinary.com",
-//                    "script-src 'self' 'unsafe-inline' https://unpkg.com https://www.google-analytics.com",
-//                    "style-src 'self' 'unsafe-inline' 'unsafe-eval'",
-//                ];
+                $value = join('; ', $directives);
 
                 if ($settings['header']) {
                     Craft::$app->getResponse()->getHeaders()->add($name, $value);
@@ -203,7 +192,7 @@ class SherlockService extends Component
         // Log scan
         $user = Craft::$app->getUser()->getIdentity();
         Craft::info(
-            'Scan run by '.($user ? $user->username : 'API').' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
+            'Scan run by '.($user ? $user->username : 'console command').' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
             'sherlock'
         );
 

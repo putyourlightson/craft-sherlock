@@ -1,7 +1,7 @@
 {% import '_includes/forms' as forms %}
 
 {% macro configWarning(setting) -%}
-    {{ "This is being overridden by the {setting} config setting."|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
+    {{ 'This is being overridden by the {setting} config setting.'|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
 {%- endmacro %}
 
 {% from _self import configWarning %}
@@ -13,15 +13,32 @@
 {% endif %}
 
 <div class="sherlock-settings">
+
     {{ forms.lightswitchField({
         first: true,
         label: 'Live Mode'|t('sherlock'),
         name: 'liveMode',
-        instructions: 'Whether the site is live. If enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
+        instructions: 'If enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
         warning: (config.liveMode is defined ? configWarning('liveMode')),
         on: settings.liveMode,
+        toggle: 'notificationEmailAddresses',
         errors: settings.getErrors('liveMode')
     }) }}
+
+    <div id="notificationEmailAddresses" {% if not settings.liveMode %} class="hidden"{% endif %}>
+
+        {{ forms.textField({
+            label: 'Notification Email Addresses'|t('sherlock'),
+            name: 'notificationEmailAddresses',
+            instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues.'|t('sherlock'),
+            warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
+            value: settings.notificationEmailAddresses,
+            errors: settings.getErrors('notificationEmailAddresses')
+        }) }}
+
+    </div>
+
+    <hr>
 
     {{ forms.lightswitchField({
         label: 'High Security Level'|t('sherlock'),
@@ -32,54 +49,99 @@
         errors: settings.getErrors('highSecurityLevel')
     }) }}
 
+    <hr>
+
     {{ forms.lightswitchField({
         label: 'Header Protection'|t('sherlock'),
-        name: 'headerProtection',
+        name: 'headerProtectionSettings[enabled]',
         instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
-        warning: (config.headerProtection is defined ? configWarning('headerProtection')),
-        on: settings.headerProtection,
-        errors: settings.getErrors('headerProtection')
+        warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
+        on: settings.headerProtectionSettings.enabled,
+        toggle: 'headerProtectionSettings',
     }) }}
 
-    <hr />
+    <div id="headerProtectionSettings" {% if not settings.headerProtectionSettings.enabled %} class="hidden"{% endif %}>
 
-    {{ forms.textField({
-        label: 'Notification Email Addresses'|t('sherlock'),
-        name: 'notificationEmailAddresses',
-        instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues.'|t('sherlock'),
-        warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
-        value: settings.notificationEmailAddresses,
-        errors: settings.getErrors('notificationEmailAddresses')
+        {{ forms.editableTableField({
+            name: 'headerProtectionSettings[headers]',
+            warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
+            cols: [
+                {
+                    type: 'singleline',
+                    heading: 'Name'|t('sherlock'),
+                    placeholder: 'X-Frame-Options',
+                    width: '25%',
+                    code: true,
+                },
+                {
+                    type: 'singleline',
+                    heading: 'Value'|t('sherlock'),
+                    placeholder: 'SAMEORIGIN',
+                    code: true,
+                },
+            ],
+            rows: settings.headerProtectionSettings.headers,
+            minRows: 1,
+            addRowLabel: 'Add a header'|t('sherlock'),
+        }) }}
+
+    </div>
+
+    <hr>
+
+    {{ forms.lightswitchField({
+        label: 'Content Security Policy'|t('sherlock'),
+        name: 'contentSecurityPolicySettings[enabled]',
+        instructions: 'Enables a content security policy on the front-end of your site ([docs]({url})).'|t('sherlock', {url: 'https://content-security-policy.com/'}),
+        warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+        on: settings.contentSecurityPolicySettings.enabled,
+        toggle: 'contentSecurityPolicySettings',
     }) }}
 
-    {{ forms.autosuggestField({
-        label: 'API Key'|t('sherlock'),
-        name: 'apiKey',
-        instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work.'|t('sherlock'),
-        warning: (config.apiKey is defined ? configWarning('apiKey')),
-        suggestEnvVars: true,
-        suggestions: craft.cp.getEnvSuggestions(),
-        value: settings.apiKey,
-        errors: settings.getErrors('apiKey')
-    }) }}
+    <div id="contentSecurityPolicySettings" {% if not settings.contentSecurityPolicySettings.enabled %} class="hidden"{% endif %}>
 
-    <p class="extra-instructions">
-        {{ 'You can create a cron job to run scans on a regular basis. The method you use depends on your server environment. For example, this cron command will trigger a scan to be run every day at 8am:'|t('sherlock') }}
-        <br/>
-        <code>0 8 * * *    /usr/bin/curl --silent --compressed {{ siteUrl(craft.app.config.general.actionTrigger ~ '/sherlock/scans/run-scan', { key: settings.apiKey|replace('$', '') }) }}</code>
-    </p>
+        {{ forms.lightswitchField({
+            offLabel: 'Report Only'|t('sherlock'),
+            onLabel: 'Enforce Policy'|t('sherlock'),
+            name: 'contentSecurityPolicySettings[reportOnly]',
+            instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock'),
+            warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+            on: settings.contentSecurityPolicySettings.reportOnly,
+        }) }}
 
-    {{ forms.autosuggestField({
-        label: 'Secret Key'|t('sherlock'),
-        name: 'secretKey',
-        instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.'|t('sherlock'),
-        warning: (config.secretKey is defined ? configWarning('secretKey')),
-        suggestEnvVars: true,
-        suggestions: craft.cp.getEnvSuggestions(),
-        value: settings.secretKey,
-        errors: settings.getErrors('secretKey')
-    }) }}
+        {{ forms.lightswitchField({
+            offLabel: 'Meta Tag'|t('sherlock'),
+            onLabel: 'HTTP Header'|t('sherlock'),
+            name: 'contentSecurityPolicySettings[header]',
+            instructions: 'Whether to set the content security policy using a meta tag (recommended for statically cached sites) or a HTTP header (recommended for dynamic sites).'|t('sherlock'),
+            warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+            on: settings.contentSecurityPolicySettings.header,
+        }) }}
 
+        {{ forms.editableTableField({
+            name: 'contentSecurityPolicySettings[directives]',
+            warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+            cols: [
+                {
+                    type: 'singleline',
+                    heading: 'Directive'|t('sherlock'),
+                    placeholder: 'default-src',
+                    width: '25%',
+                    code: true,
+                },
+                {
+                    type: 'singleline',
+                    heading: 'Value'|t('sherlock'),
+                    placeholder: "'self' cdn.example.com",
+                    code: true,
+                },
+            ],
+            rows: settings.contentSecurityPolicySettings.directives,
+            minRows: 1,
+            addRowLabel: 'Add a directive'|t('sherlock'),
+        }) }}
+
+    </div>
 
     <hr />
 
@@ -102,4 +164,5 @@
         value: settings.restrictFrontEndIpAddresses,
         errors: settings.getErrors('restrictFrontEndIpAddresses')
     }) }}
+
 </div>

@@ -22,20 +22,31 @@ return [
         // Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.
         //'liveMode' => false,
 
+        // Enter the email addresses (separated by commas) that should be notified of security issues.
+        //'notificationEmailAddresses' => '',
+
         // Whether Sherlock should be extra critical of security issues and the resulting warnings.
         //'highSecurityLevel' => false,
 
         // Protects your site by setting HTTP response headers that provide added security.
-        //'headerProtection' => true,
+        //'headerProtectionSettings' => [
+        //    'enabled' => true,
+        //    'headers' => [
+        //        ['Strict-Transport-Security', 'max-age=31536000'],
+        //        ['X-Content-Type-Options', 'nosniff'],
+        //        ['X-Frame-Options', 'SAMEORIGIN'],
+        //        ['X-Xss-Protection', '1; mode=block'],
+        //    ]
+        //],
 
-        // Enter the email addresses (separated by commas) that should be notified of security issues.
-        //'notificationEmailAddresses' => '',
-
-        // A random 32 character string that will allow calls to the plugin and must be set for calls to work.
-        //'apiKey' => '',
-
-        // A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.
-        //'secretKey' => '',
+        // Enables a content security policy on the front-end of your site.
+        // https://content-security-policy.com/
+        //'contentSecurityPolicySettings' => [
+        //    'enabled' => false,
+        //    'reportOnly' => false,
+        //    'header' => false,
+        //    'directives' => [[]],
+        //],
 
         // Restrict access to the control panel to the following IP addresses (one IP address per line, logged in admins always have access).
         //'restrictControlPanelIpAddresses' => '',

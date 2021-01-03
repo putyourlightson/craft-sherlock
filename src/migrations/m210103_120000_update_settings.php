@@ -6,7 +6,7 @@ use Craft;
 use craft\db\Migration;
 use putyourlightson\sherlock\Sherlock;
 
-class m210102_120000_disable_tests_can_fail extends Migration
+class m210103_120000_update_settings extends Migration
 {
     // Public Methods
     // =========================================================================
@@ -19,11 +19,17 @@ class m210102_120000_disable_tests_can_fail extends Migration
         $schemaVersion = Craft::$app->projectConfig
             ->get('plugins.sherlock.schemaVersion', true);
 
-        if (!version_compare($schemaVersion, '2.4.0', '<')) {
+        if (!version_compare($schemaVersion, '3.0.0', '<')) {
             return true;
         }
 
         $settings = Sherlock::$plugin->settings;
+
+        // Update header protection enabled setting from project config value
+        $headerProtection = Craft::$app->getProjectConfig()->get('sherlock.settings.headerProtection');
+        $settings->headerProtectionSettings['enabled'] = (bool)$headerProtection;
+
+        // Update tests
         $settings->craftUpdates = [];
         $settings->pluginUpdates = [];
         $settings->xXssProtection = [];

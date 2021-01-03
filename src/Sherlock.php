@@ -102,8 +102,6 @@ class Sherlock extends Plugin
 
         // Set defaults
         $settings->notificationEmailAddresses = $mailSettings->fromEmail;
-        $settings->apiKey = StringHelper::randomString(32);
-        $settings->secretKey = StringHelper::randomString(32);
 
         return $settings;
     }
