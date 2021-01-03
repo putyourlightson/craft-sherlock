@@ -40,8 +40,8 @@ $(document).ready(function()
         event.preventDefault();
     });
 
-    if (typeof runScanAjax != 'undefined') {
-        $.get(runScanAjax, function() {
+    if (typeof runScan != 'undefined') {
+        $.get(runScan, function() {
             location.reload();
         });
     }

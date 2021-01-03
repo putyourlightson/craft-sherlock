@@ -20,7 +20,7 @@
 
         <div class="sherlock">
             <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan-ajax') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
+                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
             </div>
 
             <h1 class="title">{{ "Last Security Scan"|t('sherlock') }}</h1>
@@ -89,7 +89,7 @@
             </table>
 
             <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('scans/run-scan-ajax') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
+                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('scans/run-scan') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
             </div>
 
             <h1 class="title">{{ "Security Scan History"|t('sherlock') }}</h1>
@@ -128,7 +128,7 @@
 
     {% else %}
 
-        <script>var runScanAjax = '{{ actionUrl('sherlock/scans/run-scan-ajax') }}';</script>
+        <script>var runScan = '{{ actionUrl('sherlock/scans/run-scan') }}';</script>
 
     {% endif %}
 

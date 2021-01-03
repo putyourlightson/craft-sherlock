@@ -101,7 +101,7 @@ class SherlockService extends Component
                 }
 
                 if ($settings['header']) {
-                    Craft::$app->getResponse()->getHeaders()->add($name, $value);
+                    Craft::$app->getResponse()->getHeaders()->add($name, trim($value));
                 }
                 else {
                     Craft::$app->getView()->registerMetaTag([
