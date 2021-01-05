@@ -81,7 +81,6 @@ return [
         'expectCT' => [
             'canFail' => true,
         ],
-        'permissionsPolicy' => [],
         'referrerPolicy' => [
             'canFail' => true,
         ],

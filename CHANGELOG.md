@@ -7,9 +7,8 @@
 - Added the `sherlock/scans/run` console command.
 - Added the ability to add a Content Security Policy in the plugin settings.
 - Added the ability to add HTTP Headers in the plugin settings.
-- Added the `Content-Security-Policy` header test.
+- Added the `Content-Security-Policy` header / meta tag test.
 - Added the `Expect-CT` header test.
-- Added the `Permissions-Policy` header test.
 - Added the `Referrer-Policy` header test.
 - Added the Defer Public Registration Password test.
 - Added the Elevated Session Duration test.

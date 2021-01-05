@@ -73,7 +73,6 @@ class TestsService extends Component
             'cors',
             'expectCT',
             'referrerPolicy',
-            'permissionsPolicy',
             'strictTransportSecurity',
             'xContentTypeOptions',
             'xFrameOptions',
@@ -229,18 +228,6 @@ class TestsService extends Component
 
             case 'expectCT':
                 $value = $this->_getHeaderValue('Expect-CT');
-
-                if (empty($value)) {
-                    $testModel->failTest();
-                }
-                else {
-                    $testModel->value = '"'.$value.'"';
-                }
-
-                break;
-
-            case 'permissionsPolicy':
-                $value = $this->_getHeaderValue('Permissions-Policy');
 
                 if (empty($value)) {
                     $testModel->failTest();

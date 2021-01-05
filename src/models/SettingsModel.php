@@ -115,8 +115,6 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
-    public $permissionsPolicy = [];
-
     public $craftFoldersAboveWebRoot = [
         'canFail' => true,
     ];

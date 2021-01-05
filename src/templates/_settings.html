@@ -97,7 +97,7 @@
     {{ forms.lightswitchField({
         label: 'Content Security Policy'|t('sherlock'),
         name: 'contentSecurityPolicySettings[enabled]',
-        instructions: 'Enables a content security policy on the front-end of your site ([docs]({url})).'|t('sherlock', {url: 'https://content-security-policy.com/'}),
+        instructions: 'Enables a content security policy on the front-end of your site. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('sherlock', {url: 'https://content-security-policy.com/'}),
         warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
         on: settings.contentSecurityPolicySettings.enabled,
         toggle: 'contentSecurityPolicySettings',
