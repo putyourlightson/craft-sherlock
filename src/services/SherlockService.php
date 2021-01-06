@@ -100,12 +100,14 @@ class SherlockService extends Component
                     }
                 }
 
+                $value = trim($value);
+
                 if ($settings['header']) {
-                    Craft::$app->getResponse()->getHeaders()->add($name, trim($value));
+                    Craft::$app->getResponse()->getHeaders()->add($name, $value);
                 }
                 else {
                     Craft::$app->getView()->registerMetaTag([
-                        'http-equiv' => 'Content-Security-Policy',
+                        'http-equiv' => $name,
                         'content' => $value,
                     ]);
                 }

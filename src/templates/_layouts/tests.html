@@ -50,8 +50,8 @@
         'type': 'header',
         'typeName': 'HTTP Header',
         'details': {
-            'pass': 'Content-Security-Policy header or meta tag is set',
-            'warning': 'Set the Content-Security-Policy header or meta tag',
+            'pass': '',
+            'warning': '',
         },
         'info': 'The HTTP Content-Security-Policy response header allows web site administrators to control resources the user agent is allowed to load for a given page. With a few exceptions, policies mostly involve specifying server origins and script endpoints. This helps guard against cross-site scripting attacks (XSS).',
         'url': 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy',
@@ -131,7 +131,7 @@
             'pass': 'X-XSS-Protection header is set to',
             'warning': 'Set X-XSS-Protection header to "1; mode=block"',
         },
-        'info': 'The X-XSS-Protection header is a feature of Internet Explorer, Chrome and Safari that stops pages from loading when they detect reflected cross-site scripting (XSS) attacks. Although these protections are largely unnecessary in modern browsers when sites implement a strong Content-Security-Policy that disables the use of inline JavaScript, they can still provide protections for users of older web browsers that don’t yet support CSP.',
+        'info': 'The X-XSS-Protection header is a feature of Internet Explorer, Chrome and Safari that stops pages from loading when they detect reflected cross-site scripting (XSS) attacks. Although these protections are largely unnecessary in modern browsers when sites implement a strong Content Security Policy that disables the use of inline JavaScript, they can still provide protections for users of older web browsers that don’t yet support CSP.',
         'url': 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection',
     },
     'craftFoldersAboveWebRoot': {

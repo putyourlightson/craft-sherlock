@@ -196,11 +196,27 @@ class TestsService extends Component
 
             case 'contentSecurityPolicy':
                 $value = $this->_getHeaderValue('Content-Security-Policy');
+                $headerSet = !empty($value);
 
-                if (empty($value)) {
+                if (!$headerSet) {
                     // Look for meta tag
-                    if (!preg_match('/<meta http-equiv=[\'"]Content-Security-Policy[\'"]/', $this->_body)) {
-                        $testModel->failTest();
+                    preg_match('/<meta http-equiv="Content-Security-Policy" content="(.*?)"/', $this->_body, $matches);
+                    $value = $matches[1] ?? '';
+                }
+
+                if (empty($value)){
+                    $testModel->failTest();
+                    $testModel->value = 'Content-Security-Policy header and meta tag are not set';
+                }
+                else {
+                    $testModel->value = 'Content-Security-Policy '.($headerSet ? 'header' : 'meta tag').' ';
+
+                    if (strpos($value, 'unsafe-inline') !== false || strpos($value, 'unsafe-eval') !== false) {
+                        $testModel->value .= 'contains "unsafe-" values';
+                        $testModel->warning = true;
+                    }
+                    else {
+                        $testModel->value .= 'is set';
                     }
                 }
 
