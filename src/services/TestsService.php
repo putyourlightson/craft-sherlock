@@ -11,11 +11,8 @@ use craft\base\Plugin;
 use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\TransferStats;
-use Psr\Http\Message\UriInterface;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
 use yii\web\HttpException;
@@ -28,34 +25,19 @@ use yii\web\HttpException;
 class TestsService extends Component
 {
     /**
-     * @var Client
+     * @var Updates
      */
-    private $_client;
+    private $_updates;
 
     /**
      * @var array|null
      */
-    private $_headers;
+    private $_siteUrlResponse;
 
     /**
      * @var string|null
      */
-    private $_body;
-
-    /**
-     * @var UriInterface|null
-     */
-    private $_effectiveSiteUrl;
-
-    /**
-     * @var string|null
-     */
-    private $_cpUrlScheme;
-
-    /**
-     * @var Updates
-     */
-    private $_updates;
+    private $_cpUrlResponse;
 
     /**
      * Get test names
@@ -141,78 +123,21 @@ class TestsService extends Component
      */
     public function runTest($test): TestModel
     {
-        // Get client
-        if (empty($this->_client)) {
-            $this->_client = Craft::createGuzzleClient([
-                'timeout' => 10,
-            ]);
-        }
-
-        // Get site headers and body
-        if ($this->_headers === null) {
-            $url = UrlHelper::baseSiteUrl();
-
-            try {
-                $response = $this->_client->get($url);
-                $this->_headers = $response->getHeaders();
-                $this->_body = $response->getBody()->getContents();
-
-                // Get effective URL of insecure URL
-                if (strpos($url, 'https://') === 0) {
-                    $this->_client->get(str_replace('https://', 'http://', $url), [
-                        'on_stats' => function(TransferStats $stats) {
-                            $this->_effectiveSiteUrl = $stats->getEffectiveUri();
-                        },
-                    ]);
-                }
-            }
-            catch (ConnectException $e) {
-            }
-            catch (ServerException $e) {
-            }
-
-            if ($this->_headers === null) {
-                throw new HttpException(500, Craft::t('sherlock', 'unable to connect to {url}. Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]));
-            }
-        }
-
-        // Get CP URL scheme
-        if ($this->_cpUrlScheme === null) {
-            $_cpUrlScheme = 'http';
-            $url = UrlHelper::baseCpUrl();
-
-            // Get effective URL of insecure URL
-            if (strpos($url, 'https://') === 0) {
-                try {
-                    $this->_client->get(str_replace('https://', 'http://', $url), [
-                        'on_stats' => function(TransferStats $stats) {
-                            $this->_cpUrlScheme = $stats->getEffectiveUri()->getScheme();
-                        },
-                    ]);
-                }
-                catch (ConnectException $e) {}
-                catch (ServerException $e) {}
-            }
-        }
-
-        // Get updates, forcing a refresh
-        if (empty($this->_updates)) {
-            $this->_updates = Craft::$app->getUpdates()->getUpdates(true);
-        }
+        $this->_beforeRunTests();
 
         $testModel = new TestModel(Sherlock::$plugin->settings->{$test});
         $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
 
         switch ($test) {
             case 'httpsControlPanel':
-                if ($this->_cpUrlScheme != 'https') {
+                if (empty($this->_cpUrlResponse['scheme']) || $this->_cpUrlResponse['scheme'] != 'https') {
                     $testModel->failTest();
                 }
 
                 break;
 
             case 'httpsFrontEnd':
-                if ($this->_effectiveSiteUrl === null || $this->_effectiveSiteUrl->getScheme() == 'http') {
+                if (empty($this->_siteUrlResponse['scheme']) || $this->_siteUrlResponse['scheme'] != 'https') {
                     $testModel->failTest();
                 }
 
@@ -224,7 +149,7 @@ class TestsService extends Component
 
                 if (!$headerSet) {
                     // Look for meta tag
-                    preg_match('/<meta http-equiv="Content-Security-Policy" content="(.*?)"/', $this->_body, $matches);
+                    preg_match('/<meta http-equiv="Content-Security-Policy" content="(.*?)"/', $this->_siteUrlResponse['body'], $matches);
                     $value = $matches[1] ?? '';
                 }
 
@@ -664,20 +589,80 @@ class TestsService extends Component
     }
 
     /**
+     * Performs preps before running tests.
+     *
+     * @throws HttpException
+     */
+    private function _beforeRunTests()
+    {
+        // Ensure we only run this method once
+        if ($this->_updates !== null) {
+            return;
+        }
+
+        // Get updates, forcing a refresh
+        if (empty($this->_updates)) {
+            $this->_updates = Craft::$app->getUpdates()->getUpdates(true);
+        }
+
+        $client = Craft::createGuzzleClient([
+            'timeout' => 10,
+        ]);
+
+        // Define URL so we have are guaranteed to have something to catch later.
+        $url = '';
+
+        try {
+            // Get site URL response
+            $url = UrlHelper::baseSiteUrl();
+
+            $response = $client->get($url);
+            $this->_siteUrlResponse['headers'] = $response->getHeaders();
+            $this->_siteUrlResponse['body'] = $response->getBody()->getContents();
+
+            if (strpos($url, 'https://') === 0) {
+                // Get redirect URL scheme of insecure URL
+                $client->get(str_replace('https://', 'http://', $url), [
+                    'on_stats' => function(TransferStats $stats) {
+                        $this->_siteUrlResponse['schema'] = $stats->getEffectiveUri()->getScheme();
+                    },
+                ]);
+            }
+
+            // Get CP URL response
+            $url = UrlHelper::baseCpUrl();
+
+            if (strpos($url, 'https://') === 0) {
+                // Get redirect URL scheme of insecure URL
+                $client->get(str_replace('https://', 'http://', $url), [
+                    'on_stats' => function(TransferStats $stats) {
+                        $this->_cpUrlResponse['schema'] = $stats->getEffectiveUri()->getScheme();
+                    },
+                ]);
+            }
+        }
+        catch (GuzzleException $exception) {
+            Sherlock::$plugin->log($exception->getMessage());
+
+            throw new HttpException(500, Craft::t('sherlock', 'unable to connect to {url}. Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]));
+        }
+    }
+
+    /**
      * Returns a header value
      *
      * @param string $name
      *
      * @return string
      */
-    public function _getHeaderValue(string $name): string
+    private function _getHeaderValue(string $name): string
     {
         // Use lower-case name if it exists in the header
-        if (!empty($this->_headers[strtolower($name)])) {
+        if (!empty($this->_siteUrlResponse['headers'][strtolower($name)])) {
             $name = strtolower($name);
         }
 
-        $value = $this->_headers[$name] ?? '';
+        $value = $this->_siteUrlResponse['headers'][$name] ?? '';
 
         if (is_array($value)) {
             $value = $value[0] ?? '';

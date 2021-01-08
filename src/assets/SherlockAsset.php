@@ -28,6 +28,7 @@ class SherlockAsset extends AssetBundle
 
         $this->css = [
             'css/cp.css',
+            'lib/font-awesome/css/all.min.css',
         ];
         $this->js = [
             'js/script.js',

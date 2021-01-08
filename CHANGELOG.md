@@ -3,25 +3,29 @@
 ## 3.0.0 - Unreleased
 
 ### Added
-- Added the `sherlock/scans/run` console command.
 - Added the ability to add a Content Security Policy in the plugin settings.
 - Added the ability to add HTTP Headers in the plugin settings.
+- Added the `sherlock/scans/run` console command.
 - Added the `Content-Security-Policy` header / meta tag test.
 - Added the `Expect-CT` header test.
 - Added the `Referrer-Policy` header test.
 - Added the Defer Public Registration Password test.
 - Added the Elevated Session Duration test.
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
+- Added logging to a dedicated `sherlock.log` file.
 
 ### Changed
-- Removed the plugin vulnerabilities JSON feed.
+- Changed the HTTPS in control panel test to ensure that an encrypted HTTPS connection is forced.
 - Non-critical Craft and plugin updates now display warnings instead of failures in high security mode.
 - The `X-XSS-Protection` header now only display a warning instead of a failure ([reasoning](https://scotthelme.co.uk/security-headers-updates/#removing-the-x-xss-protection-header)). 
-- Improved test explanations, thresholds and documentation links.
+- Improved test icons, explanations, thresholds and documentation links.
 
 ### Fixed
 - Fixed wording of user session duration test.
 - Fixed output of default file permissions test.
+
+### Removed
+- Removed the plugin vulnerabilities JSON feed.
 
 ## 2.3.0 - 2020-12-26
 ### Added

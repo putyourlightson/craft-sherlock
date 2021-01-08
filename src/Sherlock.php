@@ -13,6 +13,7 @@ use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
+use putyourlightson\logtofile\LogToFile;
 use putyourlightson\sherlock\models\SettingsModel;
 use putyourlightson\sherlock\services\SherlockService;
 use putyourlightson\sherlock\services\TestsService;
@@ -58,6 +59,20 @@ class Sherlock extends Plugin
         $this->_registerTwigExtensions();
         $this->_registerVariables();
         $this->_registerAfterInstallEvent();
+    }
+
+    /**
+     * Logs an action
+     *
+     * @param string $message
+     * @param array $params
+     * @param string $type
+     */
+    public function log(string $message, array $params = [], string $type = 'info')
+    {
+        $message = Craft::t('sherlock', $message, $params);
+
+        LogToFile::log($message, 'sherlock', $type);
     }
 
     /**

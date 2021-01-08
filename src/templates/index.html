@@ -2,7 +2,17 @@
 
 
 {% set title = 'Sherlock' %}
-{% set faIcons = {'header': 'fa-lock', 'server': 'fa-server', 'upload': 'fa-upload', 'folder': 'fa-folder-o', 'files': 'fa-files-o', 'code': 'fa-code'} %}
+{% set faIcons = {
+    'code': 'fa-code',
+    'files': 'fa-copy',
+    'folder': 'fa-folder',
+    'plugin': 'fa-plug',
+    'secure': 'fa-lock',
+    'server': 'fa-server',
+    'settings': 'fa-cog',
+    'upload': 'fa-upload',
+    'user': 'fa-user',
+} %}
 
 {% set bundle = view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
 {% set resourcesUrl = bundle.baseUrl %}
@@ -16,16 +26,14 @@
 
         {% set lastScan = allScans[0] %}
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-
         <div class="sherlock">
             <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
+                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/ajax/run-scan') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
             </div>
 
             <h1 class="title">{{ "Last Security Scan"|t('sherlock') }}</h1>
             <h2>
-                <i class="fa fa-clock-o"></i>
+                <i class="fas fa-history"></i>
                 {{ lastScan.dateCreated|date('j F Y \\a\\t H:i') }}
             </h2>
 
@@ -53,12 +61,8 @@
                                     <td>
                                         <img src="{{ resourcesUrl ~ '/icons/' ~ resultType ~ '.svg' }}" title="{{ resultType|capitalize }}" alt="{{ resultType|capitalize }}" />
                                     </td>
-                                    <td class="flex">
-                                        {% if faIcons[test.type] is defined %}
-                                            <i class="type fa {{ faIcons[test.type] }}" title="{{ test.typeName|t('sherlock') }}"></i>
-                                        {% else %}
-                                            <i class="type" data-icon="{{ test.type }}" title="{{ test.typeName|t('sherlock') }}"></i>
-                                        {% endif %}
+                                    <td>
+                                        <i class="type fa {{ faIcons[test.type] }}" title="{{ test.typeName|t('sherlock') }}"></i>
                                         <span class="{{ resultType == 'fail' ? 'fail' }}">{{ test.name|t('sherlock') }}</span>
                                     </td>
                                     <td>
@@ -93,7 +97,7 @@
             </div>
 
             <h1 class="title">{{ "Security Scan History"|t('sherlock') }}</h1>
-            <h2><i class="fa fa-history"></i> {{ "Previously run security scans"|t('sherlock') }}</h2>
+            <h2><i class="fas fa-history"></i> {{ "Previously run security scans"|t('sherlock') }}</h2>
 
             <table class="data fullwidth limited" data-limit="10">
                 <thead>

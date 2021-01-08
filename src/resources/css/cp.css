@@ -42,12 +42,11 @@
 }
 
 .sherlock table.data th:first-of-type {
-    width: 20px;
+    width: 22px;
 }
 
 .sherlock table.data td:first-of-type img {
-    width: 20px;
-    height: 22px;
+    width: 22px;
     vertical-align: middle;
 }
 
@@ -60,8 +59,7 @@
 }
 
 .sherlock .type {
-    margin-left: 3px;
-    font-size: 110%;
+    width: 16px;
     color: #CECBD8;
 }
 

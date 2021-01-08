@@ -28,10 +28,10 @@
         'type': 'secure',
         'typeName': 'Security',
         'details': {
-            'pass': 'Control panel is using an encrypted HTTPS connection',
-            'warning': 'Use an encrypted HTTPS connection in control panel',
+            'pass': 'Control panel is forcing an encrypted HTTPS connection',
+            'warning': 'Force an encrypted HTTPS connection in control panel',
         },
-        'info': 'Using an SSL certificate and an encrypted HTTPS connection in your control panel ensures secure authentication of users and protects site data.',
+        'info': 'Using an SSL certificate and forcing the control panel to use an encrypted HTTPS connection ensures secure authentication of users and protects site data.',
         'url': 'https://craftcms.com/knowledge-base/enforcing-ssl-for-cp-requests',
     },
     'httpsFrontEnd': {
@@ -47,7 +47,7 @@
     },
     'contentSecurityPolicy': {
         'name': 'Content-Security-Policy Header',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': '',
@@ -58,7 +58,7 @@
     },
     'cors': {
         'name': 'Cross-Origin Resource Sharing (CORS)',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': 'Access to other sites is not granted',
@@ -70,7 +70,7 @@
     },
     'expectCT': {
         'name': 'Expect-CT Header',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': 'Expect-CT header is set to',
@@ -81,7 +81,7 @@
     },
     'referrerPolicy': {
         'name': 'Referrer-Policy Header',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': 'Referrer-Policy header is set to',
@@ -92,7 +92,7 @@
     },
     'strictTransportSecurity': {
         'name': 'Strict-Transport-Security Header',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': 'Strict-Transport-Security header is set to',
@@ -103,7 +103,7 @@
     },
     'xContentTypeOptions': {
         'name': 'X-Content-Type-Options Header',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': 'X-Content-Type-Options header is set to',
@@ -114,7 +114,7 @@
     },
     'xFrameOptions': {
         'name': 'X-Frame-Options Header',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': 'X-Frame-Options header is set to',
@@ -125,7 +125,7 @@
     },
     'xXssProtection': {
         'name': 'X-XSS-Protection Header',
-        'type': 'header',
+        'type': 'secure',
         'typeName': 'HTTP Header',
         'details': {
             'pass': 'X-XSS-Protection header is set to',
@@ -201,7 +201,7 @@
     },
     'requireEmailVerification': {
         'name': 'Require Email Verification',
-        'type': 'users',
+        'type': 'user',
         'typeName': 'User Setting',
         'details': {
             'pass': 'Require email verification is enabled',
