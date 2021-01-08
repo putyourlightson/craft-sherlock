@@ -76,15 +76,17 @@
                                             {% else %}
                                                 {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t('sherlock')|raw }}
                                             {% endif %}
-                                            {{ value ? (test.safeValue is defined ? value|raw : value) }}
+                                            {% if value %}
+                                                {{ test.safeValue is defined and test.safeValue ? value|raw : value }}
+                                            {% endif %}
                                         </span>
                                         {% if test.info and not (testName == 'pluginVulnerabilities' and resultType == 'fail') %}
-                                            <span class="info">{{ test.info|t('sherlock') }}</span>
+                                            <span class="info">{{ test.info|nl2br }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if test.url is defined %}
-                                            <a href="{{ test.url }}" class="go" target="_blank">{{ "Docs"|t('sherlock') }}</a>
+                                        {% if test.link is defined %}
+                                            <a href="{{ test.link.url }}" class="go" target="_blank">{{ test.link.label|t('sherlock') }}</a>
                                         {% endif %}
                                     </td>
                                 </tr>
