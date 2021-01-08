@@ -3,13 +3,13 @@ $(document).ready(function()
     $('table.limited').each(function() {
         var limit = $(this).data('limit');
         if ($(this).find('tr').length > limit) {
-            $(this).closest('.body').find('.expand').show();
+            $(this).closest('.sherlock').find('.expand').show();
             $(this).find('tr:nth-child(n+' + (limit + 1) + ')').hide();
         }
     });
 
     $('a.view-more').click(function(event) {
-        $(this).closest('.body').find('table.limited tr').show();
+        $(this).closest('.sherlock').find('table.limited tr').show();
         $(this).parent().find('.view-less').show();
         $(this).hide();
 
@@ -17,8 +17,8 @@ $(document).ready(function()
     });
 
     $('a.view-less').click(function(event) {
-        var limit = $(this).closest('.body').find('table.limited').data('limit');
-        $(this).closest('.body').find('table.limited tr:nth-child(n+' + (limit + 1) + ')').hide();
+        var limit = $(this).closest('.sherlock').find('table.limited').data('limit');
+        $(this).closest('.sherlock').find('table.limited tr:nth-child(n+' + (limit + 1) + ')').hide();
         $(this).parent().find('.view-more').show();
         $(this).hide();
 

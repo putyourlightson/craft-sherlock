@@ -33,7 +33,7 @@
     font-size: 14px;
 }
 
-.sherlock table.data {
+.sherlock table.results {
     margin-bottom: 60px;
 }
 
@@ -45,8 +45,8 @@
     width: 22px;
 }
 
-.sherlock table.data td:first-of-type img {
-    width: 22px;
+.sherlock table.data td:first-of-type i {
+    font-size: 20px;
     vertical-align: middle;
 }
 
@@ -58,7 +58,21 @@
     font-weight: bold;
 }
 
-.sherlock .type {
+.sherlock i.fail {
+    color: #e94538 !important;
+}
+
+.sherlock i.pass {
+    font-size: 22px !important;
+    color: #708e09 !important;
+}
+
+.sherlock i.warning {
+    margin-left: -2px;
+    color: #ffbf00 !important;
+}
+
+.sherlock i.type {
     width: 16px;
     color: #CECBD8;
 }
