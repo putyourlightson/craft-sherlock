@@ -8,7 +8,6 @@ namespace putyourlightson\sherlock\services;
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
-use craft\errors\SiteNotFoundException;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
@@ -36,6 +35,10 @@ class SherlockService extends Component
      */
     public function applyRestrictions()
     {
+        if (!Sherlock::$plugin->getIsPro()) {
+            return;
+        }
+
         $request = Craft::$app->getRequest();
 
         $restrictControlPanelIpAddresses = Sherlock::$plugin->settings->restrictControlPanelIpAddresses;
@@ -247,34 +250,7 @@ class SherlockService extends Component
             'sherlock'
         );
 
-        // Check failed scan against last scan
-        if (!$scanModel->pass) {
-            $lastScan = $this->getLastScan();
-
-            // If last scan exists
-            if ($lastScan) {
-                if ($lastScan->pass) {
-                    // Send & log notification email
-                    $this->_sendLogNotificationEmail(
-                        'Security Scan Failed',
-                        'Sherlock security scan failed at the following site: ',
-                        'Sent email about failed scan to '
-                    );
-                }
-
-                // Check critical updates against last scan
-                if ((isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates']))
-                    || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
-                ) {
-                    // Send & log notification email
-                    $this->_sendLogNotificationEmail(
-                        'Security Scan Critical Updates',
-                        'Sherlock security scan detected critical updates at the following site: ',
-                        'Sent email about critical updates to '
-                    );
-                }
-            }
-        }
+        $this->_sendNotifications($scanModel);
 
         // Populate & save record
         $scanRecord = new ScanRecord;
@@ -323,12 +299,54 @@ class SherlockService extends Component
     }
 
     /**
+     * Sends notifications.
+     *
+     * @param ScanModel $scanModel
+     */
+    private function _sendNotifications(ScanModel $scanModel)
+    {
+        if (!Sherlock::$plugin->getIsPro()) {
+            return;
+        }
+
+        if ($scanModel->pass) {
+            return;
+    }
+
+        // Check failed scan against last scan
+        $lastScan = $this->getLastScan();
+
+        // If last scan exists
+        if ($lastScan) {
+            if ($lastScan->pass) {
+                // Send & log notification email
+                $this->_sendLogNotificationEmail(
+                    'Security Scan Failed',
+                    'Sherlock security scan failed at the following site: ',
+                    'Sent email about failed scan to '
+                );
+            }
+
+            // Check critical updates against last scan
+            if ((isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates']))
+                || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
+            ) {
+                // Send & log notification email
+                $this->_sendLogNotificationEmail(
+                    'Security Scan Critical Updates',
+                    'Sherlock security scan detected critical updates at the following site: ',
+                    'Sent email about critical updates to '
+                );
+            }
+        }
+    }
+
+    /**
      * Sends and logs notification email.
      *
      * @param $subject
      * @param $message
      * @param $log
-     * @throws SiteNotFoundException
      */
     private function _sendLogNotificationEmail($subject, $message, $log)
     {

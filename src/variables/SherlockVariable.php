@@ -14,6 +14,16 @@ use putyourlightson\sherlock\Sherlock;
 class SherlockVariable
 {
     /**
+     * Returns true if pro version
+     *
+     * @return bool
+     */
+    public function getIsPro(): bool
+    {
+        return Sherlock::$plugin->getIsPro();
+    }
+
+    /**
      * Returns a nonce.
      *
      * @return string

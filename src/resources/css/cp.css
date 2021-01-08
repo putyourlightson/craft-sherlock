@@ -1,10 +1,79 @@
+.sherlock-settings .pro {
+    position: relative;
+    border: 1px solid #e4edf6;
+    margin: 30px 0;
+}
+
+.sherlock-settings .pro:first-child {
+    margin-top: 0;
+}
+
+.sherlock-settings .pro:last-child {
+    margin-bottom: 0;
+}
+
+.sherlock-settings .pro::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    opacity: 0.3;
+    width: 100%;
+    height: 100%;
+}
+
+.sherlock-settings .pro, .sherlock-settings .pro::before {
+    background: #fafafa;
+    border-radius: 7px;
+}
+
+.sherlock-settings .pro .tag {
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    padding: 5px 20px;
+    border-top-right-radius: 7px;
+    border-bottom-left-radius: 5px;
+    background: #e4edf6;
+    color: #596673;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.sherlock-settings .pro .inner {
+    padding: 30px 20px;
+}
+
 .welcome {
+    position: relative;
     text-align: center;
+    padding: 30px;
+    background: #ECF8FF;
+    border-radius: 7px;
     margin-bottom: 30px;
 }
 
+.welcome .logo {
+    opacity: 0.9;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 20px;
+    width: 120px;
+}
+
+@media (max-width: 768px) {
+    .welcome .logo {
+        display: none;
+    }
+}
+
+.welcome .main {
+    position: relative;
+}
+
 .welcome .icon {
-    height: 180px;
+    height: 130px;
 }
 
 .sherlock h1 {

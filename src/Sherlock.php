@@ -20,21 +20,38 @@ use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\twigextensions\SherlockTwigExtension;
 use putyourlightson\sherlock\variables\SherlockVariable;
 use yii\base\Event;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Sherlock Plugin
  *
- * @property  SherlockService $sherlock
- * @property  TestsService $tests
+ * @property-read  SherlockService $sherlock
+ * @property-read  TestsService $tests
  *
- * @property SettingsModel $settings
+ * @property-read bool $isPro
+ * @property-read SettingsModel $settings
  */
 class Sherlock extends Plugin
 {
+    // Edition constants
+    const EDITION_LITE = 'lite';
+    const EDITION_PRO = 'pro';
+
     /**
      * @var Sherlock
      */
     public static $plugin;
+
+    /**
+     * @inheritdoc
+     */
+    public static function editions(): array
+    {
+        return [
+            self::EDITION_LITE,
+            self::EDITION_PRO,
+        ];
+    }
 
     public function init()
     {
@@ -48,7 +65,7 @@ class Sherlock extends Plugin
             'tests' => TestsService::class,
         ]);
 
-        if (Craft::$app->getRequest()->isConsoleRequest) {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
             return;
         }
 
@@ -62,7 +79,7 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Logs an action
+     * Logs an action.
      *
      * @param string $message
      * @param array $params
@@ -73,6 +90,28 @@ class Sherlock extends Plugin
         $message = Craft::t('sherlock', $message, $params);
 
         LogToFile::log($message, 'sherlock', $type);
+    }
+
+    /**
+     * Returns true if pro version.
+     *
+     * @return bool
+     */
+    public function getIsPro(): bool
+    {
+        return $this->is(self::EDITION_PRO);
+    }
+
+    /**
+     * Throws an exception if the plugin edition is not pro.
+     *
+     * @throws ForbiddenHttpException
+     */
+    public function requirePro()
+    {
+        if (!$this->getIsPro()) {
+            throw new ForbiddenHttpException(Craft::t('sherlock', 'Sherlock Pro is required to perform this action.'));
+        }
     }
 
     /**

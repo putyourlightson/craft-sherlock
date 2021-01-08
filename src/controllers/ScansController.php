@@ -32,6 +32,8 @@ class ScansController extends Controller
             return false;
         }
 
+        Sherlock::$plugin->requirePro();
+
         $key = Craft::$app->getRequest()->getParam('key', '');
         $apiKey = Craft::parseEnv(Sherlock::$plugin->settings->apiKey);
 
