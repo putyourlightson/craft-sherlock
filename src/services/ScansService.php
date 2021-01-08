@@ -106,16 +106,6 @@ class ScansService extends Component
             $runBy = Craft::$app->getRequest()->getIsConsoleRequest() ? 'console command' : 'API';
         }
 
-        Sherlock::$plugin->log('Scan run by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'));
-
-        if (!$scanModel->pass
-            && Sherlock::$plugin->getIsPro()
-            && Sherlock::$plugin->settings->liveMode
-            && !empty(Sherlock::$plugin->settings->notificationEmailAddresses)
-        ) {
-            $this->_sendNotifications($scanModel);
-        }
-
         // Populate & save record
         $scanRecord = new ScanRecord;
         $scanRecord->setAttributes($scanModel->getAttributes(), false);
@@ -138,6 +128,16 @@ class ScansService extends Component
         }
 
         $scanRecord->save();
+
+        Sherlock::$plugin->log('Scan run by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'));
+
+        if (!$scanModel->pass
+            && Sherlock::$plugin->getIsPro()
+            && Sherlock::$plugin->settings->liveMode
+            && !empty(Sherlock::$plugin->settings->notificationEmailAddresses)
+        ) {
+            $this->_sendNotifications($scanModel);
+        }
     }
 
     /**

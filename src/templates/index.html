@@ -76,7 +76,7 @@
                                             {% else %}
                                                 {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t('sherlock')|raw }}
                                             {% endif %}
-                                            {{ value ? value|raw }}
+                                            {{ value ? (test.safeValue is defined ? value|raw : value) }}
                                         </span>
                                         {% if test.info and not (testName == 'pluginVulnerabilities' and resultType == 'fail') %}
                                             <span class="info">{{ test.info|t('sherlock') }}</span>

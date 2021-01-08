@@ -155,13 +155,13 @@ class TestsService extends Component
 
                 if (empty($value)){
                     $testModel->failTest();
-                    $testModel->value = 'Content-Security-Policy header and meta tag are not set';
+                    $testModel->value = 'Neither Content-Security-Policy header nor meta tag are set';
                 }
                 else {
                     $testModel->value = 'Content-Security-Policy '.($headerSet ? 'header' : 'meta tag').' ';
 
                     if (strpos($value, 'unsafe-inline') !== false || strpos($value, 'unsafe-eval') !== false) {
-                        $testModel->value .= 'contains "unsafe-" values';
+                        $testModel->value .= 'contains "unsafe" values';
                         $testModel->warning = true;
                     }
                     else {
@@ -371,7 +371,10 @@ class TestsService extends Component
 
                     foreach ($this->_updates->cms->releases as $release) {
                         if ($release->critical) {
-                            $criticalCraftUpdates[] = '<a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>';
+                            $criticalCraftUpdates[] = '
+                                <a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> 
+                                <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
+                            ';
                         }
                     }
 
@@ -394,8 +397,9 @@ class TestsService extends Component
 
                             if ($plugin !== null) {
                                 $pluginUpdates[] = '
-                                <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
-                                <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>';
+                                    <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
+                                    <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>
+                                ';
                             }
                         }
                     }
@@ -419,7 +423,10 @@ class TestsService extends Component
 
                             foreach ($update->releases as $release) {
                                 if ($release->critical) {
-                                    $criticalPluginUpdates[] = '<a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>';
+                                    $criticalPluginUpdates[] = '
+                                        <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
+                                        <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
+                                    ';
                                 }
                             }
                         }
