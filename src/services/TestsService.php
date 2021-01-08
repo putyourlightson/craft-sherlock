@@ -624,7 +624,7 @@ class TestsService extends Component
                 // Get redirect URL scheme of insecure URL
                 $client->get(str_replace('https://', 'http://', $url), [
                     'on_stats' => function(TransferStats $stats) {
-                        $this->_siteUrlResponse['schema'] = $stats->getEffectiveUri()->getScheme();
+                        $this->_siteUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
                     },
                 ]);
             }
@@ -636,7 +636,7 @@ class TestsService extends Component
                 // Get redirect URL scheme of insecure URL
                 $client->get(str_replace('https://', 'http://', $url), [
                     'on_stats' => function(TransferStats $stats) {
-                        $this->_cpUrlResponse['schema'] = $stats->getEffectiveUri()->getScheme();
+                        $this->_cpUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
                     },
                 ]);
             }

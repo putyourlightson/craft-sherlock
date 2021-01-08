@@ -116,7 +116,7 @@ class Sherlock extends Plugin
     public function getIsPro(): bool
     {
         // TODO: remove
-        return true;
+//        return true;
         return $this->is(self::EDITION_PRO);
     }
 
