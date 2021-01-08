@@ -86,52 +86,52 @@ class SecurityService extends Component
         $settings = Sherlock::$plugin->settings->contentSecurityPolicySettings;
 
         if ($settings['enabled']) {
-            if (Craft::$app->getRequest()->getIsSiteRequest()) {
-                $name = 'Content-Security-Policy';
-                $name .= $settings['enforce'] ? '' : '-Report-Only';
-                $value = '';
-                $nonce = $this->getNonce();
+            $name = 'Content-Security-Policy';
+            $name .= $settings['enforce'] ? '' : '-Report-Only';
+            $value = '';
+            $nonce = $this->getNonce();
 
-                foreach ($settings['directives'] as $directive) {
-                    if ($directive[0]) {
-                        $directive[2] = str_replace('{nonce}', 'nonce-'.$nonce, $directive[2]);
-                        $value .= trim($directive[1]).' '.trim($directive[2]).'; ';
-                    }
+            foreach ($settings['directives'] as $directive) {
+                if ($directive[0]) {
+                    $directive[2] = str_replace('{nonce}', 'nonce-'.$nonce, $directive[2]);
+                    $value .= trim($directive[1]).' '.trim($directive[2]).'; ';
                 }
+            }
 
-                $value = trim($value);
+            $value = trim($value);
 
-                if ($settings['header']) {
-                    Craft::$app->getResponse()->getHeaders()->add($name, $value);
-                }
-                else {
-                    Craft::$app->getView()->registerMetaTag([
-                        'http-equiv' => $name,
-                        'content' => $value,
-                    ]);
-                }
+            if ($settings['header']) {
+                Craft::$app->getResponse()->getHeaders()->add($name, $value);
+            }
+            else {
+                Craft::$app->getView()->registerMetaTag([
+                    'http-equiv' => $name,
+                    'content' => $value,
+                ]);
             }
         }
     }
 
     /**
-     * Displays CP alerts.
+     * Returns CP alerts.
      *
      * @return array
      */
-    public function showCpAlerts(): array
+    public function getCpAlerts(): array
     {
+        if (!Sherlock::$plugin->getIsPro() || !Sherlock::$plugin->settings->liveMode) {
+            return [];
+        }
+
+        if (!Sherlock::$plugin->userCanAccessPlugin()) {
+            return [];
+        }
+
         $alerts = [];
+        $lastScan = Sherlock::$plugin->scans->getLastScan();
 
-        if (Sherlock::$plugin->settings->liveMode) {
-            $userId = Craft::$app->getUser()->id;
-            if (Craft::$app->getEdition() == Craft::Solo || Craft::$app->getUser()->getIsAdmin() || in_array('accessplugin-sherlock', Craft::$app->getUserPermissions()->getPermissionsByUserId($userId), true)) {
-                $lastScan = Sherlock::$plugin->scans->getLastScan();
-
-                if ($lastScan && !$lastScan->pass) {
-                    $alerts[] = 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan. <a href="'.UrlHelper::cpUrl('sherlock').'" class="go">View Last Scan</a>';
-                }
-            }
+        if ($lastScan && !$lastScan->pass) {
+            $alerts[] = 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan. <a href="'.UrlHelper::cpUrl('sherlock').'" class="go">View last scan</a>';
         }
 
         return $alerts;

@@ -8,7 +8,9 @@ namespace putyourlightson\sherlock;
 use Craft;
 use craft\base\Plugin;
 use craft\events\PluginEvent;
+use craft\events\RegisterCpAlertsEvent;
 use craft\helpers\App;
+use craft\helpers\Cp;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
@@ -74,11 +76,22 @@ class Sherlock extends Plugin
 
         $this->security->applyRestrictions();
         $this->security->applyHeaderProtection();
-        $this->security->applyContentSecurityPolicy();
+
+        if (Craft::$app->getRequest()->getIsSiteRequest()) {
+            $this->security->applyContentSecurityPolicy();
+        }
+        elseif (Craft::$app->getRequest()->getIsCpRequest()) {
+            Event::on(Cp::class, Cp::EVENT_REGISTER_ALERTS,
+                function (RegisterCpAlertsEvent $event) {
+                    $event->alerts = $this->security->getCpAlerts();
+                }
+            );
+
+            $this->_registerAfterInstallEvent();
+        }
 
         $this->_registerTwigExtensions();
         $this->_registerVariables();
-        $this->_registerAfterInstallEvent();
     }
 
     /**
@@ -102,6 +115,8 @@ class Sherlock extends Plugin
      */
     public function getIsPro(): bool
     {
+        // TODO: remove
+        return true;
         return $this->is(self::EDITION_PRO);
     }
 
@@ -115,6 +130,18 @@ class Sherlock extends Plugin
         if (!$this->getIsPro()) {
             throw new ForbiddenHttpException(Craft::t('sherlock', 'Sherlock Pro is required to perform this action.'));
         }
+    }
+
+    /**
+     * Returns whether the current user can access the plugin.
+     *
+     * @return bool
+     */
+    public function userCanAccessPlugin(): bool
+    {
+        $user = Craft::$app->getUser()->getIdentity();
+
+        return $user && $user->can('accessplugin-sherlock');
     }
 
     /**

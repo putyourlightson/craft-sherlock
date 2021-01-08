@@ -74,7 +74,6 @@ class ScansService extends Component
 
         $count = 0;
         $total = count($tests);
-        $label = 'Running {count} of {total} tests.';
 
         foreach ($tests as $test) {
             $testModel = Sherlock::$plugin->tests->runTest($test);
@@ -93,8 +92,7 @@ class ScansService extends Component
             $count++;
 
             if (is_callable($setProgressHandler)) {
-                $progressLabel = Craft::t('sherlock', $label, ['count' => $count, 'total' => $total]);
-                call_user_func($setProgressHandler, $count, $total, $progressLabel);
+                call_user_func($setProgressHandler, $count, $total);
             }
         }
 
