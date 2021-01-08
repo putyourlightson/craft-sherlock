@@ -11,7 +11,9 @@
             pass: 'No critical Craft updates available',
             warning: 'Apply critical Craft updates:',
         },
-        info: 'Critical Craft updates should be given immediate attention as soon as they are released as they can contain important security fixes. Not doing so puts your site at serious risk. If, for whatever reason, it is not possible to update the site, then you should at least make yourself aware of the gravity of the vulnerability that the updates addressed, and the potential consequences of not applying the fixes.',
+        info: 'Critical Craft updates should be given immediate attention as soon as they are released as they can contain important security fixes. Not doing so puts your site at serious risk.
+
+            If, for whatever reason, it is not possible to update the site, then you should at least make yourself aware of the gravity of the vulnerability that the updates addressed and the potential consequences of not applying the fixes.',
         link: {
             label: 'Changelog',
             url: 'https://github.com/craftcms/cms/blob/master/CHANGELOG.md',
@@ -26,7 +28,9 @@
             pass: 'No critical plugin updates available',
             warning: 'Apply critical plugin updates:',
         },
-        info: 'Critical plugin updates should be given immediate attention as soon as they are released as they can contain important security fixes. Not doing so puts your site at serious risk. If, for whatever reason, it is not possible to update the site, then you should at least make yourself aware of the gravity of the vulnerability that the updates addressed, and the potential consequences of not applying the fixes.',
+        info: 'Critical plugin updates should be given immediate attention as soon as they are released as they can contain important security fixes. Not doing so puts your site at serious risk.
+
+            If, for whatever reason, it is not possible to update the site, then you should at least make yourself aware of the gravity of the vulnerability that the updates addressed and the potential consequences of not applying the fixes.',
     },
     httpsControlPanel: {
         name: 'HTTPS In Control Panel',
@@ -36,7 +40,9 @@
             pass: 'Control panel is forcing an encrypted HTTPS connection',
             warning: 'Force an encrypted HTTPS connection in control panel',
         },
-        info: 'Using an SSL certificate and forcing the control panel to use an encrypted HTTPS connection ensures secure authentication of users and protects site data. SSL certificates have become very affordable and straightforward to install, so there is no excuse for not using one. A HTTPS connection will not only secure all communications between users and your site, it will also make your site appear more trustworthy to browsers and search engines.',
+        info: 'Using an SSL certificate and forcing the control panel to use an encrypted HTTPS connection ensures secure authentication of users and protects site data. This is especially important since some of your users may be admins or have elevated privileges.
+
+            SSL certificates have become very affordable and straightforward to install, so there is no excuse for not using one. A HTTPS connection will not only secure all communications between users and your site, it will also make your site appear more trustworthy to browsers and search engines.',
         link: {
             label: 'Craft Article',
             url: 'https://craftcms.com/knowledge-base/enforcing-ssl-for-cp-requests',
@@ -50,7 +56,9 @@
             pass: 'Front-end site is forcing an encrypted HTTPS connection',
             warning: 'Force an encrypted HTTPS connection on front-end',
         },
-        info: 'Using an SSL certificate and forcing the front-end of your site to use an encrypted HTTPS connection protects the site and user data. This is especially important if public user registration is allowed, as you may be collecting and storing personal data. SSL certificates have become very affordable and straightforward to install, so there is no excuse for not using one. A HTTPS connection will not only secure all communications between users and your site, it will also make your site appear more trustworthy to browsers and search engines.',
+        info: 'Using an SSL certificate and forcing the front-end of your site to use an encrypted HTTPS connection protects the site and user data. This is especially important if public user registration is allowed, as you may be collecting and storing personal data.
+
+            SSL certificates have become very affordable and straightforward to install, so there is no excuse for not using one. A HTTPS connection will not only secure all communications between users and your site, it will also make your site appear more trustworthy to browsers and search engines.',
         link: {
             label: 'Craft Article',
             url: 'https://craftcms.com/knowledge-base/securing-craft#install-an-ssl-certificate-and-enforce-it',
@@ -66,9 +74,9 @@
         },
         info: 'A Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including cross-site scripting (XSS) and data injection attacks. These attacks are used for everything from data theft to site defacement.
 
-        By enforcing a Content Security Policy, you explicitly tell the browser which types of resources (images, scripts, styles, etc.) it is allowed to load, where it may load them from (your site, external sites, etc.) and whether inline scripts and styles may be processed. Setting it up takes some time and should be done with care, but results in a very effective method of mitigating and reporting attacks.
+            By enforcing a Content Security Policy, you explicitly tell the browser which types of resources (images, scripts, styles, etc.) it is allowed to load, where it may load them from (your site, external sites, etc.) and whether inline scripts and styles may be processed. Setting it up takes some time and should be done with care, but results in a very effective method of mitigating and reporting attacks.
 
-        Sherlock can help you create a Content Security Policy by allowing you to set the directives, switch from reporting to enforcing when you are ready and choose to implement it using a HTTP header or meta tag.',
+            Sherlock can help you create a Content Security Policy by allowing you to set the directives, switch from reporting to enforcing when you are ready and choose to implement it using a HTTP header or meta tag.',
         link: {
             label: 'MDN Article',
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP',
@@ -223,7 +231,13 @@
             pass: 'Site is running on a supported PHP version',
             warning: 'Site is running on an unsupported PHP version',
         },
-        info: 'Each release branch of PHP is fully supported for two years from its initial stable release, followed by an additional year for critical security issues only. After this time the branch reaches its end of life and is no longer supported.',
+        info: 'Each release branch of PHP is fully supported for two years from its initial stable release, followed by an additional year for critical security issues only. After this time the branch reaches its end of life and is no longer supported.
+
+            • PHP 7.3 receives security support until 6 December 2021.
+            • PHP 7.4 receives security support until 28 November 2022.
+            • PHP 8.0 receives security support until 26 November 2023.
+
+            Running a version of PHP that is no longer receiving security support may put your site at serious risk.',
         link: {
             label: 'Supported Versions',
             url: 'http://php.net/supported-versions.php',
@@ -238,7 +252,7 @@
             pass: 'No Craft updates available',
             warning: 'Your version of Craft is behind the latest version',
         },
-        info: 'Craft updates can contain security enhancements and bug fixes so it is recommended to keep it updated whenever possible.',
+        info: 'Craft updates can contain security enhancements and bug fixes that are not deemed critical, so it is nevertheless recommended to apply them as much as possible.',
         link: {
             label: 'Changelog',
             url: 'https://github.com/craftcms/cms/blob/master/CHANGELOG.md',
@@ -253,7 +267,7 @@
             pass: 'No plugin updates available',
             warning: 'Update plugins to latest versions:',
         },
-        info: 'Plugin updates can contain security enhancements and bug fixes so it is recommended to keep them updated whenever possible.',
+        info: 'Plugin updates can contain security enhancements and bug fixes that are not deemed critical, so it is nevertheless recommended to apply them as much as possible.',
     },
     requireEmailVerification: {
         name: 'Require Email Verification',
@@ -263,7 +277,7 @@
             pass: 'Require email verification is enabled',
             warning: 'Require email verification is disabled',
         },
-        info: 'Requiring that new email addresses are verified before getting saved to user accounts ensures that they are genuine and active email addresses.',
+        info: 'Requiring that new email addresses are verified before getting saved to user accounts ensures that they are genuine and active email addresses. Not doing so can lead to fake accounts being created by spam bots.',
     },
     devMode: {
         name: 'Dev Mode',
@@ -273,7 +287,7 @@
             pass: 'Dev mode is disabled',
             warning: 'Disable dev mode',
         },
-        info: 'Dev mode is intended for testing and debugging your site and outputs performance related data on the front-end. It should never be enabled in live production environments.',
+        info: 'Dev mode is intended for testing and debugging your site and outputs performance related data on the front-end. It should never be enabled in production environments.',
         link: {
             label: 'Craft Docs',
             url: 'https://craftcms.com/docs/3.x/config/config-settings.html#devmode',
@@ -287,7 +301,7 @@
             pass: 'Translation debug output is disabled',
             warning: 'Set translation debug output to false',
         },
-        info: 'If enabled, this setting will wrap all strings that are run through `Craft::t()` or the `|translate` filter with "@" symbols. It is intended for debugging and should be disabled in live production environments.',
+        info: 'If enabled, this setting will wrap all strings that are run through `Craft::t()` or the `|translate` and `|t` filters with "@" symbols. It is intended for debugging and should absolutely be disabled in production environments.',
         link: {
             label: 'Craft Docs',
             url: 'https://craftcms.com/docs/3.x/config/config-settings.html#translationdebugoutput',
