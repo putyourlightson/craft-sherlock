@@ -245,10 +245,7 @@ class SherlockService extends Component
             $runBy = Craft::$app->getRequest()->getIsConsoleRequest() ? 'console command' : 'API';
         }
 
-        Craft::info(
-            'Scan run by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
-            'sherlock'
-        );
+        Sherlock::$plugin->log('Scan run by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'));
 
         $this->_sendNotifications($scanModel);
 
@@ -363,7 +360,7 @@ class SherlockService extends Component
             $message->send();
 
             // Log notification email
-            Craft::info($log.Sherlock::$plugin->settings->notificationEmailAddresses, 'sherlock');
+            Sherlock::$plugin->log($log.Sherlock::$plugin->settings->notificationEmailAddresses);
         }
     }
 }
