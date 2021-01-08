@@ -40,8 +40,8 @@
             </h2>
 
             <h1>
-                <i class="{{ faIcons[lastScan.pass ? 'pass' : 'fail'] }} {{ lastScan.pass ? 'pass' : 'fail' }}" title="{{ (lastScan.pass ? 'Pass' : 'Fail')|t('sherlock') }}"></i>
-                <span>This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.checkHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}</span>
+                <i class="{{ faIcons[lastScan.pass ? 'pass' : 'fail'] }} {{ lastScan.pass ? 'pass' : 'fail' }}" title="{{ (lastScan.pass ? 'Pass' : 'Fail')|t('sherlock') }}"></i>&nbsp;
+                <span>This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.isHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}</span>
                 <span class="info">{{ "This security scan result is determined by a set of criteria used by Sherlock's standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner."|t('sherlock') }}</span>
             </h1>
 

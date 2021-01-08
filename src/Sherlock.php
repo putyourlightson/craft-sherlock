@@ -15,7 +15,8 @@ use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
 use putyourlightson\logtofile\LogToFile;
 use putyourlightson\sherlock\models\SettingsModel;
-use putyourlightson\sherlock\services\SherlockService;
+use putyourlightson\sherlock\services\ScansService;
+use putyourlightson\sherlock\services\SecurityService;
 use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\twigextensions\SherlockTwigExtension;
 use putyourlightson\sherlock\variables\SherlockVariable;
@@ -25,7 +26,8 @@ use yii\web\ForbiddenHttpException;
 /**
  * Sherlock Plugin
  *
- * @property-read  SherlockService $sherlock
+ * @property-read  ScansService $scans
+ * @property-read  SecurityService $security
  * @property-read  TestsService $tests
  *
  * @property-read bool $isPro
@@ -61,7 +63,8 @@ class Sherlock extends Plugin
 
         // Register services as components
         $this->setComponents([
-            'sherlock' => SherlockService::class,
+            'scans' => ScansService::class,
+            'security' => SecurityService::class,
             'tests' => TestsService::class,
         ]);
 
@@ -69,9 +72,9 @@ class Sherlock extends Plugin
             return;
         }
 
-        $this->sherlock->applyRestrictions();
-        $this->sherlock->applyHeaderProtection();
-        $this->sherlock->applyContentSecurityPolicy();
+        $this->security->applyRestrictions();
+        $this->security->applyHeaderProtection();
+        $this->security->applyContentSecurityPolicy();
 
         $this->_registerTwigExtensions();
         $this->_registerVariables();

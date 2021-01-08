@@ -30,7 +30,7 @@ class SherlockVariable
      */
     public function getNonce(): string
     {
-        return Sherlock::$plugin->sherlock->getNonce();
+        return Sherlock::$plugin->security->getNonce();
     }
 
     /**
@@ -40,7 +40,7 @@ class SherlockVariable
      */
     public function getLastScan(): ScanModel
     {
-        return Sherlock::$plugin->sherlock->getLastScan();
+        return Sherlock::$plugin->scans->getLastScan();
     }
 
     /**
@@ -50,15 +50,15 @@ class SherlockVariable
      */
     public function getAllScans(): array
     {
-        return Sherlock::$plugin->sherlock->getAllScans();
+        return Sherlock::$plugin->scans->getAllScans();
     }
 
     /**
-     * Check high security level
+     * Returns whether the security level is high
      *
-     * @return string
+     * @return bool
      */
-    public function checkHighSecurityLevel(): string
+    public function isHighSecurityLevel(): bool
     {
         return Sherlock::$plugin->settings->highSecurityLevel;
     }
@@ -68,6 +68,6 @@ class SherlockVariable
      */
     public function runScan()
     {
-        Sherlock::$plugin->sherlock->runScan();
+        Sherlock::$plugin->scans->runScan();
     }
 }

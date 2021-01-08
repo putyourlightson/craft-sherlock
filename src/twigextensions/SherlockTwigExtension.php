@@ -17,7 +17,7 @@ class SherlockTwigExtension extends AbstractExtension implements GlobalsInterfac
     public function getGlobals(): array
     {
         return [
-            'nonce' => Sherlock::$plugin->sherlock->getNonce(),
+            'nonce' => Sherlock::$plugin->security->getNonce(),
         ];
     }
 }

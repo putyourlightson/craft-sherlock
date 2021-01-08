@@ -24,14 +24,12 @@ class AjaxController extends Controller
     {
         $user = Craft::$app->getUser();
 
-        $permissions = Craft::$app->getUserPermissions()->getPermissionsByUserId($user->id);
-
         // If user is not an admin and does not have access to the plugin
         if (!$user->getIsAdmin() and !$user->can('accessplugin-sherlock')) {
             throw new HttpException(403, Craft::t('sherlock', 'Unauthorised access'));
         }
 
-        Sherlock::$plugin->sherlock->runScan();
+        Sherlock::$plugin->scans->runScan();
 
         exit('Success');
     }

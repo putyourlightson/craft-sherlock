@@ -50,7 +50,7 @@ class ScansController extends Controller
      */
     public function actionRunScan()
     {
-        Sherlock::$plugin->sherlock->runScan();
+        Sherlock::$plugin->scans->runScan();
 
         exit('Success');
     }
@@ -65,7 +65,7 @@ class ScansController extends Controller
         $secretKey = $this->_getSecretKey();
 
         // Get JSON encoded scan
-        $scan = Json::encode(Sherlock::$plugin->sherlock->getLastScan());
+        $scan = Json::encode(Sherlock::$plugin->scans->getLastScan());
 
         // Encrypt scan with secret key
         $scan = Craft::$app->getSecurity()->encryptByKey($scan, $secretKey);
@@ -86,7 +86,7 @@ class ScansController extends Controller
         $offsetId = Craft::$app->getRequest()->getParam('offsetId', 0);
 
         // Get JSON encoded scans from offset ID
-        $scans = Json::encode(Sherlock::$plugin->sherlock->getAllScans($offsetId));
+        $scans = Json::encode(Sherlock::$plugin->scans->getAllScans($offsetId));
 
         // Encrypt scans with secret key
         $scans = Craft::$app->getSecurity()->encryptByKey($scans, $secretKey);

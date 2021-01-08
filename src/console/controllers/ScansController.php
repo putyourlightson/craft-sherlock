@@ -45,11 +45,11 @@ class ScansController extends Controller
 
         Console::startProgress(0, count($tests), '', 0.8);
 
-        Sherlock::$plugin->sherlock->runScan([$this, 'setProgressHandler']);
+        Sherlock::$plugin->scans->runScan([$this, 'setProgressHandler']);
 
         Console::endProgress();
 
-        $lastScan = Sherlock::$plugin->sherlock->getLastScan();
+        $lastScan = Sherlock::$plugin->scans->getLastScan();
 
         if ($lastScan) {
             if ($lastScan->pass) {
