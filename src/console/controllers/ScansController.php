@@ -41,7 +41,11 @@ class ScansController extends Controller
     {
         $this->stdout(Craft::t('sherlock', 'Running security scan...').PHP_EOL, Console::FG_YELLOW);
 
-        Sherlock::$plugin->sherlock->runScan();
+        $tests = Sherlock::$plugin->tests->getTestNames();
+
+        Console::startProgress(0, count($tests), '', 0.8);
+
+        Sherlock::$plugin->sherlock->runScan([$this, 'setProgressHandler']);
 
         $lastScan = Sherlock::$plugin->sherlock->getLastScan();
 
@@ -53,5 +57,16 @@ class ScansController extends Controller
                 $this->stdout(Craft::t('sherlock', 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]).PHP_EOL, Console::FG_RED);
             }
         }
+    }
+
+    /**
+     * Handles setting the progress.
+     *
+     * @param int $count
+     * @param int $total
+     */
+    public function setProgressHandler(int $count, int $total)
+    {
+        Console::updateProgress($count, $total);
     }
 }

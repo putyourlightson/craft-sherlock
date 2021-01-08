@@ -1,7 +1,6 @@
 # Changelog
 
 ## 3.0.0 - Unreleased
-> {warning} The API has been replaced by a console command. Update any scheduled cron jobs to run the `sherlock/scans/run` console command instead of using the API.
 
 ### Added
 - Added the `sherlock/scans/run` console command.
@@ -15,9 +14,8 @@
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
 
 ### Changed
-- Removed the API key and secret key.
-- Removed plugin vulnerabilities JSON feed.
-- Craft and plugin updates now display warnings instead of failures in high security mode.
+- Removed the plugin vulnerabilities JSON feed.
+- Non-critical Craft and plugin updates now display warnings instead of failures in high security mode.
 - The `X-XSS-Protection` header now only display a warning instead of a failure ([reasoning](https://scotthelme.co.uk/security-headers-updates/#removing-the-x-xss-protection-header)). 
 - Improved test explanations, thresholds and documentation links.
 

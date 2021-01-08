@@ -33,19 +33,24 @@ class TestsService extends Component
     private $_client;
 
     /**
-     * @var array
+     * @var array|null
      */
     private $_headers;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $_body;
 
     /**
-     * @var UriInterface
+     * @var UriInterface|null
      */
-    private $_effectiveUrl;
+    private $_effectiveSiteUrl;
+
+    /**
+     * @var string|null
+     */
+    private $_cpUrlScheme;
 
     /**
      * @var Updates
@@ -143,8 +148,8 @@ class TestsService extends Component
             ]);
         }
 
-        // Get site headers
-        if (empty($this->_headers)) {
+        // Get site headers and body
+        if ($this->_headers === null) {
             $url = UrlHelper::baseSiteUrl();
 
             try {
@@ -152,11 +157,11 @@ class TestsService extends Component
                 $this->_headers = $response->getHeaders();
                 $this->_body = $response->getBody()->getContents();
 
-                // Get effective URL of insecure front-end site url
+                // Get effective URL of insecure URL
                 if (strpos($url, 'https://') === 0) {
                     $this->_client->get(str_replace('https://', 'http://', $url), [
                         'on_stats' => function(TransferStats $stats) {
-                            $this->_effectiveUrl = $stats->getEffectiveUri();
+                            $this->_effectiveSiteUrl = $stats->getEffectiveUri();
                         },
                     ]);
                 }
@@ -166,8 +171,27 @@ class TestsService extends Component
             catch (ServerException $e) {
             }
 
-            if (empty($this->_headers)) {
+            if ($this->_headers === null) {
                 throw new HttpException(500, Craft::t('sherlock', 'unable to connect to {url}. Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]));
+            }
+        }
+
+        // Get CP URL scheme
+        if ($this->_cpUrlScheme === null) {
+            $_cpUrlScheme = 'http';
+            $url = UrlHelper::baseCpUrl();
+
+            // Get effective URL of insecure URL
+            if (strpos($url, 'https://') === 0) {
+                try {
+                    $this->_client->get(str_replace('https://', 'http://', $url), [
+                        'on_stats' => function(TransferStats $stats) {
+                            $this->_cpUrlScheme = $stats->getEffectiveUri()->getScheme();
+                        },
+                    ]);
+                }
+                catch (ConnectException $e) {}
+                catch (ServerException $e) {}
             }
         }
 
@@ -181,14 +205,14 @@ class TestsService extends Component
 
         switch ($test) {
             case 'httpsControlPanel':
-                if (strpos(UrlHelper::cpUrl(), 'https') !== 0) {
+                if ($this->_cpUrlScheme != 'https') {
                     $testModel->failTest();
                 }
 
                 break;
 
             case 'httpsFrontEnd':
-                if (strpos($this->_effectiveUrl, 'https') !== 0) {
+                if ($this->_effectiveSiteUrl === null || $this->_effectiveSiteUrl->getScheme() == 'http') {
                     $testModel->failTest();
                 }
 

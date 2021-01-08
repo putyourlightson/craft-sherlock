@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Plugin;
 use craft\events\PluginEvent;
 use craft\helpers\App;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
@@ -65,10 +66,12 @@ class Sherlock extends Plugin
     protected function createSettingsModel(): SettingsModel
     {
         $mailSettings = App::mailSettings();
-
-        // Set default settings
         $settings = new SettingsModel();
+
+        // Set defaults
         $settings->notificationEmailAddresses = $mailSettings->fromEmail;
+        $settings->apiKey = StringHelper::randomString(32);
+        $settings->secretKey = StringHelper::randomString(32);
 
         return $settings;
     }

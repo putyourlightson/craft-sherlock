@@ -194,8 +194,10 @@ class SherlockService extends Component
 
     /**
      * Runs a scan.
+     *
+     * @param callable|null $setProgressHandler
      */
-    public function runScan()
+    public function runScan(callable $setProgressHandler = null)
     {
         // Create model
         $scanModel = new ScanModel([
@@ -203,6 +205,10 @@ class SherlockService extends Component
         ]);
 
         $tests = Sherlock::$plugin->tests->getTestNames();
+
+        $count = 0;
+        $total = count($tests);
+        $label = 'Running {count} of {total} tests.';
 
         foreach ($tests as $test) {
             $testModel = Sherlock::$plugin->tests->runTest($test);
@@ -217,12 +223,27 @@ class SherlockService extends Component
 
             $status = !$testModel->pass ? 'fail' : ($testModel->warning ? 'warning' : 'pass');
             $scanModel->results[$status][$test] = $testModel;
+
+            $count++;
+
+            if (is_callable($setProgressHandler)) {
+                $progressLabel = Craft::t('sherlock', $label, ['count' => $count, 'total' => $total]);
+                call_user_func($setProgressHandler, $count, $total, $progressLabel);
+            }
         }
 
         // Log scan
         $user = Craft::$app->getUser()->getIdentity();
+
+        if ($user) {
+            $runBy = $user;
+        }
+        else {
+            $runBy = Craft::$app->getRequest()->getIsConsoleRequest() ? 'console command' : 'API';
+        }
+
         Craft::info(
-            'Scan run by '.($user ? $user->username : 'console command').' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
+            'Scan run by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'),
             'sherlock'
         );
 

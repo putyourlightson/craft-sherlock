@@ -5,7 +5,9 @@
 
 namespace putyourlightson\sherlock\models;
 
+use Craft;
 use craft\base\Model;
+use craft\behaviors\EnvAttributeParserBehavior;
 
 /**
  * SettingsModel
@@ -49,6 +51,16 @@ class SettingsModel extends Model
         'header' => false,
         'directives' => [[]],
     ];
+
+    /**
+     * @var string
+     */
+    public $apiKey;
+
+    /**
+     * @var string
+     */
+    public $secretKey;
 
     /**
      * @var array
@@ -240,4 +252,40 @@ class SettingsModel extends Model
         'canFail' => true,
         'threshold' => 86400, // 1 day
     ];
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors(): array
+    {
+        return [
+            'parser' => [
+                'class' => EnvAttributeParserBehavior::class,
+                'attributes' => ['apiKey', 'secretKey'],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
+    {
+        return [
+            [['apiKey', 'secretKey'], 'string', 'length' => [32]],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
+    {
+        $labels = parent::attributeLabels();
+
+        // Set the field labels
+        $labels['apiKey'] = Craft::t('sherlock', 'API Key');
+
+        return $labels;
+    }
 }
