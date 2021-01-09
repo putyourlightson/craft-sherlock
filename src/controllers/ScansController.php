@@ -47,10 +47,12 @@ class ScansController extends Controller
 
     /**
      * Runs a scan.
+     *
+     * @param int|null $siteId
      */
-    public function actionRunScan()
+    public function actionRunScan(int $siteId = null)
     {
-        Sherlock::$plugin->scans->runScan();
+        Sherlock::$plugin->scans->runScan($siteId);
 
         exit('Success');
     }
@@ -58,14 +60,15 @@ class ScansController extends Controller
     /**
      * Returns the last scan, encrypted.
      *
+     * @param int|null $siteId
      * @throws HttpException
      */
-    public function actionGetLastScan()
+    public function actionGetLastScan(int $siteId = null)
     {
         $secretKey = $this->_getSecretKey();
 
         // Get JSON encoded scan
-        $scan = Json::encode(Sherlock::$plugin->scans->getLastScan());
+        $scan = Json::encode(Sherlock::$plugin->scans->getLastScan($siteId));
 
         // Encrypt scan with secret key
         $scan = Craft::$app->getSecurity()->encryptByKey($scan, $secretKey);
@@ -76,9 +79,10 @@ class ScansController extends Controller
     /**
      * Returns all scans, encrypted.
      *
+     * @param int|null $siteId
      * @throws HttpException
      */
-    public function actionGetAllScans()
+    public function actionGetAllScans($siteId)
     {
         $secretKey = $this->_getSecretKey();
 
@@ -86,7 +90,7 @@ class ScansController extends Controller
         $offsetId = Craft::$app->getRequest()->getParam('offsetId', 0);
 
         // Get JSON encoded scans from offset ID
-        $scans = Json::encode(Sherlock::$plugin->scans->getAllScans($offsetId));
+        $scans = Json::encode(Sherlock::$plugin->scans->getAllScans($siteId, $offsetId));
 
         // Encrypt scans with secret key
         $scans = Craft::$app->getSecurity()->encryptByKey($scans, $secretKey);
@@ -111,6 +115,8 @@ class ScansController extends Controller
 
         exit($data);
     }
+
+    // TODO: remove secret key
 
     /**
      * Returns the secret key or throws an exception if not set.

@@ -7,6 +7,8 @@ namespace putyourlightson\sherlock\migrations;
 
 use Craft;
 use craft\db\Migration;
+use craft\records\Site;
+use putyourlightson\sherlock\records\ScanRecord;
 
 /**
  * Install Migration
@@ -18,9 +20,12 @@ class Install extends Migration
      */
     public function safeUp(): bool
     {
-        if (!$this->db->tableExists('{{%sherlock}}')) {
-            $this->createTable('{{%sherlock}}', [
+        $table = ScanRecord::tableName();
+
+        if (!$this->db->tableExists($table)) {
+            $this->createTable($table, [
                 'id' => $this->primaryKey(),
+                'siteId' => $this->integer()->notNull(),
                 'highSecurityLevel' => $this->boolean()->notNull(),
                 'pass' => $this->boolean()->notNull(),
                 'warning' => $this->boolean()->notNull(),
@@ -30,8 +35,9 @@ class Install extends Migration
                 'uid' => $this->uid(),
             ]);
 
-            // Refresh the db schema caches
-            Craft::$app->db->schema->refresh();
+            $this->createIndex(null, $table, 'siteId', false);
+
+            $this->addForeignKey(null, $table, 'siteId', Site::tableName(), 'id', 'CASCADE', 'CASCADE');
         }
 
         return true;

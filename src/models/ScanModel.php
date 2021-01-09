@@ -20,6 +20,11 @@ class ScanModel extends BaseModel
     public $id;
 
     /**
+     * @var int
+     */
+    public $siteId;
+
+    /**
      * @var bool
      */
     public $highSecurityLevel = false;

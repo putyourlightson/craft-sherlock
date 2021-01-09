@@ -36,8 +36,10 @@ class ScansController extends Controller
 
     /**
      * Runs a security scan.
+     *
+     * @param int|null $siteId
      */
-    public function actionRun()
+    public function actionRun(int $siteId = null)
     {
         $this->stdout(Craft::t('sherlock', 'Running security scan...').PHP_EOL, Console::FG_YELLOW);
 
@@ -45,7 +47,7 @@ class ScansController extends Controller
 
         Console::startProgress(0, count($tests), '', 0.8);
 
-        Sherlock::$plugin->scans->runScan([$this, 'setProgressHandler']);
+        Sherlock::$plugin->scans->runScan($siteId, [$this, 'setProgressHandler']);
 
         Console::endProgress();
 

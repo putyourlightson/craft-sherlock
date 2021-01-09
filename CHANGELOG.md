@@ -3,10 +3,11 @@
 ## 3.0.0 - Unreleased
 
 ### Added
+- Added multi site functionality for security scans.
 - Added the ability to add a Content Security Policy in the plugin settings.
 - Added the ability to add HTTP Headers in the plugin settings.
 - Added the `sherlock/scans/run` console command.
-- Added the `Content-Security-Policy` header / meta tag test.
+- Added the `Content-Security-Policy` header and meta tag test.
 - Added the `Expect-CT` header test.
 - Added the `Referrer-Policy` header test.
 - Added the Admin Username test.

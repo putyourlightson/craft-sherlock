@@ -21,12 +21,15 @@ class ScansService extends Component
     /**
      * Returns the last scan.
      *
+     * @param int|null $siteId
      * @return ScanModel|null
      */
-    public function getLastScan()
+    public function getLastScan(int $siteId = null)
     {
-        // Get record
+        $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
+
         $scanRecord = ScanRecord::find()
+            ->where(['siteId' => $siteId])
             ->orderBy('dateCreated desc')
             ->one();
 
@@ -43,15 +46,18 @@ class ScansService extends Component
     /**
      * Returns all scans.
      *
+     * @param int|null $siteId
      * @param int|null $offsetId
-     *
      * @return array
      */
-    public function getAllScans($offsetId = 0): array
+    public function getAllScans(int $siteId = null, int $offsetId = 0): array
     {
+        $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
+
         // Get records offset by ID
         $scanRecords = ScanRecord::find()
-            ->where('id > :offsetId', [':offsetId' => $offsetId])
+            ->where(['siteId' => $siteId])
+            ->andWhere('id > :offsetId', [':offsetId' => $offsetId])
             ->orderBy('dateCreated desc')
             ->all();
 
@@ -61,12 +67,16 @@ class ScansService extends Component
     /**
      * Runs a scan.
      *
+     * @param int|null $siteId
      * @param callable|null $setProgressHandler
      */
-    public function runScan(callable $setProgressHandler = null)
+    public function runScan(int $siteId = null, callable $setProgressHandler = null)
     {
+        $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
+
         // Create model
         $scanModel = new ScanModel([
+            'siteId' => $siteId,
             'highSecurityLevel' => (bool)Sherlock::$plugin->settings->highSecurityLevel,
         ]);
 
@@ -129,7 +139,7 @@ class ScansService extends Component
 
         $scanRecord->save();
 
-        Sherlock::$plugin->log('Scan run by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'));
+        Sherlock::$plugin->log('Scan run on site ID '.$siteId.' by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'));
 
         if (!$scanModel->pass
             && Sherlock::$plugin->getIsPro()
@@ -150,39 +160,42 @@ class ScansService extends Component
         // Check failed scan against last scan
         $lastScan = $this->getLastScan();
 
-        // If last scan exists
-        if ($lastScan) {
-            if ($lastScan->pass) {
-                // Send & log notification email
-                $this->_sendLogNotificationEmail(
-                    'Security Scan Failed',
-                    'Sherlock security scan failed at the following site: ',
-                    'Sent email about failed scan to '
-                );
-            }
+        if ($lastScan === null) {
+            return;
+        }
 
-            // Check critical updates against last scan
-            if ((isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates']))
-                || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
-            ) {
-                // Send & log notification email
-                $this->_sendLogNotificationEmail(
-                    'Security Scan Critical Updates',
-                    'Sherlock security scan detected critical updates at the following site: ',
-                    'Sent email about critical updates to '
-                );
-            }
+        $site = Craft::$app->getSites()->getSiteById($scanModel->siteId);
+
+        if ($lastScan->pass) {
+            // Send & log notification email
+            $this->_sendLogNotificationEmail(
+                'Security Scan Failed',
+                'Sherlock security scan for site "'.$site->name.'" failed: ',
+                'Sent email about failed scan to '
+            );
+        }
+
+        // Check critical updates against last scan
+        if ((isset($scanModel->results['fail']['criticalCraftUpdates']) && empty($lastScan->results['fail']['criticalCraftUpdates']))
+            || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
+        ) {
+            // Send & log notification email
+            $this->_sendLogNotificationEmail(
+                'Security Scan Critical Updates',
+                'Sherlock security scan for site "'.$site->name.'" detected critical updates: ',
+                'Sent email about critical updates to '
+            );
         }
     }
 
     /**
      * Sends and logs notification email.
      *
-     * @param $subject
-     * @param $message
-     * @param $log
+     * @param string $subject
+     * @param string $body
+     * @param string $log
      */
-    private function _sendLogNotificationEmail($subject, $message, $log)
+    private function _sendLogNotificationEmail(string $subject, string $body, string $log)
     {
         $mailer = Craft::$app->getMailer();
 
@@ -190,7 +203,7 @@ class ScansService extends Component
         $message = $mailer->compose()
             ->setTo(Sherlock::$plugin->settings->notificationEmailAddresses)
             ->setSubject(Craft::$app->getSites()->getCurrentSite()->name.' - '.$subject)
-            ->setHtmlBody($message.UrlHelper::cpUrl('sherlock'));
+            ->setHtmlBody($body.UrlHelper::cpUrl('sherlock'));
 
         $message->send();
 

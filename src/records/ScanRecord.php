@@ -11,6 +11,7 @@ use craft\db\ActiveRecord;
  * Scan Record
  *
  * @property int $id
+ * @property int $siteId
  * @property bool $highSecurityLevel          High security level
  * @property bool $pass                       Pass
  * @property bool $warning                    Warning
