@@ -1,6 +1,7 @@
 {% extends 'sherlock/_layouts/tests' %}
 
 {% set title = 'Sherlock' %}
+
 {% set faIcons = {
     'fail': 'fas fa-times-circle',
     'pass': 'fas fa-check-square',
@@ -16,24 +17,35 @@
     'user': 'fas fa-user',
 } %}
 
-{% set bundle = view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
-{% set resourcesUrl = bundle.baseUrl %}
+{% do view.registerAssetBundle('putyourlightson\\sherlock\\assets\\SherlockAsset') %}
+
+
+{% block contextMenu %}
+
+    {% if craft.app.getIsMultiSite() %}
+        {% include '_elements/sitemenu' with {
+            selectedSiteId: currentSite.id,
+            urlFormat: url('sherlock/{handle}'),
+        } only %}
+    {% endif %}
+
+{% endblock %}
 
 
 {% block content %}
 
-    {% set allScans = craft.sherlock.getAllScans() %}
+    <div class="sherlock">
 
-    {% if allScans|length %}
+        {% include 'sherlock/_includes/runScanButton' with {align: 'right'} %}
 
-        {% set lastScan = allScans[0] %}
+        <h1 class="title">{{ 'Last Security Scan'|t('sherlock') }}</h1>
 
-        <div class="sherlock">
-            <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/ajax/run-scan') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
-            </div>
+        {% set allScans = craft.sherlock.getAllScans() %}
 
-            <h1 class="title">{{ "Last Security Scan"|t('sherlock') }}</h1>
+        {% if allScans|length %}
+
+            {% set lastScan = allScans[0] %}
+
             <h2>
                 <i class="fas fa-history"></i>
                 {{ lastScan.dateCreated|date('j F Y \\a\\t H:i') }}
@@ -42,7 +54,7 @@
             <h1>
                 <i class="{{ faIcons[lastScan.pass ? 'pass' : 'fail'] }} {{ lastScan.pass ? 'pass' : 'fail' }}" title="{{ (lastScan.pass ? 'Pass' : 'Fail')|t('sherlock') }}"></i>&nbsp;
                 <span>This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.isHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with <strong>warnings</strong>'|raw }}</span>
-                <span class="info">{{ "This security scan result is determined by a set of criteria used by Sherlock's standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner."|t('sherlock') }}</span>
+                <span class="info">{{ 'This security scan result is determined by a set of criteria used by Sherlock’s standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner.'|t('sherlock') }}</span>
             </h1>
 
             <table class="data fullwidth results">
@@ -96,22 +108,20 @@
                 </tbody>
             </table>
 
-            <div class="buttons right">
-                <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('ajax/run-scan') }}">{{ "Run Scan Now"|t('sherlock') }}</a>
-            </div>
+            {% include 'sherlock/_includes/runScanButton' with {align: 'right'} %}
 
-            <h1 class="title">{{ "Security Scan History"|t('sherlock') }}</h1>
-            <h2><i class="fas fa-history"></i> {{ "Previously run security scans"|t('sherlock') }}</h2>
+            <h1 class="title">{{ 'Security Scan History'|t('sherlock') }}</h1>
+            <h2><i class="fas fa-history"></i> {{ 'Previously run security scans'|t('sherlock') }}</h2>
 
             <table class="data fullwidth limited" data-limit="10">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>{{ "Result"|t('sherlock') }}</th>
-                        <th>{{ "Security Level"|t('sherlock') }}</th>
-                        <th>{{ "Failed Tests"|t('sherlock') }}</th>
-                        <th>{{ "Warnings"|t('sherlock') }}</th>
-                        <th>{{ "Date"|t('sherlock') }}</th>
+                        <th>{{ 'Result'|t('sherlock') }}</th>
+                        <th>{{ 'Security Level'|t('sherlock') }}</th>
+                        <th>{{ 'Failed Tests'|t('sherlock') }}</th>
+                        <th>{{ 'Warnings'|t('sherlock') }}</th>
+                        <th>{{ 'Date'|t('sherlock') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -134,17 +144,20 @@
                 <a class="view-more" href="#">{{ 'View full scan history'|t('sherlock') }}<strong class="caret"></strong></a>
                 <a class="view-less dropup" href="#" style="display: none;">{{ 'View less scan history'|t('sherlock') }}<strong class="caret up"></strong></a>
             </div>
-        </div>
 
-    {% else %}
+        {% else %}
 
-        <script>var runScan = '{{ actionUrl('sherlock/ajax/run-scan') }}';</script>
+            <h2><i class="fas fa-history"></i> {{ 'No security scans have been run for this site.'|t('sherlock') }}</h2>
 
-    {% endif %}
+            {% include 'sherlock/_includes/runScanButton' %}
 
-    <div class="running" {{ allScans|length ? 'style="display: none;"' }}>
+        {% endif %}
+
+    </div>
+
+    <div class="running" style="display: none;">
         <div id="graphic" class="spinner big"></div>
-        <div id="status"><p>{{ "Running security scan…"|t('sherlock') }}</p></div>
+        <div id="status"><p>{{ 'Running security scan…'|t('sherlock') }}</p></div>
     </div>
 
 {% endblock %}

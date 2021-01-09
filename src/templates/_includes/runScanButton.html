@@ -1,0 +1,20 @@
+{% set align = align ?? '' %}
+
+<div class="{{ align }}">
+    {% if craft.app.isLive and currentSite.hasUrls %}
+        <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan-ajax') }}">
+            {{ 'Run Scan Now'|t('sherlock') }}
+        </a>
+    {% else %}
+        <p class="{{ align ? 'info' : 'light' }}" style="vertical-align: top;">
+            {% if not craft.app.isLive %}
+                {{ 'Scan cannot be run when system is off.'|t('sherlock') }}
+            {% else %}
+                {{ 'Scan cannot be run on a site that does not have a base URL.'|t('sherlock') }}
+            {% endif %}
+        </p>
+        <a href="#" class="btn submit disabled">
+            {{ 'Run Scan Now'|t('sherlock') }}
+        </a>
+    {% endif %}
+</div>

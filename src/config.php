@@ -48,11 +48,8 @@ return [
         //    'directives' => [[]],
         //],
 
-        // A random 32 character string that will allow calls to the plugin and must be set for calls to work.
+        // A random 32 character string that will allow calls to the plugin API.
         //'apiKey' => '',
-
-        // A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.
-        //'secretKey' => '',
 
         // Restrict access to the control panel to the following IP addresses (logged in admins always have access).
         //'restrictControlPanelIpAddresses' =>  = [],

@@ -9,12 +9,14 @@ use Craft;
 use craft\base\Plugin;
 use craft\events\PluginEvent;
 use craft\events\RegisterCpAlertsEvent;
+use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\App;
 use craft\helpers\Cp;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
+use craft\web\UrlManager;
 use putyourlightson\logtofile\LogToFile;
 use putyourlightson\sherlock\models\SettingsModel;
 use putyourlightson\sherlock\services\ScansService;
@@ -81,12 +83,8 @@ class Sherlock extends Plugin
             $this->security->applyContentSecurityPolicy();
         }
         elseif (Craft::$app->getRequest()->getIsCpRequest()) {
-            Event::on(Cp::class, Cp::EVENT_REGISTER_ALERTS,
-                function (RegisterCpAlertsEvent $event) {
-                    $event->alerts = $this->security->getCpAlerts();
-                }
-            );
-
+            $this->_registerCpUrlRules();
+            $this->_registerCpAlerts();
             $this->_registerAfterInstallEvent();
         }
 
@@ -155,7 +153,6 @@ class Sherlock extends Plugin
         // Set defaults
         $settings->notificationEmailAddresses = $mailSettings->fromEmail;
         $settings->apiKey = StringHelper::randomString(32);
-        $settings->secretKey = StringHelper::randomString(32);
 
         return $settings;
     }
@@ -189,6 +186,31 @@ class Sherlock extends Plugin
             $variable = $event->sender;
             $variable->set('sherlock', SherlockVariable::class);
         });
+    }
+
+    /**
+     * Registers CP URL rules event
+     */
+    private function _registerCpUrlRules()
+    {
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function(RegisterUrlRulesEvent $event) {
+                $event->rules['sherlock'] = 'sherlock/scans/index';
+                $event->rules['sherlock/<siteHandle:{handle}>'] = 'sherlock/scans/index';
+            }
+        );
+    }
+
+    /**
+     * Registers CP alerts
+     */
+    private function _registerCpAlerts()
+    {
+        Event::on(Cp::class, Cp::EVENT_REGISTER_ALERTS,
+            function(RegisterCpAlertsEvent $event) {
+                $event->alerts = $this->security->getCpAlerts();
+            }
+        );
     }
 
     /**

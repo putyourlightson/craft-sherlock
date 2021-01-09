@@ -203,23 +203,12 @@
         {{ forms.autosuggestField({
             label: 'API Key'|t('sherlock'),
             name: 'apiKey',
-            instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work.'|t('sherlock'),
+            instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
             warning: (config.apiKey is defined ? configWarning('apiKey')),
             suggestEnvVars: true,
             suggestions: craft.cp.getEnvSuggestions(),
             value: settings.apiKey,
             errors: settings.getErrors('apiKey')
-        }) }}
-
-        {{ forms.autosuggestField({
-            label: 'Secret Key'|t('sherlock'),
-            name: 'secretKey',
-            instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.'|t('sherlock'),
-            warning: (config.secretKey is defined ? configWarning('secretKey')),
-            suggestEnvVars: true,
-            suggestions: craft.cp.getEnvSuggestions(),
-            value: settings.secretKey,
-            errors: settings.getErrors('secretKey')
         }) }}
 
         <hr>
@@ -267,13 +256,7 @@
             <div class="inner">
                 {{ forms.textField({
                     label: 'API Key'|t('sherlock'),
-                    instructions: 'A random 32 character string that will allow calls to the plugin and must be set for calls to work.'|t('sherlock'),
-                    value: '',
-                }) }}
-
-                {{ forms.autosuggestField({
-                    label: 'Secret Key'|t('sherlock'),
-                    instructions: 'A random 32 character string that will be used to encrypt and decrypt data sent through API calls to the plugin.'|t('sherlock'),
+                    instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
                     value: '',
                 }) }}
             </div>

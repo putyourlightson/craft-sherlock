@@ -42,7 +42,7 @@ $(document).ready(function()
 
     if (typeof runScan != 'undefined') {
         $.get(runScan, function() {
-            location.reload();
+            //location.reload();
         });
     }
 });

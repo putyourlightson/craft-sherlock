@@ -58,11 +58,6 @@ class SettingsModel extends Model
     public $apiKey;
 
     /**
-     * @var string
-     */
-    public $secretKey;
-
-    /**
      * @var array
      */
     public $restrictControlPanelIpAddresses = [];
@@ -275,7 +270,7 @@ class SettingsModel extends Model
         return [
             'parser' => [
                 'class' => EnvAttributeParserBehavior::class,
-                'attributes' => ['apiKey', 'secretKey'],
+                'attributes' => ['apiKey'],
             ],
         ];
     }
@@ -286,7 +281,7 @@ class SettingsModel extends Model
     public function rules(): array
     {
         return [
-            [['apiKey', 'secretKey'], 'string', 'length' => [32]],
+            [['apiKey'], 'string', 'length' => [32]],
         ];
     }
 

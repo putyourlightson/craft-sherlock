@@ -6,10 +6,11 @@
 namespace putyourlightson\sherlock\controllers;
 
 use Craft;
-use craft\helpers\Json;
 use craft\web\Controller;
 use putyourlightson\sherlock\Sherlock;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
+use yii\web\Response;
 
 /**
  * Scans Controller
@@ -19,120 +20,62 @@ class ScansController extends Controller
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
+    protected $allowAnonymous = ['run-scan'];
 
     /**
      * @inheritdoc
-     *
-     * @throws HttpException
+     * @throws ForbiddenHttpException
      */
-    public function beforeAction($action): bool
+    public function init()
     {
-        if (!parent::beforeAction($action)) {
-            return false;
+        parent::init();
+
+        // If deprecated `run-scan` action
+        if ($this->id == 'run-scan') {
+            return;
         }
 
-        Sherlock::$plugin->requirePro();
+        // Require permission
+        $this->requirePermission('accessplugin-sherlock');
+    }
 
-        $key = Craft::$app->getRequest()->getParam('key', '');
-        $apiKey = Craft::parseEnv(Sherlock::$plugin->settings->apiKey);
+    /**
+     * @param string|null $siteHandle
+     * @return Response
+     */
+    public function actionIndex(string $siteHandle = null): Response
+    {
+        // Set the current site to the site handle if set
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
 
-        // Verify provided key against API key
-        if (empty($key) || empty($apiKey) || $key != $apiKey) {
-            throw new HttpException(403, Craft::t('sherlock', 'Unauthorised API key'));
+            if ($site !== null) {
+                Craft::$app->getSites()->setCurrentSite($site);
+            }
         }
 
-        return true;
+        // Render the template
+        return $this->renderTemplate('sherlock/index');
     }
 
     /**
      * Runs a scan.
-     *
-     * @param int|null $siteId
      */
-    public function actionRunScan(int $siteId = null)
+    public function actionRunScanAjax()
     {
-        Sherlock::$plugin->scans->runScan($siteId);
+        Sherlock::$plugin->scans->runScan();
 
         exit('Success');
     }
 
     /**
-     * Returns the last scan, encrypted.
+     * Deprecated in 3.0.0, use `api/run-scan` instead.
      *
      * @param int|null $siteId
-     * @throws HttpException
+     * @deprecated
      */
-    public function actionGetLastScan(int $siteId = null)
+    public function actionRunScan(int $siteId = null)
     {
-        $secretKey = $this->_getSecretKey();
-
-        // Get JSON encoded scan
-        $scan = Json::encode(Sherlock::$plugin->scans->getLastScan($siteId));
-
-        // Encrypt scan with secret key
-        $scan = Craft::$app->getSecurity()->encryptByKey($scan, $secretKey);
-
-        exit($scan);
-    }
-
-    /**
-     * Returns all scans, encrypted.
-     *
-     * @param int|null $siteId
-     * @throws HttpException
-     */
-    public function actionGetAllScans($siteId)
-    {
-        $secretKey = $this->_getSecretKey();
-
-        // Get offset ID
-        $offsetId = Craft::$app->getRequest()->getParam('offsetId', 0);
-
-        // Get JSON encoded scans from offset ID
-        $scans = Json::encode(Sherlock::$plugin->scans->getAllScans($siteId, $offsetId));
-
-        // Encrypt scans with secret key
-        $scans = Craft::$app->getSecurity()->encryptByKey($scans, $secretKey);
-
-        exit($scans);
-    }
-
-    /**
-     * Verifies that a secret key exists.
-     *
-     * @throws HttpException
-     */
-    public function actionVerify()
-    {
-        $secretKey = $this->_getSecretKey();
-
-        // JSON encoded success
-        $success = Json::encode(array('success' => 1));
-
-        // Encrypt with secret key
-        $data = Craft::$app->getSecurity()->encryptByKey($success, $secretKey);
-
-        exit($data);
-    }
-
-    // TODO: remove secret key
-
-    /**
-     * Returns the secret key or throws an exception if not set.
-     *
-     * @return string
-     * @throws HttpException
-     */
-    private function _getSecretKey(): string
-    {
-        $secretKey = Craft::parseEnv(Sherlock::$plugin->settings->secretKey);
-
-        // Check that secret key is set
-        if (empty($secretKey)) {
-            throw new HttpException(403, Craft::t('sherlock', 'Invalid secret key'));
-        }
-
-        return $secretKey;
+        Sherlock::$plugin->runAction('api/run-scan');
     }
 }
