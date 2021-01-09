@@ -32,6 +32,32 @@
 
             If, for whatever reason, it is not possible to update the site, then you should at least make yourself aware of the gravity of the vulnerability that the updates addressed and the potential consequences of not applying the fixes.',
     },
+    craftUpdates: {
+        name: 'Craft Updates',
+        type: 'upload',
+        typeName: 'Software Update',
+        'safeValue': true,
+        details: {
+            pass: 'No Craft updates available',
+            warning: 'Your version of Craft is behind the latest version',
+        },
+        info: 'Craft updates can contain security enhancements and bug fixes that are not deemed critical, so it is nevertheless recommended to apply them as much as possible.',
+        link: {
+            label: 'Changelog',
+            url: 'https://github.com/craftcms/cms/blob/master/CHANGELOG.md',
+        },
+    },
+    pluginUpdates: {
+        name: 'Plugin Updates',
+        type: 'plugin',
+        typeName: 'Plugins',
+        'safeValue': true,
+        details: {
+            pass: 'No plugin updates available',
+            warning: 'Update plugins to latest versions:',
+        },
+        info: 'Plugin updates can contain security enhancements and bug fixes that are not deemed critical, so it is nevertheless recommended to apply them as much as possible.',
+    },
     httpsControlPanel: {
         name: 'HTTPS In Control Panel',
         type: 'secure',
@@ -62,6 +88,68 @@
         link: {
             label: 'Craft Article',
             url: 'https://craftcms.com/knowledge-base/securing-craft#install-an-ssl-certificate-and-enforce-it',
+        },
+    },
+    craftFoldersAboveWebRoot: {
+        name: 'Craft Folders Above Web Root',
+        typeName: 'File/Folder System',
+        type: 'folder',
+        details: {
+            pass: 'Craft folders are located above the web root',
+            warning: 'Craft folders not located above the web root:',
+        },
+        info: 'Keeping the Craft folders above the web root ensures that no one can access any of their files directly.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/installation.html#step-1-download-craft',
+        },
+    },
+    craftFolderPermissions: {
+        name: 'Craft Folder Permissions',
+        typeName: 'File/Folder System',
+        type: 'folder',
+        details: {
+            pass: 'Craft folder permissions are correctly set',
+            warning: 'Craft folder permissions are not correctly set:',
+        },
+        info: 'The folder permissions of Craft’s writeable folders. Set these to at most 0775, which will grant everything for the owner and group, read and execute for everyone else.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
+        },
+    },
+    craftFilePermissions: {
+        name: 'Craft File Permissions',
+        typeName: 'File/Folder System',
+        type: 'files',
+        details: {
+            pass: 'Craft file permissions are correctly set',
+            warning: 'Craft file permissions are not correctly set:',
+        },
+        info: 'The file permissions of Craft’s writable files. Set these to at most 0664, which will grant read and write for the owner and group, read for everyone else.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
+        },
+    },
+    phpVersion: {
+        name: 'PHP Version',
+        type: 'code',
+        typeName: 'Server Language',
+        details: {
+            pass: 'Site is running on a supported PHP version',
+            warning: 'Site is running on an unsupported PHP version',
+        },
+        info: 'Each release branch of PHP is fully supported for two years from its initial stable release, followed by an additional year for critical security issues only. After this time the branch reaches its end of life and is no longer supported.
+
+            • PHP 7.3 receives security support until 6 December 2021.
+            • PHP 7.4 receives security support until 28 November 2022.
+            • PHP 8.0 receives security support until 26 November 2023.
+
+            Running a version of PHP that is no longer receiving security support may put your site at serious risk.',
+        link: {
+            label: 'Supported Versions',
+            url: 'http://php.net/supported-versions.php',
         },
     },
     contentSecurityPolicy: {
@@ -181,93 +269,15 @@
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection',
         },
     },
-    craftFoldersAboveWebRoot: {
-        name: 'Craft Folders Above Web Root',
-        typeName: 'File/Folder System',
-        type: 'folder',
+    adminUsername: {
+        name: 'Admin Username',
+        type: 'user',
+        typeName: 'User',
         details: {
-            pass: 'Craft folders are located above the web root',
-            warning: 'Craft folders not located above the web root:',
+            pass: 'No admin account with username "admin" exists' ,
+            warning: 'An admin account with username "admin" exists',
         },
-        info: 'Keeping the Craft folders above the web root ensures that no one can access any of their files directly.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/installation.html#step-1-download-craft',
-        },
-    },
-    craftFolderPermissions: {
-        name: 'Craft Folder Permissions',
-        typeName: 'File/Folder System',
-        type: 'folder',
-        details: {
-            pass: 'Craft folder permissions are correctly set',
-            warning: 'Craft folder permissions are not correctly set:',
-        },
-        info: 'The folder permissions of Craft’s writeable folders. Set these to at most 0775, which will grant everything for the owner and group, read and execute for everyone else.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
-        },
-    },
-    craftFilePermissions: {
-        name: 'Craft File Permissions',
-        typeName: 'File/Folder System',
-        type: 'files',
-        details: {
-            pass: 'Craft file permissions are correctly set',
-            warning: 'Craft file permissions are not correctly set:',
-        },
-        info: 'The file permissions of Craft’s writable files. Set these to at most 0664, which will grant read and write for the owner and group, read for everyone else.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
-        },
-    },
-    phpVersion: {
-        name: 'PHP Version',
-        type: 'code',
-        typeName: 'Server Language',
-        details: {
-            pass: 'Site is running on a supported PHP version',
-            warning: 'Site is running on an unsupported PHP version',
-        },
-        info: 'Each release branch of PHP is fully supported for two years from its initial stable release, followed by an additional year for critical security issues only. After this time the branch reaches its end of life and is no longer supported.
-
-            • PHP 7.3 receives security support until 6 December 2021.
-            • PHP 7.4 receives security support until 28 November 2022.
-            • PHP 8.0 receives security support until 26 November 2023.
-
-            Running a version of PHP that is no longer receiving security support may put your site at serious risk.',
-        link: {
-            label: 'Supported Versions',
-            url: 'http://php.net/supported-versions.php',
-        },
-    },
-    craftUpdates: {
-        name: 'Craft Updates',
-        type: 'upload',
-        typeName: 'Software Update',
-        'safeValue': true,
-        details: {
-            pass: 'No Craft updates available',
-            warning: 'Your version of Craft is behind the latest version',
-        },
-        info: 'Craft updates can contain security enhancements and bug fixes that are not deemed critical, so it is nevertheless recommended to apply them as much as possible.',
-        link: {
-            label: 'Changelog',
-            url: 'https://github.com/craftcms/cms/blob/master/CHANGELOG.md',
-        },
-    },
-    pluginUpdates: {
-        name: 'Plugin Updates',
-        type: 'plugin',
-        typeName: 'Plugins',
-        'safeValue': true,
-        details: {
-            pass: 'No plugin updates available',
-            warning: 'Update plugins to latest versions:',
-        },
-        info: 'Plugin updates can contain security enhancements and bug fixes that are not deemed critical, so it is nevertheless recommended to apply them as much as possible.',
+        info: 'Since admin accounts have the highest privileges in Craft, it is better to avoid having any with the username "admin", which is easily guessable. This makes it harder for potential attackers to target admin user accounts.',
     },
     requireEmailVerification: {
         name: 'Require Email Verification',
@@ -278,118 +288,6 @@
             warning: 'Require email verification is disabled',
         },
         info: 'Requiring that new email addresses are verified before getting saved to user accounts ensures that they are genuine and active email addresses. Not doing so can lead to fake accounts being created by spam bots.',
-    },
-    devMode: {
-        name: 'Dev Mode',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'Dev mode is disabled',
-            warning: 'Disable dev mode',
-        },
-        info: 'Dev mode is intended for testing and debugging your site and outputs performance related data on the front-end. It should never be enabled in production environments.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#devmode',
-        },
-    },
-    translationDebugOutput: {
-        name: 'Translation Debug Output',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'Translation debug output is disabled',
-            warning: 'Set translation debug output to false',
-        },
-        info: 'If enabled, this setting will wrap all strings that are run through `Craft::t()` or the `|translate` and `|t` filters with "@" symbols. It is intended for debugging and should absolutely be disabled in production environments.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#translationdebugoutput',
-        },
-    },
-    defaultFileMode: {
-        name: 'Default File Permissions',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'Default file permissions are set to ',
-            warning: 'Set default file permissions to 0664 or null',
-        },
-        info: 'The permissions Craft will use when creating a new file on the file system. Set this to at most 0664, which will grant read and write for the owner and group, read for everyone else. If set to null, the permission will be determined by the current environment.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaultfilemode',
-        },
-    },
-    defaultDirMode: {
-        name: 'Default Folder Permissions',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'Default folder permissions are set to ',
-            warning: 'Set default folder permissions to 0775 or null',
-        },
-        info: 'The permissions Craft will use when creating a new folder on the file system. Set this to at most 0775, which will grant everything for the owner and group, read and execute for everyone else. If set to null, the permission will be determined by the current environment.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaultdirmode',
-        },
-    },
-    defaultTokenDuration: {
-        name: 'Default Token Duration',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'Default token duration is set to',
-            warning: 'Set default token duration to P1D (86400) or less',
-        },
-        info: 'The duration that system tokens should last for. Setting this to P1D (86400) or less will ensure that system tokens expire after at most 1 day.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaulttokenduration',
-        },
-    },
-    enableCsrfProtection: {
-        name: 'CSRF Protection',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'CSRF protection is enabled',
-            warning: 'Enable CSRF protection',
-        },
-        info: 'Cross-Site Request Forgery (CSRF) protection ensures that all POST requests to Craft must be accompanied by a CSRF token, otherwise the request will be rejected with a 400 error. This helps to prevent attacks that force unwanted actions to be executed on behalf of a user that is authenticated and logged in to Craft.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#enablecsrfprotection',
-        },
-    },
-    useSecureCookies: {
-        name: 'Use Secure Cookies',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'Site is using secure cookies',
-            warning: 'Set secure cookies to "on" or "auto"',
-        },
-        info: 'Whether Craft should set the secure flag on its cookies, limiting them to only be sent on secure (SSL) requests. Setting this to "on" or "auto" will ensure that the secure flag is set.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#usesecurecookies',
-        },
-    },
-    cpTrigger: {
-        name: 'Control Panel Trigger',
-        type: 'settings',
-        typeName: 'Config Setting',
-        details: {
-            pass: 'Control panel trigger is not "admin"',
-            warning: 'Change control panel trigger to something other than "admin"',
-        },
-        info: 'This is the URI segment that triggers Craft to load the control panel rather than the front-end website. Changing this to something other than the default "admin" can help prevent people from guessing the access point to your site’s control panel.',
-        link: {
-            label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#cptrigger',
-        },
     },
     blowfishHashCost: {
         name: 'Blowfish Hash Cost',
@@ -419,6 +317,62 @@
             url: 'https://craftcms.com/docs/3.x/config/config-settings.html#cooldownduration',
         },
     },
+    cpTrigger: {
+        name: 'Control Panel Trigger',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Control panel trigger is not "admin"',
+            warning: 'Change control panel trigger to something other than "admin"',
+        },
+        info: 'This is the URI segment that triggers Craft to load the control panel rather than the front-end website. Changing this to something other than the default "admin" can help prevent people from guessing the access point to your site’s control panel.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#cptrigger',
+        },
+    },
+    defaultDirMode: {
+        name: 'Default Folder Permissions',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Default folder permissions are set to ',
+            warning: 'Set default folder permissions to 0775 or null',
+        },
+        info: 'The permissions Craft will use when creating a new folder on the file system. Set this to at most 0775, which will grant everything for the owner and group, read and execute for everyone else. If set to null, the permission will be determined by the current environment.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaultdirmode',
+        },
+    },
+    defaultFileMode: {
+        name: 'Default File Permissions',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Default file permissions are set to ',
+            warning: 'Set default file permissions to 0664 or null',
+        },
+        info: 'The permissions Craft will use when creating a new file on the file system. Set this to at most 0664, which will grant read and write for the owner and group, read for everyone else. If set to null, the permission will be determined by the current environment.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaultfilemode',
+        },
+    },
+    defaultTokenDuration: {
+        name: 'Default Token Duration',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Default token duration is set to',
+            warning: 'Set default token duration to P1D (86400) or less',
+        },
+        info: 'The duration that system tokens should last for. Setting this to P1D (86400) or less will ensure that system tokens expire after at most 1 day.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaulttokenduration',
+        },
+    },
     deferPublicRegistrationPassword: {
         name: 'Defer Public Registration Password',
         type: 'settings',
@@ -433,6 +387,20 @@
             url: 'https://craftcms.com/docs/3.x/config/config-settings.html#deferpublicregistrationpassword',
         },
     },
+    devMode: {
+        name: 'Dev Mode',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Dev mode is disabled',
+            warning: 'Disable dev mode',
+        },
+        info: 'Dev mode is intended for testing and debugging your site and outputs performance related data on the front-end. It should never be enabled in production environments.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#devmode',
+        },
+    },
     elevatedSessionDuration: {
         name: 'Elevated Session Duration',
         type: 'settings',
@@ -445,6 +413,20 @@
         link: {
             label: 'Craft Docs',
             url: 'https://craftcms.com/docs/3.x/config/config-settings.html#elevatedsessionduration',
+        },
+    },
+    enableCsrfProtection: {
+        name: 'CSRF Protection',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'CSRF protection is enabled',
+            warning: 'Enable CSRF protection',
+        },
+        info: 'Cross-Site Request Forgery (CSRF) protection ensures that all POST requests to Craft must be accompanied by a CSRF token, otherwise the request will be rejected with a 400 error. This helps to prevent attacks that force unwanted actions to be executed on behalf of a user that is authenticated and logged in to Craft.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#enablecsrfprotection',
         },
     },
     invalidLoginWindowDuration: {
@@ -559,6 +541,20 @@
             url: 'https://craftcms.com/docs/3.x/config/config-settings.html#testtoemailaddress',
         },
     },
+    translationDebugOutput: {
+        name: 'Translation Debug Output',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Translation debug output is disabled',
+            warning: 'Set translation debug output to false',
+        },
+        info: 'If enabled, this setting will wrap all strings that are run through `Craft::t()` or the `|translate` and `|t` filters with "@" symbols. It is intended for debugging and should absolutely be disabled in production environments.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#translationdebugoutput',
+        },
+    },
     userSessionDuration: {
         name: 'User Session Duration',
         type: 'settings',
@@ -571,6 +567,20 @@
         link: {
             label: 'Craft Docs',
             url: 'https://craftcms.com/docs/3.x/config/config-settings.html#usersessionduration',
+        },
+    },
+    useSecureCookies: {
+        name: 'Use Secure Cookies',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Site is using secure cookies',
+            warning: 'Set secure cookies to "on" or "auto"',
+        },
+        info: 'Whether Craft should set the secure flag on its cookies, limiting them to only be sent on secure (SSL) requests. Setting this to "on" or "auto" will ensure that the secure flag is set.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#usesecurecookies',
         },
     },
     verificationCodeDuration: {

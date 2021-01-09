@@ -142,8 +142,13 @@
 }
 
 .sherlock i.type {
+    font-size: 15px;
     width: 16px;
     color: #CECBD8;
+}
+
+.sherlock i.type.fa-lock.type {
+    font-size: 14px;
 }
 
 .sherlock .expand {

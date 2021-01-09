@@ -66,40 +66,26 @@ return [
         /**
          * Individual test settings.
          *
+
+        // Updates
         'criticalCraftUpdates' => [
             'forceFail' => true,
         ],
         'criticalPluginUpdates' => [
             'forceFail' => true,
         ],
+        'craftUpdates' => [],
+        'pluginUpdates' => [],
+
+        // HTTPS
         'httpsControlPanel' => [
             'forceFail' => true,
         ],
         'httpsFrontEnd' => [
             'canFail' => true,
         ],
-        'contentSecurityPolicy' => [
-            'canFail' => true,
-        ],
-        'cors' => [
-            'forceFail' => true,
-        ],
-        'expectCT' => [
-            'canFail' => true,
-        ],
-        'referrerPolicy' => [
-            'canFail' => true,
-        ],
-        'strictTransportSecurity' => [
-            'canFail' => true,
-        ],
-        'xContentTypeOptions' => [
-            'canFail' => true,
-        ],
-        'xFrameOptions' => [
-            'canFail' => true,
-        ],
-        'xXssProtection' => [],
+
+        // System
         'craftFoldersAboveWebRoot' => [
             'canFail' => true,
         ],
@@ -127,46 +113,67 @@ return [
                 '8.0' => '2023-11-26',
             ],
         ],
-        'craftUpdates' => [],
-        'pluginUpdates' => [],
+
+        // Headers
+        'contentSecurityPolicy' => [
+            'canFail' => true,
+        ],
+        'cors' => [
+            'forceFail' => true,
+        ],
+        'expectCT' => [
+            'canFail' => true,
+        ],
+        'referrerPolicy' => [
+            'canFail' => true,
+        ],
+        'strictTransportSecurity' => [
+            'canFail' => true,
+        ],
+        'xContentTypeOptions' => [
+            'canFail' => true,
+        ],
+        'xFrameOptions' => [
+            'canFail' => true,
+        ],
+        'xXssProtection' => [],
+
+        // Users
+        'adminUsername' => [],
         'requireEmailVerification' => [
             'canFail' => true,
         ],
-        'devMode' => [
-            'canFail' => true,
-        ],
-        'translationDebugOutput' => [
-            'canFail' => true,
-        ],
-        'defaultFileMode' => [
-            'canFail' => true,
-            'threshold' => 0664,
-        ],
-        'defaultDirMode' => [
-            'canFail' => true,
-            'threshold' => 0775,
-        ],
-        'defaultTokenDuration' => [
-            'canFail' => true,
-            'threshold' => 86400, // 1 day
-        ],
-        'enableCsrfProtection' => [
-            'canFail' => true,
-        ],
-        'useSecureCookies' => [
-            'canFail' => true,
-        ],
-        'cpTrigger' => [],
+
+        // General config settings
         'blowfishHashCost' => [
             'threshold' => 13,
         ],
         'cooldownDuration' => [
             'threshold' => 300, // 5 minutes
         ],
+        'cpTrigger' => [],
+        'defaultDirMode' => [
+            'canFail' => true,
+            'threshold' => 0775,
+        ],
+        'defaultFileMode' => [
+            'canFail' => true,
+            'threshold' => 0664,
+        ],
+        'defaultTokenDuration' => [
+            'canFail' => true,
+            'threshold' => 86400, // 1 day
+        ],
         'deferPublicRegistrationPassword' => [],
+        'devMode' => [
+            'canFail' => true,
+        ],
         'elevatedSessionDuration' => [
             'canFail' => true,
             'threshold' => 300, // 5 minutes
+        ],
+        'enableCsrfProtection' => [
+            'canFail' => true,
         ],
         'invalidLoginWindowDuration' => [
             'threshold' => 3600, // 1 hour
@@ -178,30 +185,30 @@ return [
         'preventUserEnumeration' => [
             'canFail' => true,
         ],
-        'sanitizeSvgUploads' => [
-            'canFail' => true,
-        ],
         'rememberedUserSessionDuration' => [
             'threshold' => 1209600, // 14 days
         ],
         'requireMatchingUserAgentForSession' => [],
         'requireUserAgentAndIpForSession' => [],
+        'sanitizeSvgUploads' => [
+            'canFail' => true,
+        ],
         'testToEmailAddress' => [
+            'canFail' => true,
+        ],
+        'translationDebugOutput' => [
             'canFail' => true,
         ],
         'userSessionDuration' => [
             'canFail' => true,
             'threshold' => 3600, // 1 hour
         ],
+        'useSecureCookies' => [
+            'canFail' => true,
+        ],
         'verificationCodeDuration' => [
             'canFail' => true,
             'threshold' => 86400, // 1 day
-        ],
-        'preventUserEnumeration' => [
-            'canFail' => true,
-        ],
-        'sanitizeSvgUploads' => [
-            'canFail' => true,
         ],
          */
     ],

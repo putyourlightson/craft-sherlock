@@ -81,6 +81,8 @@ class SettingsModel extends Model
      * Individual test settings
      */
 
+    // Updates
+
     public $criticalCraftUpdates = [
         'forceFail' => true,
     ];
@@ -88,6 +90,12 @@ class SettingsModel extends Model
     public $criticalPluginUpdates = [
         'forceFail' => true,
     ];
+
+    public $craftUpdates = [];
+
+    public $pluginUpdates = [];
+
+    // HTTPS
 
     public $httpsControlPanel = [
         'forceFail' => true,
@@ -97,35 +105,7 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
-    public $cors = [
-        'forceFail' => true,
-    ];
-
-    public $xFrameOptions = [
-        'canFail' => true,
-    ];
-
-    public $xContentTypeOptions = [
-        'canFail' => true,
-    ];
-
-    public $xXssProtection = [];
-
-    public $strictTransportSecurity = [
-        'canFail' => true,
-    ];
-
-    public $referrerPolicy = [
-        'canFail' => true,
-    ];
-
-    public $expectCT = [
-        'canFail' => true,
-    ];
-
-    public $contentSecurityPolicy = [
-        'canFail' => true,
-    ];
+    // System
 
     public $craftFoldersAboveWebRoot = [
         'canFail' => true,
@@ -158,46 +138,47 @@ class SettingsModel extends Model
         ],
     ];
 
-    public $craftUpdates = [];
+    // Headers
 
-    public $pluginUpdates = [];
+    public $contentSecurityPolicy = [
+        'canFail' => true,
+    ];
+
+    public $cors = [
+        'forceFail' => true,
+    ];
+
+    public $expectCT = [
+        'canFail' => true,
+    ];
+
+    public $referrerPolicy = [
+        'canFail' => true,
+    ];
+
+    public $strictTransportSecurity = [
+        'canFail' => true,
+    ];
+
+    public $xContentTypeOptions = [
+        'canFail' => true,
+    ];
+
+    public $xFrameOptions = [
+        'canFail' => true,
+    ];
+
+    public $xXssProtection = [];
+
+    // Users
+
+    public $adminUsername = [];
 
     public $requireEmailVerification = [
         'canFail' => true,
     ];
 
-    public $devMode = [
-        'canFail' => true,
-    ];
-
-    public $translationDebugOutput = [
-        'canFail' => true,
-    ];
-
-    public $defaultFileMode = [
-        'canFail' => true,
-        'threshold' => 0664,
-    ];
-
-    public $defaultDirMode = [
-        'canFail' => true,
-        'threshold' => 0775,
-    ];
-
-    public $defaultTokenDuration = [
-        'canFail' => true,
-        'threshold' => 86400, // 1 day
-    ];
-
-    public $enableCsrfProtection = [
-        'canFail' => true,
-    ];
-
-    public $useSecureCookies = [
-        'canFail' => true,
-    ];
-
-    public $cpTrigger = [];
+    // General config settings
 
     public $blowfishHashCost = [
         'threshold' => 13,
@@ -207,11 +188,36 @@ class SettingsModel extends Model
         'threshold' => 300, // 5 minutes
     ];
 
+    public $cpTrigger = [];
+
+    public $defaultDirMode = [
+        'canFail' => true,
+        'threshold' => 0775,
+    ];
+
+    public $defaultFileMode = [
+        'canFail' => true,
+        'threshold' => 0664,
+    ];
+
+    public $defaultTokenDuration = [
+        'canFail' => true,
+        'threshold' => 86400, // 1 day
+    ];
+
     public $deferPublicRegistrationPassword = [];
+
+    public $devMode = [
+        'canFail' => true,
+    ];
 
     public $elevatedSessionDuration = [
         'canFail' => true,
         'threshold' => 300, // 5 minutes
+    ];
+
+    public $enableCsrfProtection = [
+        'canFail' => true,
     ];
 
     public $invalidLoginWindowDuration = [
@@ -240,6 +246,14 @@ class SettingsModel extends Model
     ];
 
     public $testToEmailAddress = [
+        'canFail' => true,
+    ];
+
+    public $translationDebugOutput = [
+        'canFail' => true,
+    ];
+
+    public $useSecureCookies = [
         'canFail' => true,
     ];
 

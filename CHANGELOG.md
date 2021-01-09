@@ -9,6 +9,7 @@
 - Added the `Content-Security-Policy` header / meta tag test.
 - Added the `Expect-CT` header test.
 - Added the `Referrer-Policy` header test.
+- Added the Admin Username test.
 - Added the Defer Public Registration Password test.
 - Added the Elevated Session Duration test.
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).

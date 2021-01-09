@@ -47,13 +47,21 @@ class TestsService extends Component
     public function getTestNames(): array
     {
         $tests = [
-            // Critical updates
+            // Updates
             'criticalCraftUpdates',
             'criticalPluginUpdates',
+            'craftUpdates',
+            'pluginUpdates',
 
             // HTTPS
             'httpsControlPanel',
             'httpsFrontEnd',
+
+            // System
+            'craftFoldersAboveWebRoot',
+            'craftFolderPermissions',
+            'craftFilePermissions',
+            'phpVersion',
 
             // Headers
             'contentSecurityPolicy',
@@ -65,32 +73,21 @@ class TestsService extends Component
             'xFrameOptions',
             'xXssProtection',
 
-            // System
-            'craftFoldersAboveWebRoot',
-            'craftFolderPermissions',
-            'craftFilePermissions',
-            'phpVersion',
-
-            // Regular updates
-            'craftUpdates',
-            'pluginUpdates',
-
-            // User settings
+            // Users
+            'adminUsername',
             'requireEmailVerification',
 
             // General config settings
-            'devMode',
-            'translationDebugOutput',
-            'defaultFileMode',
-            'defaultDirMode',
-            'defaultTokenDuration',
-            'enableCsrfProtection',
-            'useSecureCookies',
-            'cpTrigger',
             'blowfishHashCost',
             'cooldownDuration',
+            'cpTrigger',
+            'defaultDirMode',
+            'defaultFileMode',
+            'defaultTokenDuration',
             'deferPublicRegistrationPassword',
+            'devMode',
             'elevatedSessionDuration',
+            'enableCsrfProtection',
             'invalidLoginWindowDuration',
             'maxInvalidLogins',
             'preventUserEnumeration',
@@ -99,7 +96,9 @@ class TestsService extends Component
             'requireUserAgentAndIpForSession',
             'sanitizeSvgUploads',
             'testToEmailAddress',
+            'translationDebugOutput',
             'userSessionDuration',
+            'useSecureCookies',
             'verificationCodeDuration',
         ];
 
@@ -436,6 +435,15 @@ class TestsService extends Component
                 if (!empty($criticalPluginUpdates)) {
                     $testModel->failTest();
                     $testModel->value = implode(' , ', $criticalPluginUpdates);
+                }
+
+                break;
+
+            case 'adminUsername':
+                $user = Craft::$app->getUsers()->getUserByUsernameOrEmail('admin');
+
+                if ($user && $user->admin) {
+                    $testModel->failTest();
                 }
 
                 break;
