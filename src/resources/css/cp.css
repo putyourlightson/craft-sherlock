@@ -1,49 +1,3 @@
-.sherlock-settings .pro {
-    position: relative;
-    border: 1px solid #e4edf6;
-    margin: 30px 0;
-}
-
-.sherlock-settings .pro:first-child {
-    margin-top: 0;
-}
-
-.sherlock-settings .pro:last-child {
-    margin-bottom: 0;
-}
-
-.sherlock-settings .pro::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    opacity: 0.3;
-    width: 100%;
-    height: 100%;
-}
-
-.sherlock-settings .pro, .sherlock-settings .pro::before {
-    background: #fafafa;
-    border-radius: 7px;
-}
-
-.sherlock-settings .pro .tag {
-    position: absolute;
-    right: 0;
-    z-index: 2;
-    padding: 5px 20px;
-    border-top-right-radius: 7px;
-    border-bottom-left-radius: 5px;
-    background: #e4edf6;
-    color: #596673;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 13px;
-}
-
-.sherlock-settings .pro .inner {
-    padding: 30px 20px;
-}
-
 .welcome {
     position: relative;
     text-align: center;
@@ -165,7 +119,7 @@
     height: 0;
     vertical-align: middle;
     border-top: 4px dashed;
-    border-top: 4px solid\9;
+    border-top: 4px solid;
     border-right: 4px solid rgba(0, 0, 0, 0);
     border-left: 4px solid rgba(0, 0, 0, 0);
     margin-left: 3px;
@@ -175,7 +129,57 @@
     content: "";
     border-top: 0;
     border-bottom: 4px dashed;
-    border-bottom: 4px solid\9;
+    border-bottom: 4px solid;
+}
+
+.sherlock #status .btn {
+    font-size: 14px;
+}
+
+.sherlock-settings .pro {
+    position: relative;
+    border: 1px solid #e4edf6;
+    margin: 30px 0;
+}
+
+.sherlock-settings .pro:first-child {
+    margin-top: 0;
+}
+
+.sherlock-settings .pro:last-child {
+    margin-bottom: 0;
+}
+
+.sherlock-settings .pro::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    opacity: 0.3;
+    width: 100%;
+    height: 100%;
+}
+
+.sherlock-settings .pro, .sherlock-settings .pro::before {
+    background: #fafafa;
+    border-radius: 7px;
+}
+
+.sherlock-settings .pro .tag {
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    padding: 5px 20px;
+    border-top-right-radius: 7px;
+    border-bottom-left-radius: 5px;
+    background: #e4edf6;
+    color: #596673;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.sherlock-settings .pro .inner {
+    padding: 30px 20px;
 }
 
 .sherlock-settings .missing-fields {

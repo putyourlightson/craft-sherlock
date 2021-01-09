@@ -17,12 +17,13 @@ use yii\web\Response;
 class ScansController extends Controller
 {
     /**
-     * @inheritdoc
+     * For the deprecated `run-scan` action
      */
     protected $allowAnonymous = ['run-scan'];
 
     /**
      * @inheritdoc
+     *
      * @throws ForbiddenHttpException
      */
     public function init()

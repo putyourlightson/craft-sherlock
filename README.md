@@ -1,6 +1,9 @@
-<p align="center"><img height="180" src="./src/icon.svg"></p>
+[![Stable Version](https://img.shields.io/packagist/v/putyourlightson/craft-sherlock?label=stable)]((https://packagist.org/packages/putyourlightson/craft-sherlock))
+[![Total Downloads](https://img.shields.io/packagist/dt/putyourlightson/craft-sherlock)](https://packagist.org/packages/putyourlightson/craft-sherlock)
 
-# Sherlock Plugin for Craft CMS 3
+<p align="center"><img width="130" src="https://putyourlightson.com/assets/logos/sherlock.svg"></p>
+
+# Sherlock Plugin for Craft CMS
 
 Sherlock is a security scanner and monitor to keep your site and [Craft CMS](https://craftcms.com/) secure.
 
