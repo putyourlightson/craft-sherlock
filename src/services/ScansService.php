@@ -86,7 +86,7 @@ class ScansService extends Component
         $total = count($tests);
 
         foreach ($tests as $test) {
-            $testModel = Sherlock::$plugin->tests->runTest($test);
+            $testModel = Sherlock::$plugin->tests->runTest($test, $siteId);
 
             if (!$testModel->pass) {
                 $scanModel->pass = false;

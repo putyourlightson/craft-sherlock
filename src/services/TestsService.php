@@ -16,6 +16,7 @@ use GuzzleHttp\TransferStats;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
 use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * Tests Service
@@ -116,13 +117,14 @@ class TestsService extends Component
      * Run test
      *
      * @param $test
+     * @param int|null $siteId
      *
      * @return TestModel
      * @throws HttpException
      */
-    public function runTest($test): TestModel
+    public function runTest($test, int $siteId = null): TestModel
     {
-        $this->_beforeRunTests();
+        $this->_beforeRunTests($siteId);
 
         $testModel = new TestModel(Sherlock::$plugin->settings->{$test});
         $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
@@ -606,9 +608,10 @@ class TestsService extends Component
     /**
      * Performs preps before running tests.
      *
+     * @param int|null $siteId
      * @throws HttpException
      */
-    private function _beforeRunTests()
+    private function _beforeRunTests(int $siteId = null)
     {
         // Ensure we only run this method once
         if ($this->_updates !== null) {
@@ -629,7 +632,9 @@ class TestsService extends Component
 
         try {
             // Get site URL response
-            $url = UrlHelper::baseSiteUrl();
+            $sites = Craft::$app->getSites();
+            $site = $siteId ? $sites->getSiteById($siteId) : $sites->getCurrentSite();
+            $url = $site->baseUrl;
 
             $response = $client->get($url);
             $this->_siteUrlResponse['headers'] = $response->getHeaders();
@@ -659,7 +664,7 @@ class TestsService extends Component
         catch (GuzzleException $exception) {
             Sherlock::$plugin->log($exception->getMessage());
 
-            throw new HttpException(500, Craft::t('sherlock', 'unable to connect to {url}. Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]));
+            throw new NotFoundHttpException(Craft::t('sherlock', 'unable to connect to {url}. Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]));
         }
     }
 

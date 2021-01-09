@@ -9,7 +9,6 @@ use Craft;
 use craft\web\Controller;
 use putyourlightson\sherlock\Sherlock;
 use yii\web\ForbiddenHttpException;
-use yii\web\HttpException;
 use yii\web\Response;
 
 /**
@@ -60,12 +59,15 @@ class ScansController extends Controller
 
     /**
      * Runs a scan.
+     *
+     * @param int|null $siteId
+     * @return Response
      */
-    public function actionRunScanAjax()
+    public function actionRunScanAjax(int $siteId = null): Response
     {
-        Sherlock::$plugin->scans->runScan();
+        Sherlock::$plugin->scans->runScan($siteId);
 
-        exit('Success');
+        return $this->asJson(['success' => true]);
     }
 
     /**
