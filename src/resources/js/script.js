@@ -26,6 +26,8 @@ $(document).ready(function()
     });
 
     $('.run-scan').click(function() {
+        event.preventDefault();
+
         $('.sherlock').hide();
         $('.running').show();
 
@@ -34,15 +36,8 @@ $(document).ready(function()
         }).fail(function(xhr) {
             var error = xhr.responseText;
             $('.running #graphic').addClass('error');
-            $('.running #status').addClass('error').html(error);
+            $('.running #text').addClass('error').html(error);
+            $('.running #back').show();
         });
-
-        event.preventDefault();
     });
-
-    if (typeof runScan != 'undefined') {
-        $.get(runScan, function() {
-            //location.reload();
-        });
-    }
 });
