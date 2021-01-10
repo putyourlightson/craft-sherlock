@@ -281,11 +281,11 @@ class TestsService extends Component
                     'templates' => Craft::getAlias('@templates'),
                 ];
                 $pathsFailed = [];
-                $cwd = getcwd();
+                $webroot = Craft::getAlias('@webroot');
 
                 foreach ($paths as $key => $path) {
-                    // If the current working directory is a substring of the path
-                    if (strpos($path, $cwd) !== false) {
+                    // If the webroot is a substring of the path
+                    if (strpos($path, $webroot) !== false) {
                         $pathsFailed[] = $key;
                     }
                 }
