@@ -14,13 +14,13 @@ use putyourlightson\sherlock\Sherlock;
 class SherlockVariable
 {
     /**
-     * Returns true if pro version
+     * Returns true if lite version
      *
      * @return bool
      */
-    public function getIsPro(): bool
+    public function getIsLite(): bool
     {
-        return Sherlock::$plugin->getIsPro();
+        return Sherlock::$plugin->getIsLite();
     }
 
     /**

@@ -12,54 +12,37 @@
     {% include 'sherlock/_includes/welcome' %}
 {% endif %}
 
+{% set isLite = craft.sherlock.isLite %}
+
+
 <div class="sherlock-settings">
 
-    {% if craft.sherlock.isPro %}
+    {% set fields %}
 
         {{ forms.lightswitchField({
             first: true,
-            label: 'Live Mode'|t('sherlock'),
-            name: 'liveMode',
-            instructions: 'If enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
-            warning: (config.liveMode is defined ? configWarning('liveMode')),
-            on: settings.liveMode,
-            errors: settings.getErrors('liveMode')
+            label: 'Monitor'|t('sherlock'),
+            name: (isLite ? '' : 'monitor'),
+            instructions: 'Whether to monitor scans. If enabled, control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
+            warning: (config.monitor is defined ? configWarning('monitor')),
+            on: (isLite ? false : settings.monitor),
+            errors: settings.getErrors('monitor')
         }) }}
 
         {{ forms.textField({
             label: 'Notification Email Addresses'|t('sherlock'),
-            name: 'notificationEmailAddresses',
-            instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues when live mode is enabled.'|t('sherlock'),
+            name: (isLite ? '' : 'notificationEmailAddresses'),
+            instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues when monitor is enabled.'|t('sherlock'),
             warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
-            value: settings.notificationEmailAddresses,
+            value: (isLite ? '' : settings.notificationEmailAddresses),
             errors: settings.getErrors('notificationEmailAddresses')
         }) }}
 
-        <hr>
+    {% endset %}
 
-    {% else %}
+    {% include 'sherlock/_includes/paidFields' %}
 
-        <div class="pro">
-            <div class="tag">
-                Pro Feature
-            </div>
-            <div class="inner">
-                {{ forms.lightswitchField({
-                    first: true,
-                    label: 'Live Mode'|t('sherlock'),
-                    instructions: 'If enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
-                    on: false
-                }) }}
-
-                {{ forms.textField({
-                    label: 'Notification Email Addresses'|t('sherlock'),
-                    instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues when live mode is enabled.'|t('sherlock'),
-                    value: '',
-                }) }}
-            </div>
-        </div>
-
-    {% endif %}
+    {{ not isLite ? '<hr>' }}
 
     {{ forms.lightswitchField({
         label: 'High Security Level'|t('sherlock'),
@@ -196,26 +179,32 @@
 
     </div>
 
-    {% if craft.sherlock.isPro %}
+    {{ not isLite ? '<hr>' }}
 
-        <hr>
+    {% set fields %}
 
         {{ forms.autosuggestField({
             label: 'API Key'|t('sherlock'),
-            name: 'apiKey',
+            name: (isLite ? '' : 'apiKey'),
             instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
             warning: (config.apiKey is defined ? configWarning('apiKey')),
             suggestEnvVars: true,
             suggestions: craft.cp.getEnvSuggestions(),
-            value: settings.apiKey,
+            value: (isLite ? '' : settings.apiKey),
             errors: settings.getErrors('apiKey')
         }) }}
 
-        <hr>
+    {% endset %}
+
+    {% include 'sherlock/_includes/paidFields' %}
+
+    {{ not isLite ? '<hr>' }}
+
+    {% set fields %}
 
         {{ forms.editableTableField({
             label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
-            name: 'restrictControlPanelIpAddresses',
+            name: (isLite ? '' : 'restrictControlPanelIpAddresses'),
             instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
             warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
             cols: [
@@ -226,13 +215,13 @@
                     code: true,
                 },
             ],
-            rows: settings.restrictControlPanelIpAddresses,
+            rows: (isLite ? [] : settings.restrictControlPanelIpAddresses),
             addRowLabel: 'Add an IP address'|t('sherlock'),
         }) }}
 
         {{ forms.editableTableField({
             label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
-            name: 'restrictFrontEndIpAddresses',
+            name: (isLite ? '' : 'restrictFrontEndIpAddresses'),
             instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
             warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
             cols: [
@@ -243,64 +232,12 @@
                     code: true,
                 },
             ],
-            rows: settings.restrictFrontEndIpAddresses,
+            rows: (isLite ? [] : settings.restrictFrontEndIpAddresses),
             addRowLabel: 'Add an IP address'|t('sherlock'),
         }) }}
 
-    {% else %}
+    {% endset %}
 
-        <div class="pro">
-            <div class="tag">
-                Pro Feature
-            </div>
-            <div class="inner">
-                {{ forms.textField({
-                    label: 'API Key'|t('sherlock'),
-                    instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
-                    value: '',
-                }) }}
-            </div>
-        </div>
-
-        <div class="pro">
-            <div class="tag">
-                Pro Feature
-            </div>
-            <div class="inner">
-                {{ forms.editableTableField({
-                    label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
-                    name: '',
-                    instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-                    cols: [
-                        {
-                            type: 'singleline',
-                            heading: 'IP Address'|t('sherlock'),
-                            placeholder: '192.168.0.1',
-                            code: true,
-                        },
-                    ],
-                    rows: [],
-                    addRowLabel: 'Add an IP address'|t('sherlock'),
-                }) }}
-
-                {{ forms.editableTableField({
-                    label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
-                    name: '',
-                    instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-                    cols: [
-                        {
-                            type: 'singleline',
-                            heading: 'IP Address'|t('sherlock'),
-                            placeholder: '192.168.0.1',
-                            code: true,
-                        },
-                    ],
-                    rows: [],
-                    addRowLabel: 'Add an IP address'|t('sherlock'),
-                }) }}
-            </div>
-        </div>
-
-    {% endif %}
+    {% include 'sherlock/_includes/paidFields' %}
 
 </div>

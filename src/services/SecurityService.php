@@ -31,7 +31,7 @@ class SecurityService extends Component
      */
     public function applyRestrictions()
     {
-        if (!Sherlock::$plugin->getIsPro()) {
+        if (Sherlock::$plugin->getIsLite()) {
             return;
         }
 
@@ -119,7 +119,7 @@ class SecurityService extends Component
      */
     public function getCpAlerts(): array
     {
-        if (!Sherlock::$plugin->getIsPro() || !Sherlock::$plugin->settings->liveMode) {
+        if (Sherlock::$plugin->getIsLite() || !Sherlock::$plugin->settings->monitor) {
             return [];
         }
 

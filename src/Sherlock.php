@@ -41,6 +41,7 @@ class Sherlock extends Plugin
 {
     // Edition constants
     const EDITION_LITE = 'lite';
+    const EDITION_PLUS = 'plus';
     const EDITION_PRO = 'pro';
 
     /**
@@ -55,6 +56,7 @@ class Sherlock extends Plugin
     {
         return [
             self::EDITION_LITE,
+            self::EDITION_PLUS,
             self::EDITION_PRO,
         ];
     }
@@ -111,21 +113,19 @@ class Sherlock extends Plugin
      *
      * @return bool
      */
-    public function getIsPro(): bool
+    public function getIsLite(): bool
     {
-        // TODO: remove
-//        return true;
-        return $this->is(self::EDITION_PRO);
+        return $this->is(self::EDITION_LITE);
     }
 
     /**
-     * Throws an exception if the plugin edition is not pro.
+     * Throws an exception if the plugin edition is lite.
      *
      * @throws ForbiddenHttpException
      */
-    public function requirePro()
+    public function requireNotLite()
     {
-        if (!$this->getIsPro()) {
+        if ($this->getIsLite()) {
             throw new ForbiddenHttpException(Craft::t('sherlock', 'Sherlock Pro is required to perform this action.'));
         }
     }

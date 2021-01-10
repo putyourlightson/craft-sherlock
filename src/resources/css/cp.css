@@ -136,21 +136,21 @@
     font-size: 14px;
 }
 
-.sherlock-settings .pro {
+.sherlock-settings .paid {
     position: relative;
     border: 1px solid #e4edf6;
     margin: 30px 0;
 }
 
-.sherlock-settings .pro:first-child {
+.sherlock-settings .paid:first-child {
     margin-top: 0;
 }
 
-.sherlock-settings .pro:last-child {
+.sherlock-settings .paid:last-child {
     margin-bottom: 0;
 }
 
-.sherlock-settings .pro::before {
+.sherlock-settings .paid::before {
     content: '';
     position: absolute;
     z-index: 1;
@@ -159,12 +159,12 @@
     height: 100%;
 }
 
-.sherlock-settings .pro, .sherlock-settings .pro::before {
+.sherlock-settings .paid, .sherlock-settings .paid::before {
     background: #fafafa;
     border-radius: 7px;
 }
 
-.sherlock-settings .pro .tag {
+.sherlock-settings .paid .tag {
     position: absolute;
     right: 0;
     z-index: 2;
@@ -178,7 +178,11 @@
     font-size: 13px;
 }
 
-.sherlock-settings .pro .inner {
+.sherlock-settings .paid .tag .info {
+    vertical-align: sub;
+}
+
+.sherlock-settings .paid .inner {
     padding: 30px 20px;
 }
 

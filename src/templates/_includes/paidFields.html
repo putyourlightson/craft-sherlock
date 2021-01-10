@@ -1,0 +1,15 @@
+{% if isLite %}
+    <div class="paid">
+        <div class="tag nowrap">
+            Paid Feature
+            <span class="info">
+                This feature is available only with the Plus or Pro edition.
+            </span>
+        </div>
+        <div class="inner">
+            {{ fields }}
+        </div>
+    </div>
+{% else %}
+    {{ fields }}
+{% endif %}

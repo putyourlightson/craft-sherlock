@@ -72,7 +72,9 @@ class ScansService extends Component
      */
     public function runScan(int $siteId = null, callable $setProgressHandler = null)
     {
-        $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
+        if ($siteId !== null) {
+            Craft::$app->getSites()->setCurrentSite($siteId);
+        }
 
         // Create model
         $scanModel = new ScanModel([
@@ -142,8 +144,8 @@ class ScansService extends Component
         Sherlock::$plugin->log('Scan run on site ID '.$siteId.' by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'));
 
         if (!$scanModel->pass
-            && Sherlock::$plugin->getIsPro()
-            && Sherlock::$plugin->settings->liveMode
+            && !Sherlock::$plugin->getIsLite()
+            && Sherlock::$plugin->settings->monitor
             && !empty(Sherlock::$plugin->settings->notificationEmailAddresses)
         ) {
             $this->_sendNotifications($scanModel);

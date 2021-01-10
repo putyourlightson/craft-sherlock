@@ -118,14 +118,13 @@ class TestsService extends Component
      * Run test
      *
      * @param $test
-     * @param int|null $siteId
      *
      * @return TestModel
      * @throws HttpException
      */
-    public function runTest($test, int $siteId = null): TestModel
+    public function runTest($test): TestModel
     {
-        $this->_beforeRunTests($siteId);
+        $this->_beforeRunTests();
 
         $testModel = new TestModel(Sherlock::$plugin->settings->{$test});
         $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
@@ -622,10 +621,9 @@ class TestsService extends Component
     /**
      * Performs preps before running tests.
      *
-     * @param int|null $siteId
      * @throws HttpException
      */
-    private function _beforeRunTests(int $siteId = null)
+    private function _beforeRunTests()
     {
         // Ensure we only run this method once
         if ($this->_updates !== null) {
@@ -645,10 +643,8 @@ class TestsService extends Component
         $url = '';
 
         try {
-            // Get site URL response
-            $sites = Craft::$app->getSites();
-            $site = $siteId ? $sites->getSiteById($siteId) : $sites->getCurrentSite();
-            $url = $site->baseUrl;
+            // Get current site URL response
+            $url = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
 
             $response = $client->get($url);
             $this->_siteUrlResponse['headers'] = $response->getHeaders();
