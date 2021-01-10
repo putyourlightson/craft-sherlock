@@ -325,7 +325,7 @@ class TestsService extends Component
                         $unparsedBaseUrl = $currentSite->getBaseUrl(false);
                     }
                     else {
-                        $unparsedBaseUrl = $currentSite->originalBaseUrl ?: $currentSite->baseUrl;
+                        $unparsedBaseUrl = $currentSite->baseUrl;
                     }
 
                     if (strpos($unparsedBaseUrl, '@web') !== false) {
