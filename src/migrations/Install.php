@@ -5,7 +5,6 @@
 
 namespace putyourlightson\sherlock\migrations;
 
-use Craft;
 use craft\db\Migration;
 use craft\records\Site;
 use putyourlightson\sherlock\records\ScanRecord;

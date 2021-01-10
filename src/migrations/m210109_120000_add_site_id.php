@@ -6,7 +6,6 @@ use Craft;
 use craft\db\Migration;
 use craft\records\Site;
 use putyourlightson\sherlock\records\ScanRecord;
-use putyourlightson\sherlock\Sherlock;
 
 class m210109_120000_add_site_id extends Migration
 {

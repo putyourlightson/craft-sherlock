@@ -74,10 +74,9 @@ class ScansController extends Controller
     /**
      * Deprecated in 3.0.0, use `api/run-scan` instead.
      *
-     * @param int|null $siteId
      * @deprecated
      */
-    public function actionRunScan(int $siteId = null)
+    public function actionRunScan()
     {
         Sherlock::$plugin->runAction('api/run-scan');
     }

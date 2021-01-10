@@ -75,6 +75,9 @@ class ScansService extends Component
         if ($siteId !== null) {
             Craft::$app->getSites()->setCurrentSite($siteId);
         }
+        else {
+            $siteId = Craft::$app->getSites()->getCurrentSite()->id;
+        }
 
         // Create model
         $scanModel = new ScanModel([
@@ -88,7 +91,7 @@ class ScansService extends Component
         $total = count($tests);
 
         foreach ($tests as $test) {
-            $testModel = Sherlock::$plugin->tests->runTest($test, $siteId);
+            $testModel = Sherlock::$plugin->tests->runTest($test);
 
             if (!$testModel->pass) {
                 $scanModel->pass = false;

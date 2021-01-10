@@ -25,7 +25,6 @@ use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\twigextensions\SherlockTwigExtension;
 use putyourlightson\sherlock\variables\SherlockVariable;
 use yii\base\Event;
-use yii\web\ForbiddenHttpException;
 
 /**
  * Sherlock Plugin
@@ -34,7 +33,7 @@ use yii\web\ForbiddenHttpException;
  * @property-read  SecurityService $security
  * @property-read  TestsService $tests
  *
- * @property-read bool $isPro
+ * @property-read bool $isLite
  * @property-read SettingsModel $settings
  */
 class Sherlock extends Plugin
@@ -116,18 +115,6 @@ class Sherlock extends Plugin
     public function getIsLite(): bool
     {
         return $this->is(self::EDITION_LITE);
-    }
-
-    /**
-     * Throws an exception if the plugin edition is lite.
-     *
-     * @throws ForbiddenHttpException
-     */
-    public function requireNotLite()
-    {
-        if ($this->getIsLite()) {
-            throw new ForbiddenHttpException(Craft::t('sherlock', 'Sherlock Pro is required to perform this action.'));
-        }
     }
 
     /**

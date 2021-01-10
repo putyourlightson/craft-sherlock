@@ -3,6 +3,7 @@
 ## 3.0.0 - Unreleased
 
 ### Added
+- Added Lite, Plus and Pro editions.
 - Added multi site functionality for security scans.
 - Added the ability to add a Content Security Policy in the plugin settings.
 - Added the ability to add HTTP Headers in the plugin settings.

@@ -8,6 +8,7 @@ namespace putyourlightson\sherlock\controllers;
 use Craft;
 use craft\web\Controller;
 use putyourlightson\sherlock\Sherlock;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -32,7 +33,9 @@ class ApiController extends Controller
             return false;
         }
 
-        Sherlock::$plugin->requirePro();
+        if (Sherlock::$plugin->getIsLite()) {
+            throw new ForbiddenHttpException(Craft::t('sherlock', 'Sherlock Plus is required to perform this action.'));
+        }
 
         $key = Craft::$app->getRequest()->getParam('key', '');
         $apiKey = Craft::parseEnv(Sherlock::$plugin->settings->apiKey);
@@ -74,7 +77,7 @@ class ApiController extends Controller
      * @param int|null $siteId
      * @return Response
      */
-    public function actionGetAllScans($siteId): Response
+    public function actionGetAllScans(int $siteId = null): Response
     {
         // Get offset ID
         $offsetId = Craft::$app->getRequest()->getParam('offsetId', 0);
