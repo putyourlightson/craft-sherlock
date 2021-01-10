@@ -13,6 +13,7 @@
 - Added the Admin Username test.
 - Added the Defer Public Registration Password test.
 - Added the Elevated Session Duration test.
+- Added the Web Alias In Base URL test.
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
 - Added logging to a dedicated `sherlock.log` file.
 
@@ -20,6 +21,7 @@
 - Changed the HTTPS in control panel test to ensure that an encrypted HTTPS connection is forced.
 - Non-critical Craft and plugin updates now display warnings instead of failures in high security mode.
 - The `X-XSS-Protection` header now only display a warning instead of a failure ([reasoning](https://scotthelme.co.uk/security-headers-updates/#removing-the-x-xss-protection-header)). 
+- Renamed "Live Mode" to "Monitoring".
 - Improved test icons, explanations, thresholds and documentation links.
 
 ### Fixed
@@ -28,6 +30,7 @@
 
 ### Removed
 - Removed the plugin vulnerabilities JSON feed.
+- Removed the secret key.
 
 ## 2.3.0 - 2020-12-26
 ### Added

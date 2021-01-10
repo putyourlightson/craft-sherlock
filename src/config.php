@@ -83,13 +83,13 @@ return [
         ],
 
         // System
-        'craftFoldersAboveWebRoot' => [
+        'craftFilePermissions' => [
             'canFail' => true,
         ],
         'craftFolderPermissions' => [
             'canFail' => true,
         ],
-        'craftFilePermissions' => [
+        'craftFoldersAboveWebRoot' => [
             'canFail' => true,
         ],
         'phpVersion' => [
@@ -109,6 +109,9 @@ return [
                 '7.4' => '2022-11-28',
                 '8.0' => '2023-11-26',
             ],
+        ],
+        'webAliasInBaseUrl => [
+            'forceFail' => true,
         ],
 
         // Headers

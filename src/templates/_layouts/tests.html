@@ -90,18 +90,18 @@
             url: 'https://craftcms.com/knowledge-base/securing-craft#install-an-ssl-certificate-and-enforce-it',
         },
     },
-    craftFoldersAboveWebRoot: {
-        name: 'Craft Folders Above Web Root',
+    craftFilePermissions: {
+        name: 'Craft File Permissions',
         typeName: 'File/Folder System',
-        type: 'folder',
+        type: 'files',
         details: {
-            pass: 'Craft folders are located above the web root',
-            warning: 'Craft folders not located above the web root:',
+            pass: 'Craft file permissions are correctly set',
+            warning: 'Craft file permissions are not correctly set:',
         },
-        info: 'Keeping the Craft folders above the web root ensures that no one can access any of their files directly.',
+        info: 'The file permissions of Craft’s writable files. Set these to at most 0664, which will grant read and write for the owner and group, read for everyone else.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/installation.html#step-1-download-craft',
+            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
         },
     },
     craftFolderPermissions: {
@@ -118,18 +118,18 @@
             url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
         },
     },
-    craftFilePermissions: {
-        name: 'Craft File Permissions',
+    craftFoldersAboveWebRoot: {
+        name: 'Craft Folders Above Web Root',
         typeName: 'File/Folder System',
-        type: 'files',
+        type: 'folder',
         details: {
-            pass: 'Craft file permissions are correctly set',
-            warning: 'Craft file permissions are not correctly set:',
+            pass: 'Craft folders are located above the web root',
+            warning: 'Craft folders not located above the web root:',
         },
-        info: 'The file permissions of Craft’s writable files. Set these to at most 0664, which will grant read and write for the owner and group, read for everyone else.',
+        info: 'Keeping the Craft folders above the web root ensures that no one can access any of their files directly.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
+            url: 'https://craftcms.com/docs/3.x/installation.html#step-1-download-craft',
         },
     },
     phpVersion: {
@@ -150,6 +150,20 @@
         link: {
             label: 'Supported Versions',
             url: 'http://php.net/supported-versions.php',
+        },
+    },
+    webAliasInBaseUrl: {
+        name: 'Web Alias In Base URL',
+        typeName: 'Alias',
+        type: 'alias',
+        details: {
+            pass: 'Dynamic @web alias not used in base URL',
+            warning: 'Dynamic @web alias is used in base URL',
+        },
+        info: 'When using the @web alias in your site’s base URL, it should be explicitly defined rather than dynamically generated. Leaving it dynamic could introduce a cache poisoning vulnerability, and Craft won’t be able to reliably determine which site is being requested. This can result in issues when running console commands.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/#aliases',
         },
     },
     contentSecurityPolicy: {

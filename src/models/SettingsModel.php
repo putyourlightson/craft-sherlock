@@ -102,7 +102,7 @@ class SettingsModel extends Model
 
     // System
 
-    public $craftFoldersAboveWebRoot = [
+    public $craftFilePermissions = [
         'canFail' => true,
     ];
 
@@ -110,7 +110,7 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
-    public $craftFilePermissions = [
+    public $craftFoldersAboveWebRoot = [
         'canFail' => true,
     ];
 
@@ -131,6 +131,10 @@ class SettingsModel extends Model
             '7.4' => '2022-11-28',
             '8.0' => '2023-11-26',
         ],
+    ];
+
+    public $webAliasInBaseUrl = [
+        'forceFail' => true,
     ];
 
     // Headers

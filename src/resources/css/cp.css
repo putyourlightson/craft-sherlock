@@ -101,7 +101,7 @@
     color: #CECBD8;
 }
 
-.sherlock i.type.fa-lock.type {
+.sherlock i.type.fa-lock, .sherlock i.type.fa-code {
     font-size: 14px;
 }
 
@@ -132,7 +132,7 @@
     border-bottom: 4px solid;
 }
 
-.sherlock #status .btn {
+.running #status .btn {
     font-size: 14px;
 }
 

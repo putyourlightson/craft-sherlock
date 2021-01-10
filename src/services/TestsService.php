@@ -59,10 +59,11 @@ class TestsService extends Component
             'httpsFrontEnd',
 
             // System
-            'craftFoldersAboveWebRoot',
-            'craftFolderPermissions',
             'craftFilePermissions',
+            'craftFolderPermissions',
+            'craftFoldersAboveWebRoot',
             'phpVersion',
+            'webAliasInBaseUrl',
 
             // Headers
             'contentSecurityPolicy',
@@ -130,6 +131,88 @@ class TestsService extends Component
         $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
 
         switch ($test) {
+            case 'criticalCraftUpdates':
+                if ($this->_updates->cms->getHasCritical()) {
+                    $criticalCraftUpdates = [];
+
+                    foreach ($this->_updates->cms->releases as $release) {
+                        if ($release->critical) {
+                            $criticalCraftUpdates[] = '
+                                <a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> 
+                                <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
+                            ';
+                        }
+                    }
+
+                    $testModel->failTest();
+                    $testModel->value = implode(' , ', $criticalCraftUpdates);
+                }
+
+                break;
+
+            case 'criticalPluginUpdates':
+                $criticalPluginUpdates = [];
+
+                if (!empty($this->_updates->plugins)) {
+                    foreach ($this->_updates->plugins as $handle => $update) {
+                        if ($update->getHasCritical()) {
+                            /** @var Plugin $plugin */
+                            $plugin = Craft::$app->getPlugins()->getPlugin($handle);
+
+                            foreach ($update->releases as $release) {
+                                if ($release->critical) {
+                                    $criticalPluginUpdates[] = '
+                                        <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
+                                        <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
+                                    ';
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($criticalPluginUpdates)) {
+                    $testModel->failTest();
+                    $testModel->value = implode(' , ', $criticalPluginUpdates);
+                }
+
+                break;
+
+            case 'craftUpdates':
+                if ($this->_updates->cms->getHasReleases()) {
+                    $testModel->failTest();
+                }
+
+                break;
+
+            case 'pluginUpdates':
+                $pluginUpdates = [];
+
+                if (!empty($this->_updates->plugins)) {
+                    foreach ($this->_updates->plugins as $handle => $update) {
+                        if (!empty($update->releases)) {
+                            $latestRelease = $update->getLatest();
+
+                            /** @var Plugin $plugin */
+                            $plugin = Craft::$app->getPlugins()->getPlugin($handle);
+
+                            if ($plugin !== null) {
+                                $pluginUpdates[] = '
+                                    <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
+                                    <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>
+                                ';
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($pluginUpdates)) {
+                    $testModel->failTest();
+                    $testModel->value = implode(' , ', $pluginUpdates);
+                }
+
+                break;
+
             case 'httpsControlPanel':
                 if (empty($this->_cpUrlResponse['scheme']) || $this->_cpUrlResponse['scheme'] != 'https') {
                     $testModel->failTest();
@@ -140,6 +223,115 @@ class TestsService extends Component
             case 'httpsFrontEnd':
                 if (empty($this->_siteUrlResponse['scheme']) || $this->_siteUrlResponse['scheme'] != 'https') {
                     $testModel->failTest();
+                }
+
+                break;
+
+            case 'craftFilePermissions':
+                $configPath = Craft::getAlias('@config');
+                $files = [
+                    'config/db.php' => $configPath.'/db.php',
+                    'config/general.php' => $configPath.'/general.php',
+                    'config/license.key' => $configPath.'/license.key',
+                ];
+                $filesFailed = [];
+
+                foreach ($files as $key => $file) {
+                    // If the file is writable by everyone
+                    if (substr(decoct(fileperms($file)), -1) >= 6) {
+                        $filesFailed[] = $key;
+                    }
+                }
+
+                if (count($filesFailed)) {
+                    $testModel->failTest();
+
+                    $testModel->value = implode(', ', $filesFailed);
+                }
+
+                break;
+
+            case 'craftFolderPermissions':
+                $paths = [
+                    'root' => Craft::getAlias('@root'),
+                    'config' => Craft::getAlias('@config'),
+                    'storage' => Craft::getAlias('@storage'),
+                ];
+                $pathsFailed = [];
+
+                foreach ($paths as $key => $path) {
+                    // If the path is writable by everyone
+                    if (substr(decoct(fileperms($path)), -1) >= 6) {
+                        $pathsFailed[] = $key;
+                    }
+                }
+
+                if (count($pathsFailed)) {
+                    $testModel->failTest();
+
+                    $testModel->value = implode(', ', $pathsFailed);
+                }
+
+                break;
+
+            case 'craftFoldersAboveWebRoot':
+                $paths = [
+                    'root' => Craft::getAlias('@root'),
+                    'config' => Craft::getAlias('@config'),
+                    'storage' => Craft::getAlias('@storage'),
+                    'templates' => Craft::getAlias('@templates'),
+                ];
+                $pathsFailed = [];
+                $cwd = getcwd();
+
+                foreach ($paths as $key => $path) {
+                    // If the current working directory is a substring of the path
+                    if (strpos($path, $cwd) !== false) {
+                        $pathsFailed[] = $key;
+                    }
+                }
+
+                if (count($pathsFailed)) {
+                    $testModel->failTest();
+
+                    $testModel->value = implode(', ', $pathsFailed);
+                }
+
+                break;
+
+            case 'phpVersion':
+                $version = PHP_VERSION;
+                $value = substr($version, 0, 3);
+                $eolDate = '';
+
+                if (isset($testModel->thresholds[$value])) {
+                    if (strtotime($testModel->thresholds[$value]) < time()) {
+                        $testModel->failTest();
+                    }
+
+                    $eolDate = $testModel->thresholds[$value];
+                }
+
+                $testModel->value = $version.($eolDate ? ' (until '.$eolDate.')' : '');
+
+                break;
+
+            case 'webAliasInBaseUrl':
+                if (Craft::$app->getRequest()->isWebAliasSetDynamically) {
+                    $currentSite = Craft::$app->getSites()->getCurrentSite();
+
+                    // How this works was changed in 3.6.0
+                    // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
+                    if (version_compare(Craft::$app->getVersion(), '3.6.0-RC2', '>=')) {
+                        $unparsedBaseUrl = $currentSite->getBaseUrl(false);
+                    }
+                    else {
+                        $unparsedBaseUrl = $currentSite->_baseUrl;
+                    }
+
+                    if (strpos($unparsedBaseUrl, '@web') !== false) {
+                        $testModel->failTest();
+                    }
                 }
 
                 break;
@@ -266,177 +458,6 @@ class TestsService extends Component
                 }
                 else {
                     $testModel->value = '"'.$value.'"';
-                }
-
-                break;
-
-            case 'craftFoldersAboveWebRoot':
-                $paths = [
-                    'root' => Craft::getAlias('@root'),
-                    'config' => Craft::getAlias('@config'),
-                    'storage' => Craft::getAlias('@storage'),
-                    'templates' => Craft::getAlias('@templates'),
-                ];
-                $pathsFailed = [];
-                $cwd = getcwd();
-
-                foreach ($paths as $key => $path) {
-                    // if the current working directory is a substring of the path
-                    if (strpos($path, $cwd) !== false) {
-                        $pathsFailed[] = $key;
-                    }
-                }
-
-                if (count($pathsFailed)) {
-                    $testModel->failTest();
-
-                    $testModel->value = implode(', ', $pathsFailed);
-                }
-
-                break;
-
-            case 'craftFolderPermissions':
-                $paths = [
-                    'root' => Craft::getAlias('@root'),
-                    'config' => Craft::getAlias('@config'),
-                    'storage' => Craft::getAlias('@storage'),
-                ];
-                $pathsFailed = [];
-
-                foreach ($paths as $key => $path) {
-                    // If the path is writable by everyone
-                    if (substr(decoct(fileperms($path)), -1) >= 6) {
-                        $pathsFailed[] = $key;
-                    }
-                }
-
-                if (count($pathsFailed)) {
-                    $testModel->failTest();
-
-                    $testModel->value = implode(', ', $pathsFailed);
-                }
-
-                break;
-
-            case 'craftFilePermissions':
-                $configPath = Craft::getAlias('@config');
-                $files = [
-                    'config/db.php' => $configPath.'/db.php',
-                    'config/general.php' => $configPath.'/general.php',
-                    'config/license.key' => $configPath.'/license.key',
-                ];
-                $filesFailed = [];
-
-                foreach ($files as $key => $file) {
-                    // If the file is writable by everyone
-                    if (substr(decoct(fileperms($file)), -1) >= 6) {
-                        $filesFailed[] = $key;
-                    }
-                }
-
-                if (count($filesFailed)) {
-                    $testModel->failTest();
-
-                    $testModel->value = implode(', ', $filesFailed);
-                }
-
-                break;
-
-            case 'phpVersion':
-                $version = PHP_VERSION;
-                $value = substr($version, 0, 3);
-                $eolDate = '';
-
-                if (isset($testModel->thresholds[$value])) {
-                    if (strtotime($testModel->thresholds[$value]) < time()) {
-                        $testModel->failTest();
-                    }
-
-                    $eolDate = $testModel->thresholds[$value];
-                }
-
-                $testModel->value = $version.($eolDate ? ' (until '.$eolDate.')' : '');
-
-                break;
-
-            case 'craftUpdates':
-                if ($this->_updates->cms->getHasReleases()) {
-                    $testModel->failTest();
-                }
-
-                break;
-
-            case 'criticalCraftUpdates':
-                if ($this->_updates->cms->getHasCritical()) {
-                    $criticalCraftUpdates = [];
-
-                    foreach ($this->_updates->cms->releases as $release) {
-                        if ($release->critical) {
-                            $criticalCraftUpdates[] = '
-                                <a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> 
-                                <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
-                            ';
-                        }
-                    }
-
-                    $testModel->failTest();
-                    $testModel->value = implode(' , ', $criticalCraftUpdates);
-                }
-
-                break;
-
-            case 'pluginUpdates':
-                $pluginUpdates = [];
-
-                if (!empty($this->_updates->plugins)) {
-                    foreach ($this->_updates->plugins as $handle => $update) {
-                        if (!empty($update->releases)) {
-                            $latestRelease = $update->getLatest();
-
-                            /** @var Plugin $plugin */
-                            $plugin = Craft::$app->getPlugins()->getPlugin($handle);
-
-                            if ($plugin !== null) {
-                                $pluginUpdates[] = '
-                                    <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
-                                    <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>
-                                ';
-                            }
-                        }
-                    }
-                }
-
-                if (!empty($pluginUpdates)) {
-                    $testModel->failTest();
-                    $testModel->value = implode(' , ', $pluginUpdates);
-                }
-
-                break;
-
-            case 'criticalPluginUpdates':
-                $criticalPluginUpdates = [];
-
-                if (!empty($this->_updates->plugins)) {
-                    foreach ($this->_updates->plugins as $handle => $update) {
-                        if ($update->getHasCritical()) {
-                            /** @var Plugin $plugin */
-                            $plugin = Craft::$app->getPlugins()->getPlugin($handle);
-
-                            foreach ($update->releases as $release) {
-                                if ($release->critical) {
-                                    $criticalPluginUpdates[] = '
-                                        <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
-                                        <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
-                                    ';
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (!empty($criticalPluginUpdates)) {
-                    $testModel->failTest();
-                    $testModel->value = implode(' , ', $criticalPluginUpdates);
                 }
 
                 break;
