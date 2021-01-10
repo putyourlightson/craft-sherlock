@@ -17,7 +17,7 @@ class SettingsModel extends Model
     /**
      * @var bool
      */
-    public $liveMode = false;
+    public $monitor = false;
 
     /**
      * @var mixed
@@ -207,7 +207,7 @@ class SettingsModel extends Model
     public $deferPublicRegistrationPassword = [];
 
     public $devMode = [
-        'canFail' => true,
+        'forceFail' => true,
     ];
 
     public $elevatedSessionDuration = [

@@ -478,14 +478,6 @@ class TestsService extends Component
 
                 break;
 
-            case 'devMode':
-                if (Craft::$app->getConfig()->getGeneral()->{$test}) {
-                    $testModel->pass = $testModel->forceFail ? false : !($testModel->canFail && Sherlock::$plugin->settings->liveMode);
-                    $testModel->warning = true;
-                }
-
-                break;
-
             case 'enableCsrfProtection':
             case 'useSecureCookies':
             case 'requireMatchingUserAgentForSession':
@@ -498,17 +490,18 @@ class TestsService extends Component
 
                 break;
 
-            case 'translationDebugOutput':
-            case 'testToEmailAddress':
             case 'deferPublicRegistrationPassword':
+            case 'devMode':
+            case 'testToEmailAddress':
+            case 'translationDebugOutput':
                 if (Craft::$app->getConfig()->getGeneral()->{$test}) {
                     $testModel->failTest();
                 }
 
                 break;
 
-            case 'defaultFileMode':
             case 'defaultDirMode':
+            case 'defaultFileMode':
                 $value = Craft::$app->getConfig()->getGeneral()->{$test};
 
                 if ($value > $testModel->threshold) {

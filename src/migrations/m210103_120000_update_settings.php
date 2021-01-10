@@ -22,7 +22,14 @@ class m210103_120000_update_settings extends Migration
 
         $settings = Sherlock::$plugin->settings;
 
-        // Update header protection enabled setting from project config value
+        // Rename live mode to monitor
+        $liveMode = Craft::$app->getProjectConfig()->get('sherlock.settings.liveMode');
+        $settings->monitor = (bool)$liveMode;
+
+        // Update devMode setting
+        $settings->devMode = ['forceFail' => true];
+
+        // Update header protection enabled setting
         $headerProtection = Craft::$app->getProjectConfig()->get('sherlock.settings.headerProtection');
         $settings->headerProtectionSettings['enabled'] = (bool)$headerProtection;
 

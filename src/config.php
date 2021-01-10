@@ -19,8 +19,8 @@
 
 return [
     '*' => [
-        // Whether the site is live – if enabled then control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.
-        //'liveMode' => false,
+        // Whether to monitor scans. If enabled, control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.
+        //'monitor' => false,
 
         // Enter the email addresses (separated by commas) that should be notified of security issues.
         //'notificationEmailAddresses' => '',
@@ -166,7 +166,7 @@ return [
         ],
         'deferPublicRegistrationPassword' => [],
         'devMode' => [
-            'canFail' => true,
+            'forceFail' => true,
         ],
         'elevatedSessionDuration' => [
             'canFail' => true,
