@@ -389,9 +389,6 @@ class TestsService extends Component
                 if (empty($value)) {
                     $testModel->failTest();
                 }
-                else {
-                    $testModel->value = '"'.$value.'"';
-                }
 
                 break;
 
