@@ -14,16 +14,6 @@ use putyourlightson\sherlock\Sherlock;
 class SherlockVariable
 {
     /**
-     * Returns true if lite version
-     *
-     * @return bool
-     */
-    public function getIsLite(): bool
-    {
-        return Sherlock::$plugin->getIsLite();
-    }
-
-    /**
      * Returns a nonce.
      *
      * @return string

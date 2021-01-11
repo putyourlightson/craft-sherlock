@@ -68,6 +68,16 @@ class SettingsModel extends Model
     public $restrictFrontEndIpAddresses = [];
 
     /**
+     * @var array The integration type classes to add to the plugin’s default integration types.
+     */
+    public $integrationTypes = [];
+
+    /**
+     * @var array The integration settings.
+     */
+    public $integrationSettings = [];
+
+    /**
      * @var mixed
      */
     public $disabledTests = [];

@@ -19,6 +19,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use putyourlightson\logtofile\LogToFile;
 use putyourlightson\sherlock\models\SettingsModel;
+use putyourlightson\sherlock\services\IntegrationsService;
 use putyourlightson\sherlock\services\ScansService;
 use putyourlightson\sherlock\services\SecurityService;
 use putyourlightson\sherlock\services\TestsService;
@@ -29,6 +30,7 @@ use yii\base\Event;
 /**
  * Sherlock Plugin
  *
+ * @property-read  IntegrationsService $integrations
  * @property-read  ScansService $scans
  * @property-read  SecurityService $security
  * @property-read  TestsService $tests
@@ -66,16 +68,15 @@ class Sherlock extends Plugin
 
         self::$plugin = $this;
 
-        // Register services as components
-        $this->setComponents([
-            'scans' => ScansService::class,
-            'security' => SecurityService::class,
-            'tests' => TestsService::class,
-        ]);
-
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
             return;
         }
+
+        $this->_registerComponents();
+        $this->_registerTwigExtensions();
+        $this->_registerVariables();
+
+        $this->integrations->runEnabledIntegrations();
 
         $this->security->applyRestrictions();
         $this->security->applyHeaderProtection();
@@ -88,9 +89,6 @@ class Sherlock extends Plugin
             $this->_registerCpAlerts();
             $this->_registerAfterInstallEvent();
         }
-
-        $this->_registerTwigExtensions();
-        $this->_registerVariables();
     }
 
     /**
@@ -108,13 +106,23 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Returns true if pro version.
+     * Returns true if lite version.
      *
      * @return bool
      */
     public function getIsLite(): bool
     {
         return $this->is(self::EDITION_LITE);
+    }
+
+    /**
+     * Returns true if pro version.
+     *
+     * @return bool
+     */
+    public function getIsPro(): bool
+    {
+        return $this->is(self::EDITION_PRO);
     }
 
     /**
@@ -152,6 +160,22 @@ class Sherlock extends Plugin
         return Craft::$app->getView()->renderTemplate('sherlock/_settings', [
             'settings' => $this->getSettings(),
             'config' => Craft::$app->getConfig()->getConfigFromFile('sherlock'),
+            'isLite' => $this->getIsLite(),
+            'isPro' => $this->getIsPro(),
+            'integrations' => $this->integrations->createAllTypes(),
+        ]);
+    }
+
+    /**
+     * Registers the components
+     */
+    private function _registerComponents()
+    {
+        $this->setComponents([
+            'integrations' => IntegrationsService::class,
+            'scans' => ScansService::class,
+            'security' => SecurityService::class,
+            'tests' => TestsService::class,
         ]);
     }
 

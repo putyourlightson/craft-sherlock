@@ -12,8 +12,6 @@
     {% include 'sherlock/_includes/welcome' %}
 {% endif %}
 
-{% set isLite = craft.sherlock.isLite %}
-
 
 <div class="sherlock-settings">
 
@@ -239,5 +237,37 @@
     {% endset %}
 
     {% include 'sherlock/_includes/paidFields' %}
+
+    {{ isPro ? '<hr>' }}
+
+    {% set fields %}
+
+        <h2>{{ 'Integrations'|t('sherlock') }}</h2>
+
+        {% for integration in integrations %}
+            {% namespace 'integrationSettings[' ~ className(integration) ~ ']' %}
+                {{ forms.lightswitchField({
+                    label: integration.displayName,
+                    instructions: integration.displayDescription,
+                    warning: (config.integrationSettings is defined ? configWarning('integrationSettings')),
+                    name: (isPro ? 'enabled' : ''),
+                    on: (isPro and integration.enabled),
+                    toggle: 'settings',
+                }) }}
+
+                <div id="settings" class="{{ (isPro and integration.enabled) ? '' : 'hidden' }}">
+                    {% set warning = integration.warning %}
+                    {% if warning %}
+                        <p class="warning with-icon">{{ warning|raw }}</p>
+                    {% endif %}
+
+                    {{ integration.getSettingsHtml()|raw }}
+                </div>
+            {% endnamespace %}
+        {% endfor %}
+
+    {% endset %}
+
+    {% include 'sherlock/_includes/paidFields' with {type: 'pro'} %}
 
 </div>

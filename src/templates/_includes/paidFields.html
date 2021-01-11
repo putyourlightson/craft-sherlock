@@ -1,9 +1,11 @@
-{% if isLite %}
+{% set type = type ?? 'plus' %}
+
+{% if isLite or (type == 'pro' and not isPro) %}
     <div class="paid">
         <div class="tag nowrap">
-            Paid Feature
+            {{ type == 'plus' ? 'Plus' : 'Pro' }} Feature
             <span class="info">
-                This feature is available only with the Plus or Pro edition.
+                This feature is available only with the {{ type == 'plus' ? 'Plus or Pro' : 'Pro' }} edition.
             </span>
         </div>
         <div class="inner">
