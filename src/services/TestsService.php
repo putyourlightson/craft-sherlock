@@ -643,8 +643,10 @@ class TestsService extends Component
         $url = '';
 
         try {
+            $currentSite = Craft::$app->getSites()->getCurrentSite();
+
             // Get current site URL response
-            $url = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
+            $url = $currentSite->getBaseUrl();
 
             $response = $client->get($url);
             $this->_siteUrlResponse['headers'] = $response->getHeaders();
@@ -662,6 +664,10 @@ class TestsService extends Component
             // Get CP URL response
             $url = UrlHelper::baseCpUrl();
 
+            if (strpos($url, 'http') !== 0) {
+                $url = trim($currentSite->getBaseUrl(), '/').'/'.Craft::$app->getConfig()->getGeneral()->cpTrigger;
+            }
+
             if (strpos($url, 'https://') === 0) {
                 // Get redirect URL scheme of insecure URL
                 $client->get(str_replace('https://', 'http://', $url), [
@@ -672,9 +678,12 @@ class TestsService extends Component
             }
         }
         catch (GuzzleException $exception) {
+            $message = Craft::t('sherlock', 'unable to connect to "{url}". Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]);
+
+            Sherlock::$plugin->log($message);
             Sherlock::$plugin->log($exception->getMessage());
 
-            throw new NotFoundHttpException(Craft::t('sherlock', 'unable to connect to {url}. Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]));
+            throw new NotFoundHttpException($message);
         }
     }
 
