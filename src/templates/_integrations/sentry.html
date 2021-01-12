@@ -1,9 +1,11 @@
 {% import '_includes/forms' as forms %}
 
-{{ forms.textField({
+{{ forms.autosuggestField({
     label: 'Data Source Name (DSN)'|t('sherlock'),
     name: 'dsn',
     instructions: 'Sentry automatically assigns you a Data Source Name (DSN) when you create a project. Find this in your Sentry account at _Settings → Projects → Client Keys (DSN)_.'|t('sherlock'),
+    suggestEnvVars: true,
+    suggestions: craft.cp.getEnvSuggestions(),
     value: integration.dsn,
     errors: integration.getErrors('dsn'),
 }) }}

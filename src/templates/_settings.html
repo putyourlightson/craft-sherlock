@@ -1,3 +1,5 @@
+{% extends '_layouts/cp' %}
+
 {% import '_includes/forms' as forms %}
 
 {% macro configWarning(setting) -%}
@@ -8,266 +10,294 @@
 
 {% do view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
 
-{% if craft.app.request.getParam('welcome') %}
-    {% include 'sherlock/_includes/welcome' %}
-{% endif %}
+{% set crumbs = [
+    { label: 'Settings'|t('app'), url: url('settings') },
+    { label: 'Plugins'|t('app'), url: url('settings/plugins') }
+] %}
+
+{% set title = 'Sherlock' %}
+
+{% set fullPageForm = true %}
 
 
-<div class="sherlock-settings">
+{% block actionButton %}
 
-    {% set fields %}
+    <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
 
-        {{ forms.lightswitchField({
-            first: true,
-            label: 'Monitor'|t('sherlock'),
-            name: (isLite ? '' : 'monitor'),
-            instructions: 'Whether to monitor scans. If enabled, control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
-            warning: (config.monitor is defined ? configWarning('monitor')),
-            on: (isLite ? false : settings.monitor),
-            errors: settings.getErrors('monitor')
-        }) }}
+{% endblock %}
 
-        {{ forms.textField({
-            label: 'Notification Email Addresses'|t('sherlock'),
-            name: (isLite ? '' : 'notificationEmailAddresses'),
-            instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues when monitor is enabled.'|t('sherlock'),
-            warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
-            value: (isLite ? '' : settings.notificationEmailAddresses),
-            errors: settings.getErrors('notificationEmailAddresses')
-        }) }}
 
-    {% endset %}
+{% block content %}
 
-    {% include 'sherlock/_includes/paidFields' %}
+    <input type="hidden" name="action" value="sherlock/settings/save">
+    <input type="hidden" name="pluginHandle" value="sherlock">
 
-    {{ not isLite ? '<hr>' }}
+    {% if craft.app.request.getParam('welcome') %}
+        {% include 'sherlock/_includes/welcome' %}
+    {% endif %}
 
-    {{ forms.lightswitchField({
-        label: 'High Security Level'|t('sherlock'),
-        name: 'highSecurityLevel',
-        instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
-        warning: (config.highSecurityLevel is defined ? configWarning('highSecurityLevel')),
-        on: settings.highSecurityLevel,
-        errors: settings.getErrors('highSecurityLevel')
-    }) }}
 
-    <hr>
+    <div class="sherlock-settings">
 
-    {{ forms.lightswitchField({
-        label: 'Header Protection'|t('sherlock'),
-        name: 'headerProtectionSettings[enabled]',
-        instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
-        warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
-        on: settings.headerProtectionSettings.enabled,
-        toggle: 'headerProtectionSettings',
-    }) }}
+        {% namespace 'settings' %}
 
-    <div id="headerProtectionSettings" {% if not settings.headerProtectionSettings.enabled %} class="hidden"{% endif %}>
+            {% set fields %}
 
-        {{ forms.editableTableField({
-            name: 'headerProtectionSettings[headers]',
-            warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
-            cols: [
-                {
-                    type: 'lightswitch',
-                    heading: 'Enabled'|t('sherlock'),
-                    thin: true,
-                },
-                {
-                    type: 'singleline',
-                    heading: 'Name'|t('sherlock'),
-                    placeholder: 'X-Frame-Options',
-                    width: '25%',
-                    code: true,
-                },
-                {
-                    type: 'singleline',
-                    heading: 'Value'|t('sherlock'),
-                    placeholder: 'SAMEORIGIN',
-                    code: true,
-                },
-            ],
-            rows: settings.headerProtectionSettings.headers,
-            minRows: 1,
-            addRowLabel: 'Add a header'|t('sherlock'),
-        }) }}
-
-    </div>
-
-    <hr>
-
-    {{ forms.lightswitchField({
-        label: 'Content Security Policy'|t('sherlock'),
-        name: 'contentSecurityPolicySettings[enabled]',
-        instructions: 'Enables a content security policy on the front-end of your site. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('sherlock', {url: 'https://content-security-policy.com/'}),
-        warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
-        on: settings.contentSecurityPolicySettings.enabled,
-        toggle: 'contentSecurityPolicySettings',
-    }) }}
-
-    <div id="contentSecurityPolicySettings" {% if not settings.contentSecurityPolicySettings.enabled %} class="hidden"{% endif %}>
-
-        {{ forms.lightswitchField({
-            offLabel: 'Report Only'|t('sherlock'),
-            onLabel: 'Enforce'|t('sherlock'),
-            name: 'contentSecurityPolicySettings[enforce]',
-            instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock'),
-            warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
-            on: settings.contentSecurityPolicySettings.enforce,
-        }) }}
-
-        {{ forms.lightswitchField({
-            offLabel: 'Meta Tag'|t('sherlock'),
-            onLabel: 'HTTP Header'|t('sherlock'),
-            name: 'contentSecurityPolicySettings[header]',
-            instructions: 'Whether to set the content security policy using a meta tag (recommended for statically cached sites) or a HTTP header (recommended for dynamic sites).'|t('sherlock'),
-            warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
-            on: settings.contentSecurityPolicySettings.header,
-        }) }}
-
-        {{ forms.editableTableField({
-            name: 'contentSecurityPolicySettings[directives]',
-            warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
-            cols: [
-                {
-                    type: 'lightswitch',
-                    heading: 'Enabled'|t('sherlock'),
-                    thin: true,
-                },
-                {
-                    type: 'select',
-                    heading: 'Directive'|t('sherlock'),
-                    options: {
-                        'default-src': 'default-src',
-                        'script-src': 'script-src',
-                        'style-src': 'style-src',
-                        'img-src': 'img-src',
-                        'connect-src': 'connect-src',
-                        'font-src': 'font-src',
-                        'object-src': 'object-src',
-                        'media-src': 'media-src',
-                        'frame-src': 'frame-src',
-                        'sandbox': 'sandbox',
-                        'report-uri': 'report-uri',
-                        'child-src': 'child-src',
-                        'form-action': 'form-action',
-                        'frame-ancestors': 'frame-ancestors',
-                        'plugin-types': 'plugin-types',
-                        'base-uri': 'base-uri',
-                        'report-to': 'report-to',
-                        'worker-src': 'worker-src',
-                        'manifest-src': 'manifest-src',
-                        'prefetch-src': 'prefetch-src',
-                        'navigate-to': 'navigate-to',
-                    },
-                    thin: true,
-                },
-                {
-                    type: 'singleline',
-                    heading: 'Value'|t('sherlock'),
-                    placeholder: "'self' '{nonce}' 'sha256-xyz...' cdn.example.com",
-                    info: 'A nonce can be added to the value below using `{nonce}`, and to templates using the `{{ nonce }}` or `{{ craft.sprig.nonce }}` template tags. Never use a nonce for statically cached sites, instead use a [hash]({url}).'|t('sherlock', {url: 'https://content-security-policy.com/hash/'}),
-                    code: true,
-                },
-            ],
-            rows: settings.contentSecurityPolicySettings.directives,
-            minRows: 1,
-            addRowLabel: 'Add a directive'|t('sherlock'),
-        }) }}
-
-    </div>
-
-    {{ not isLite ? '<hr>' }}
-
-    {% set fields %}
-
-        {{ forms.autosuggestField({
-            label: 'API Key'|t('sherlock'),
-            name: (isLite ? '' : 'apiKey'),
-            instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
-            warning: (config.apiKey is defined ? configWarning('apiKey')),
-            suggestEnvVars: true,
-            suggestions: craft.cp.getEnvSuggestions(),
-            value: (isLite ? '' : settings.apiKey),
-            errors: settings.getErrors('apiKey')
-        }) }}
-
-    {% endset %}
-
-    {% include 'sherlock/_includes/paidFields' %}
-
-    {{ not isLite ? '<hr>' }}
-
-    {% set fields %}
-
-        {{ forms.editableTableField({
-            label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
-            name: (isLite ? '' : 'restrictControlPanelIpAddresses'),
-            instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-            warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
-            cols: [
-                {
-                    type: 'singleline',
-                    heading: 'IP Address'|t('sherlock'),
-                    placeholder: '192.168.0.1',
-                    code: true,
-                },
-            ],
-            rows: (isLite ? [] : settings.restrictControlPanelIpAddresses),
-            addRowLabel: 'Add an IP address'|t('sherlock'),
-        }) }}
-
-        {{ forms.editableTableField({
-            label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
-            name: (isLite ? '' : 'restrictFrontEndIpAddresses'),
-            instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-            warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
-            cols: [
-                {
-                    type: 'singleline',
-                    heading: 'IP Address'|t('sherlock'),
-                    placeholder: '192.168.0.1',
-                    code: true,
-                },
-            ],
-            rows: (isLite ? [] : settings.restrictFrontEndIpAddresses),
-            addRowLabel: 'Add an IP address'|t('sherlock'),
-        }) }}
-
-    {% endset %}
-
-    {% include 'sherlock/_includes/paidFields' %}
-
-    {{ isPro ? '<hr>' }}
-
-    {% set fields %}
-
-        <h2>{{ 'Integrations'|t('sherlock') }}</h2>
-
-        {% for integration in integrations %}
-            {% namespace 'integrationSettings[' ~ className(integration) ~ ']' %}
                 {{ forms.lightswitchField({
-                    label: integration.displayName,
-                    instructions: integration.displayDescription,
-                    warning: (config.integrationSettings is defined ? configWarning('integrationSettings')),
-                    name: (isPro ? 'enabled' : ''),
-                    on: (isPro and integration.enabled),
-                    toggle: 'settings',
+                    first: true,
+                    label: 'Monitor'|t('sherlock'),
+                    name: (isLite ? '' : 'monitor'),
+                    instructions: 'Whether to monitor scans. If enabled, control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
+                    warning: (config.monitor is defined ? configWarning('monitor')),
+                    on: (isLite ? false : settings.monitor),
+                    errors: settings.getErrors('monitor')
                 }) }}
 
-                <div id="settings" class="{{ (isPro and integration.enabled) ? '' : 'hidden' }}">
-                    {% set warning = integration.warning %}
-                    {% if warning %}
-                        <p class="warning with-icon">{{ warning|raw }}</p>
-                    {% endif %}
+                {{ forms.textField({
+                    label: 'Notification Email Addresses'|t('sherlock'),
+                    name: (isLite ? '' : 'notificationEmailAddresses'),
+                    instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues when monitor is enabled.'|t('sherlock'),
+                    warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
+                    value: (isLite ? '' : settings.notificationEmailAddresses),
+                    errors: settings.getErrors('notificationEmailAddresses')
+                }) }}
 
-                    {{ integration.getSettingsHtml()|raw }}
-                </div>
-            {% endnamespace %}
-        {% endfor %}
+            {% endset %}
 
-    {% endset %}
+            {% include 'sherlock/_includes/paidFields' %}
 
-    {% include 'sherlock/_includes/paidFields' with {type: 'pro'} %}
+            {{ not isLite ? '<hr>' }}
 
-</div>
+            {{ forms.lightswitchField({
+                label: 'High Security Level'|t('sherlock'),
+                name: 'highSecurityLevel',
+                instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
+                warning: (config.highSecurityLevel is defined ? configWarning('highSecurityLevel')),
+                on: settings.highSecurityLevel,
+                errors: settings.getErrors('highSecurityLevel')
+            }) }}
+
+            <hr>
+
+            {{ forms.lightswitchField({
+                label: 'Header Protection'|t('sherlock'),
+                name: 'headerProtectionSettings[enabled]',
+                instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
+                warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
+                on: settings.headerProtectionSettings.enabled,
+                toggle: 'headerProtectionSettings',
+            }) }}
+
+            <div id="headerProtectionSettings" {% if not settings.headerProtectionSettings.enabled %} class="hidden"{% endif %}>
+
+                {{ forms.editableTableField({
+                    name: 'headerProtectionSettings[headers]',
+                    warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
+                    cols: [
+                        {
+                            type: 'lightswitch',
+                            heading: 'Enabled'|t('sherlock'),
+                            thin: true,
+                        },
+                        {
+                            type: 'singleline',
+                            heading: 'Name'|t('sherlock'),
+                            placeholder: 'X-Frame-Options',
+                            width: '25%',
+                            code: true,
+                        },
+                        {
+                            type: 'singleline',
+                            heading: 'Value'|t('sherlock'),
+                            placeholder: 'SAMEORIGIN',
+                            code: true,
+                        },
+                    ],
+                    rows: settings.headerProtectionSettings.headers,
+                    minRows: 1,
+                    addRowLabel: 'Add a header'|t('sherlock'),
+                }) }}
+
+            </div>
+
+            <hr>
+
+            {{ forms.lightswitchField({
+                label: 'Content Security Policy'|t('sherlock'),
+                name: 'contentSecurityPolicySettings[enabled]',
+                instructions: 'Enables a content security policy on the front-end of your site. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('sherlock', {url: 'https://content-security-policy.com/'}),
+                warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                on: settings.contentSecurityPolicySettings.enabled,
+                toggle: 'contentSecurityPolicySettings',
+            }) }}
+
+            <div id="contentSecurityPolicySettings" {% if not settings.contentSecurityPolicySettings.enabled %} class="hidden"{% endif %}>
+
+                {{ forms.lightswitchField({
+                    offLabel: 'Report Only'|t('sherlock'),
+                    onLabel: 'Enforce'|t('sherlock'),
+                    name: 'contentSecurityPolicySettings[enforce]',
+                    instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock'),
+                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                    on: settings.contentSecurityPolicySettings.enforce,
+                }) }}
+
+                {{ forms.lightswitchField({
+                    offLabel: 'Meta Tag'|t('sherlock'),
+                    onLabel: 'HTTP Header'|t('sherlock'),
+                    name: 'contentSecurityPolicySettings[header]',
+                    instructions: 'Whether to set the content security policy using a meta tag (recommended for statically cached sites) or a HTTP header (recommended for dynamic sites).'|t('sherlock'),
+                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                    on: settings.contentSecurityPolicySettings.header,
+                }) }}
+
+                {{ forms.editableTableField({
+                    name: 'contentSecurityPolicySettings[directives]',
+                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                    cols: [
+                        {
+                            type: 'lightswitch',
+                            heading: 'Enabled'|t('sherlock'),
+                            thin: true,
+                        },
+                        {
+                            type: 'select',
+                            heading: 'Directive'|t('sherlock'),
+                            options: {
+                                'default-src': 'default-src',
+                                'script-src': 'script-src',
+                                'style-src': 'style-src',
+                                'img-src': 'img-src',
+                                'connect-src': 'connect-src',
+                                'font-src': 'font-src',
+                                'object-src': 'object-src',
+                                'media-src': 'media-src',
+                                'frame-src': 'frame-src',
+                                'sandbox': 'sandbox',
+                                'report-uri': 'report-uri',
+                                'child-src': 'child-src',
+                                'form-action': 'form-action',
+                                'frame-ancestors': 'frame-ancestors',
+                                'plugin-types': 'plugin-types',
+                                'base-uri': 'base-uri',
+                                'report-to': 'report-to',
+                                'worker-src': 'worker-src',
+                                'manifest-src': 'manifest-src',
+                                'prefetch-src': 'prefetch-src',
+                                'navigate-to': 'navigate-to',
+                            },
+                            thin: true,
+                        },
+                        {
+                            type: 'singleline',
+                            heading: 'Value'|t('sherlock'),
+                            placeholder: "'self' '{nonce}' 'sha256-xyz...' cdn.example.com",
+                            info: 'A nonce can be added to the value below using `{nonce}`, and to templates using the `{{ nonce }}` or `{{ craft.sprig.nonce }}` template tags. Never use a nonce for statically cached sites, instead use a [hash]({url}).'|t('sherlock', {url: 'https://content-security-policy.com/hash/'}),
+                            code: true,
+                        },
+                    ],
+                    rows: settings.contentSecurityPolicySettings.directives,
+                    minRows: 1,
+                    addRowLabel: 'Add a directive'|t('sherlock'),
+                }) }}
+
+            </div>
+
+            {{ not isLite ? '<hr>' }}
+
+            {% set fields %}
+
+                {{ forms.autosuggestField({
+                    label: 'API Key'|t('sherlock'),
+                    name: (isLite ? '' : 'apiKey'),
+                    instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
+                    warning: (config.apiKey is defined ? configWarning('apiKey')),
+                    suggestEnvVars: true,
+                    suggestions: craft.cp.getEnvSuggestions(),
+                    value: (isLite ? '' : settings.apiKey),
+                    errors: settings.getErrors('apiKey')
+                }) }}
+
+            {% endset %}
+
+            {% include 'sherlock/_includes/paidFields' %}
+
+            {{ not isLite ? '<hr>' }}
+
+            {% set fields %}
+
+                {{ forms.editableTableField({
+                    label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
+                    name: (isLite ? '' : 'restrictControlPanelIpAddresses'),
+                    instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
+                    warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
+                    cols: [
+                        {
+                            type: 'singleline',
+                            heading: 'IP Address'|t('sherlock'),
+                            placeholder: '192.168.0.1',
+                            code: true,
+                        },
+                    ],
+                    rows: (isLite ? [] : settings.restrictControlPanelIpAddresses),
+                    addRowLabel: 'Add an IP address'|t('sherlock'),
+                }) }}
+
+                {{ forms.editableTableField({
+                    label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
+                    name: (isLite ? '' : 'restrictFrontEndIpAddresses'),
+                    instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
+                    warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
+                    cols: [
+                        {
+                            type: 'singleline',
+                            heading: 'IP Address'|t('sherlock'),
+                            placeholder: '192.168.0.1',
+                            code: true,
+                        },
+                    ],
+                    rows: (isLite ? [] : settings.restrictFrontEndIpAddresses),
+                    addRowLabel: 'Add an IP address'|t('sherlock'),
+                }) }}
+
+            {% endset %}
+
+            {% include 'sherlock/_includes/paidFields' %}
+
+        {% endnamespace %}
+
+        {{ isPro ? '<hr>' }}
+
+        {% set fields %}
+
+            <h1>{{ 'Integrations'|t('sherlock') }}</h1>
+
+            {% for integration in integrations %}
+                {% namespace 'settings[integrationSettings][' ~ className(integration) ~ ']' %}
+                    {{ forms.lightswitchField({
+                        label: integration.displayName,
+                        instructions: integration.displayDescription,
+                        warning: (config.integrationSettings is defined ? configWarning('integrationSettings')),
+                        name: (isPro ? 'enabled' : ''),
+                        on: (isPro and integration.enabled),
+                        toggle: 'settings',
+                    }) }}
+
+                    <div id="settings" class="{{ (isPro and integration.enabled) ? '' : 'hidden' }}">
+                        {% set warning = integration.warning %}
+                        {% if warning %}
+                            <p class="warning with-icon">{{ warning|raw }}</p>
+                        {% endif %}
+
+                        {{ integration.getSettingsHtml()|raw }}
+                    </div>
+                {% endnamespace %}
+            {% endfor %}
+
+        {% endset %}
+
+        {% include 'sherlock/_includes/paidFields' with {type: 'pro'} %}
+
+    </div>
+
+{% endblock %}

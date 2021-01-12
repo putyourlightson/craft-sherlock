@@ -10,6 +10,13 @@ use craft\base\SavableComponentInterface;
 interface IntegrationInterface extends SavableComponentInterface
 {
     /**
+     * Returns whether the integration is enabled.
+     *
+     * @return bool
+     */
+    public function getEnabled(): bool;
+
+    /**
      * Returns the display description of this class.
      *
      * @return string

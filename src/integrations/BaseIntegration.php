@@ -13,9 +13,17 @@ use craft\base\SavableComponent;
 abstract class BaseIntegration extends SavableComponent implements IntegrationInterface
 {
     /**
-     * @var bool
+     * @var bool Whether the integration is enabled.
      */
     public $enabled = false;
+
+    /**
+     * @inheritdoc
+     */
+    public function getEnabled(): bool
+    {
+        return $this->enabled;
+    }
 
     /**
      * @inheritdoc

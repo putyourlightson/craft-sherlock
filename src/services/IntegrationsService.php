@@ -61,12 +61,11 @@ class IntegrationsService extends Component
      */
     public function getEnabledTypes(): array
     {
+        $integrationSettings = Sherlock::$plugin->settings->integrationSettings;
         $integrationTypes = [];
 
         foreach ($this->getAllTypes() as $type) {
-            $settings = Sherlock::$plugin->settings->integrationSettings[$type] ?? [];
-
-            if (empty($settings['enabled'])) {
+            if (!empty($integrationSettings[$type]['enabled'])) {
                 $integrationTypes[] = $type;
             }
         }
@@ -81,10 +80,11 @@ class IntegrationsService extends Component
      */
     public function createAllTypes(): array
     {
+        $integrationSettings = Sherlock::$plugin->settings->integrationSettings;
         $integrations = [];
 
         foreach ($this->getAllTypes() as $type) {
-            $integrations[] = $this->createType($type);
+            $integrations[] = $this->createType($type, $integrationSettings[$type] ?? []);
         }
 
         return $integrations;
@@ -97,25 +97,25 @@ class IntegrationsService extends Component
      */
     public function createEnabledTypes(): array
     {
+        $integrationSettings = Sherlock::$plugin->settings->integrationSettings;
         $integrations = [];
 
         foreach ($this->getEnabledTypes() as $type) {
-            $integrations[] = $this->createType($type);
+            $integrations[] = $this->createType($type, $integrationSettings[$type] ?? []);
         }
 
         return $integrations;
     }
 
     /**
-     * Creates and returns an integration types.
+     * Creates and returns an integration type with the optional provided settings.
      *
      * @param string $type
+     * @param array $settings
      * @return IntegrationInterface
      */
-    public function createType(string $type): IntegrationInterface
+    public function createType(string $type, array $settings = []): IntegrationInterface
     {
-        $settings = Sherlock::$plugin->settings->integrationSettings[$type] ?? [];
-
         /** @var IntegrationInterface $integration */
         $integration = ComponentHelper::createComponent([
             'type' => $type,

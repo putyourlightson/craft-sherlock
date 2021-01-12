@@ -68,6 +68,9 @@ class Sherlock extends Plugin
 
         self::$plugin = $this;
 
+        // TODO: remove
+        $this->edition = self::EDITION_PRO;
+
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
             return;
         }
@@ -153,20 +156,6 @@ class Sherlock extends Plugin
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function settingsHtml()
-    {
-        return Craft::$app->getView()->renderTemplate('sherlock/_settings', [
-            'settings' => $this->getSettings(),
-            'config' => Craft::$app->getConfig()->getConfigFromFile('sherlock'),
-            'isLite' => $this->getIsLite(),
-            'isPro' => $this->getIsPro(),
-            'integrations' => $this->integrations->createAllTypes(),
-        ]);
-    }
-
-    /**
      * Registers the components
      */
     private function _registerComponents()
@@ -208,6 +197,13 @@ class Sherlock extends Plugin
             function(RegisterUrlRulesEvent $event) {
                 $event->rules['sherlock'] = 'sherlock/scans/index';
                 $event->rules['sherlock/<siteHandle:{handle}>'] = 'sherlock/scans/index';
+
+                // Merge so that settings controller action comes first (important!)
+                $event->rules = array_merge([
+                        'settings/plugins/sherlock' => 'sherlock/settings/edit',
+                    ],
+                    $event->rules
+                );
             }
         );
     }

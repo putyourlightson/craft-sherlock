@@ -6,8 +6,12 @@
 namespace putyourlightson\sherlock\integrations;
 
 use Craft;
+use craft\behaviors\EnvAttributeParserBehavior;
 use Sentry;
 
+/**
+ * @property-read string $settingsHtml
+ */
 class SentryIntegration extends BaseIntegration
 {
     /**
@@ -39,6 +43,33 @@ class SentryIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['parser'] = [
+            'class' => EnvAttributeParserBehavior::class,
+            'attributes' => [
+                'dsn',
+            ],
+        ];
+
+        return $behaviors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'dsn' => Craft::t('blitz', 'Data Source Name (DSN)'),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules(): array
     {
         return [
@@ -62,11 +93,11 @@ class SentryIntegration extends BaseIntegration
      */
     public function getWarning(): string
     {
-        if (!class_exists('Sentry')) {
-            return Craft::t('sherlock', 'The Sentry SDK must be installed with `composer require sentry/sdk` for this integration to be able to run.');
+        if (class_exists('Sentry')) {
+            return '';
         }
 
-        return '';
+        return Craft::t('sherlock', 'The Sentry SDK must be installed with `composer require sentry/sdk` for the integration to be able to run.');
     }
 
     /**
@@ -79,13 +110,10 @@ class SentryIntegration extends BaseIntegration
         }
 
         $config = [
-            'dsn' => self::$dsn,
-            'traces_sample_rate' => self::$tracesSampleRate,
+            'dsn' => $this->dsn,
+            'traces_sample_rate' => $this->tracesSampleRate,
         ];
 
-        Sentry\init([
-            'dsn' => self::$dsn,
-            'traces_sample_rate' => 0.1,
-        ]);
+        Sentry\init($config);
     }
 }
