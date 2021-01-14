@@ -1,0 +1,3 @@
+{% macro configWarning(setting) -%}
+    {{ 'This is being overridden by the `{setting}` config setting.'|t('sherlock', {setting: setting })|markdown(inlineOnly=true) }}
+{%- endmacro %}

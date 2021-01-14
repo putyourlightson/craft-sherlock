@@ -1,12 +1,7 @@
 {% extends '_layouts/cp' %}
 
 {% import '_includes/forms' as forms %}
-
-{% macro configWarning(setting) -%}
-    {{ 'This is being overridden by the {setting} config setting.'|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
-{%- endmacro %}
-
-{% from _self import configWarning %}
+{% import 'campaign/_macros' as macros %}
 
 {% do view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
 
@@ -48,7 +43,7 @@
                     label: 'Monitor'|t('sherlock'),
                     name: (isLite ? '' : 'monitor'),
                     instructions: 'Whether to monitor scans. If enabled, control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
-                    warning: (config.monitor is defined ? configWarning('monitor')),
+                    warning: (config.monitor is defined ? macros.configWarning('monitor')),
                     on: (isLite ? false : settings.monitor),
                     errors: settings.getErrors('monitor')
                 }) }}
@@ -57,7 +52,7 @@
                     label: 'Notification Email Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'notificationEmailAddresses'),
                     instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues when monitor is enabled.'|t('sherlock'),
-                    warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
+                    warning: (config.notificationEmailAddresses is defined ? macros.configWarning('notificationEmailAddresses')),
                     value: (isLite ? '' : settings.notificationEmailAddresses),
                     errors: settings.getErrors('notificationEmailAddresses')
                 }) }}
@@ -72,7 +67,7 @@
                 label: 'High Security Level'|t('sherlock'),
                 name: 'highSecurityLevel',
                 instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
-                warning: (config.highSecurityLevel is defined ? configWarning('highSecurityLevel')),
+                warning: (config.highSecurityLevel is defined ? macros.configWarning('highSecurityLevel')),
                 on: settings.highSecurityLevel,
                 errors: settings.getErrors('highSecurityLevel')
             }) }}
@@ -83,7 +78,7 @@
                 label: 'Header Protection'|t('sherlock'),
                 name: 'headerProtectionSettings[enabled]',
                 instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
-                warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
+                warning: (config.headerProtectionSettings is defined ? macros.configWarning('headerProtectionSettings')),
                 on: settings.headerProtectionSettings.enabled,
                 toggle: 'headerProtectionSettings',
             }) }}
@@ -92,7 +87,7 @@
 
                 {{ forms.editableTableField({
                     name: 'headerProtectionSettings[headers]',
-                    warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
+                    warning: (config.headerProtectionSettings is defined ? macros.configWarning('headerProtectionSettings')),
                     cols: [
                         {
                             type: 'lightswitch',
@@ -126,7 +121,7 @@
                 label: 'Content Security Policy'|t('sherlock'),
                 name: 'contentSecurityPolicySettings[enabled]',
                 instructions: 'Enables a content security policy on the front-end of your site. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('sherlock', {url: 'https://content-security-policy.com/'}),
-                warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
                 on: settings.contentSecurityPolicySettings.enabled,
                 toggle: 'contentSecurityPolicySettings',
             }) }}
@@ -138,7 +133,7 @@
                     onLabel: 'Enforce'|t('sherlock'),
                     name: 'contentSecurityPolicySettings[enforce]',
                     instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock'),
-                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                    warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
                     on: settings.contentSecurityPolicySettings.enforce,
                 }) }}
 
@@ -147,13 +142,13 @@
                     onLabel: 'HTTP Header'|t('sherlock'),
                     name: 'contentSecurityPolicySettings[header]',
                     instructions: 'Whether to set the content security policy using a meta tag (recommended for statically cached sites) or a HTTP header (recommended for dynamic sites).'|t('sherlock'),
-                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                    warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
                     on: settings.contentSecurityPolicySettings.header,
                 }) }}
 
                 {{ forms.editableTableField({
                     name: 'contentSecurityPolicySettings[directives]',
-                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
+                    warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
                     cols: [
                         {
                             type: 'lightswitch',
@@ -211,7 +206,7 @@
                     label: 'API Key'|t('sherlock'),
                     name: (isLite ? '' : 'apiKey'),
                     instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
-                    warning: (config.apiKey is defined ? configWarning('apiKey')),
+                    warning: (config.apiKey is defined ? macros.configWarning('apiKey')),
                     suggestEnvVars: true,
                     suggestions: craft.cp.getEnvSuggestions(),
                     value: (isLite ? '' : settings.apiKey),
@@ -230,7 +225,7 @@
                     label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'restrictControlPanelIpAddresses'),
                     instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-                    warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
+                    warning: (config.restrictControlPanelIpAddresses is defined ? macros.configWarning('restrictControlPanelIpAddresses')),
                     cols: [
                         {
                             type: 'singleline',
@@ -247,7 +242,7 @@
                     label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'restrictFrontEndIpAddresses'),
                     instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-                    warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
+                    warning: (config.restrictFrontEndIpAddresses is defined ? macros.configWarning('restrictFrontEndIpAddresses')),
                     cols: [
                         {
                             type: 'singleline',
@@ -277,7 +272,7 @@
                     {{ forms.lightswitchField({
                         label: integration.displayName,
                         instructions: integration.displayDescription,
-                        warning: (config.integrationSettings is defined ? configWarning('integrationSettings')),
+                        warning: (config.integrationSettings is defined ? macros.configWarning('integrationSettings')),
                         name: (isPro ? 'enabled' : ''),
                         on: (isPro and integration.enabled),
                         toggle: 'settings',
@@ -286,7 +281,7 @@
                     <div id="settings" class="{{ (isPro and integration.enabled) ? '' : 'hidden' }}">
                         {% set warning = integration.warning %}
                         {% if warning %}
-                            <p class="warning with-icon">{{ warning|raw }}</p>
+                            <p class="warning with-icon">{{ warning|markdown(inlineOnly=true) }}</p>
                         {% endif %}
 
                         {{ integration.getSettingsHtml()|raw }}

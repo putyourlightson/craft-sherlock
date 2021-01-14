@@ -11,6 +11,7 @@ use craft\base\Plugin;
 use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
+use DateTime;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\TransferStats;
 use putyourlightson\sherlock\models\TestModel;
@@ -138,7 +139,7 @@ class TestsService extends Component
                         if ($release->critical) {
                             $criticalCraftUpdates[] = '
                                 <a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> 
-                                <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
+                                <span class="info">Version '.$release->version.' is a critical update, released on '.$this->_formatDate($release->date).'.</span>
                             ';
                         }
                     }
@@ -162,7 +163,7 @@ class TestsService extends Component
                                 if ($release->critical) {
                                     $criticalPluginUpdates[] = '
                                         <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
-                                        <span class="info">Version '.$release->version.' is a critical update, released on '.Craft::$app->getFormatter()->asDate($release->date).'.</span>
+                                        <span class="info">Version '.$release->version.' is a critical update, released on '.$this->_formatDate($release->date).'.</span>
                                     ';
                                 }
                             }
@@ -198,7 +199,7 @@ class TestsService extends Component
                             if ($plugin !== null) {
                                 $pluginUpdates[] = '
                                     <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
-                                    <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.Craft::$app->getFormatter()->asDate($latestRelease->date).'.</span>
+                                    <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.$this->_formatDate($latestRelease->date).'.</span>
                                 ';
                             }
                         }
@@ -685,7 +686,7 @@ class TestsService extends Component
     }
 
     /**
-     * Returns a header value
+     * Returns a header value.
      *
      * @param string $name
      *
@@ -708,5 +709,16 @@ class TestsService extends Component
         $value = strip_tags(urldecode($value));
 
         return $value;
+    }
+
+    /**
+     * Returns a formatted date.
+     *
+     * @param int|string|DateTime $date
+     * @return string
+     */
+    private function _formatDate($date): string
+    {
+        return Craft::$app->getFormatter()->asDate($date, 'long');
     }
 }

@@ -97,7 +97,7 @@ class SentryIntegration extends BaseIntegration
             return '';
         }
 
-        return Craft::t('sherlock', 'The Sentry SDK must be installed with `composer require sentry/sdk` for the integration to be able to run.');
+        return Craft::t('sherlock', 'The Sentry SDK must be installed with composer for the integration to be able to run: `composer require sentry/sdk`');
     }
 
     /**
