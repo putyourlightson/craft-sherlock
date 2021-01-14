@@ -45,7 +45,7 @@ class SentryIntegration extends BaseIntegration
      */
     public static function displayDescription(): string
     {
-        return 'Integration with Sentry.io error and performance monitoring.';
+        return 'Integration with [Sentry.io](https://sentry.io/) error and performance monitoring.';
     }
 
     /**
@@ -102,7 +102,7 @@ class SentryIntegration extends BaseIntegration
      */
     public function getWarning(): string
     {
-        if (!$this->getIsInstalled()) {
+        if ($this->getIsInstalled()) {
             return '';
         }
 
@@ -115,7 +115,6 @@ class SentryIntegration extends BaseIntegration
     public function run()
     {
         if (!$this->getIsInstalled()) {
-            Craft::dd(Sentry\SentrySdk::class);
             return;
         }
 

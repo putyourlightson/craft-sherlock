@@ -39,7 +39,7 @@ class RollbarIntegration extends BaseIntegration
      */
     public static function displayDescription(): string
     {
-        return 'Integration with Rollbar.com error and exception reporting.';
+        return 'Integration with [Rollbar.com](https://rollbar.com/) error and exception reporting.';
     }
 
     /**
@@ -85,7 +85,7 @@ class RollbarIntegration extends BaseIntegration
      */
     public function getWarning(): string
     {
-        if (!$this->getIsInstalled()) {
+        if ($this->getIsInstalled()) {
             return '';
         }
 

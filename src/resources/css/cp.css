@@ -200,12 +200,6 @@
     color: #8f98a3;
 }
 
-.hud-shade {
-    background: #000000;
-    opacity: 0.4;
-}
-
 .info-hud {
-    line-height: 21px;
     max-width: 500px;
 }

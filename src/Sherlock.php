@@ -36,6 +36,7 @@ use yii\base\Event;
  * @property-read  TestsService $tests
  *
  * @property-read bool $isLite
+ * @property-read bool $isPro
  * @property-read SettingsModel $settings
  */
 class Sherlock extends Plugin
@@ -69,7 +70,7 @@ class Sherlock extends Plugin
         self::$plugin = $this;
 
         // TODO: remove
-        $this->edition = self::EDITION_PRO;
+        $this->edition = self::EDITION_LITE;
 
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
             return;

@@ -8,6 +8,7 @@ namespace putyourlightson\sherlock\integrations;
 use craft\base\SavableComponent;
 
 /**
+ * @property-read bool $isInstalled
  * @property-read string $warning
  */
 abstract class BaseIntegration extends SavableComponent implements IntegrationInterface

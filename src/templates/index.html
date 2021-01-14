@@ -1,5 +1,8 @@
 {% extends 'sherlock/_layouts/tests' %}
 
+{% do view.registerAssetBundle('putyourlightson\\sherlock\\assets\\SherlockAsset') %}
+{% do view.registerCssFile(craft.app.assetManager.getPublishedUrl('@putyourlightson/sherlock/resources/css/scans.css', true)) %}
+
 {% set title = 'Sherlock' %}
 
 {% set faIcons = {
@@ -18,8 +21,6 @@
     'upload': 'fas fa-upload',
     'user': 'fas fa-user',
 } %}
-
-{% do view.registerAssetBundle('putyourlightson\\sherlock\\assets\\SherlockAsset') %}
 
 
 {% block contextMenu %}
@@ -55,7 +56,7 @@
 
             <h1>
                 <i class="{{ faIcons[lastScan.pass ? 'pass' : 'fail'] }} {{ lastScan.pass ? 'pass' : 'fail' }}" title="{{ (lastScan.pass ? 'Pass' : 'Fail')|t('sherlock') }}"></i>&nbsp;
-                <span>This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.isHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with **warnings**'|markdown }}</span>
+                <span>This site <strong>{{ lastScan.pass ? 'pass' : 'fail' }}ed</strong> the <strong>{{ craft.sherlock.isHighSecurityLevel ? 'high' : 'standard' }}</strong> security scan {{ lastScan.pass and lastScan.warning ? ' with **warnings**'|markdown(inlineOnly=true) }}</span>
                 <span class="info">{{ 'This security scan result is determined by a set of criteria used by Sherlock’s standard/high security level setting. This is only a guideline and cannot ensure that your site and server are 100% secure. The security of this site is solely the responsibility of the site owner.'|t('sherlock') }}</span>
             </h1>
 
@@ -84,11 +85,11 @@
                                     <td>
                                         <span class="result {{ resultType == 'fail' ? 'fail' }}">
                                             {% if resultType == 'pass' %}
-                                                {{ test.details.pass|t('sherlock')|markdown }}
+                                                {{ test.details.pass|t('sherlock')|markdown(inlineOnly=true) }}
                                             {% elseif resultType == 'warning' %}
-                                                {{ test.details.warning|t('sherlock')|markdown }}
+                                                {{ test.details.warning|t('sherlock')|markdown(inlineOnly=true) }}
                                             {% else %}
-                                                {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t('sherlock')|markdown }}
+                                                {{ (test.details.fail is defined ? test.details.fail : test.details.warning)|t('sherlock')|markdown(inlineOnly=true) }}
                                             {% endif %}
                                             {% if value %}
                                                 {{ test.safeValue is defined and test.safeValue ? value|raw : value }}

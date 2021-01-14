@@ -30,7 +30,7 @@ class ScansController extends Controller
     {
         parent::init();
 
-        // If deprecated `run-scan` action
+        // Allow deprecated `run-scan` action
         if ($this->id == 'run-scan') {
             return;
         }

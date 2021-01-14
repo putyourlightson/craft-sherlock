@@ -10,6 +10,10 @@
     errors: integration.getErrors('dsn'),
 }) }}
 
+{% set info %}
+    <span class="info">{{ 'The higher the value, the more traces will be captured. Be sure to lower this value in production to avoid you burn through your quota too quickly.'|t('sherlock') }}</span>
+{% endset %}
+
 {{ forms.textField({
     label: 'Traces Sample Rate'|t('sherlock'),
     name: 'tracesSampleRate',
@@ -17,7 +21,7 @@
     step: '0.1',
     min: 0,
     max: 1,
-    instructions: 'To capture transactions, you must set this to a non-zero value between `0` and `1.0`. The higher the value, the more traces will be captured. Be sure to lower this value in production to avoid you burn through your quota too quickly.'|t('sherlock'),
+    instructions: 'To capture transactions, you must set this to a non-zero value between `0` and `1.0`.'|t('sherlock') ~ info,
     value: integration.tracesSampleRate,
     errors: integration.getErrors('tracesSampleRate'),
 }) }}
