@@ -13,9 +13,26 @@ use craft\base\SavableComponent;
 abstract class BaseIntegration extends SavableComponent implements IntegrationInterface
 {
     /**
+     * @var string|null A class that the integration requires.
+     */
+    protected $requiredClass;
+
+    /**
      * @var bool Whether the integration is enabled.
      */
     public $enabled = false;
+
+    /**
+     * @inheritdoc
+     */
+    public function getIsInstalled(): bool
+    {
+        if ($this->requiredClass === null) {
+            return true;
+        }
+
+        return class_exists($this->requiredClass);
+    }
 
     /**
      * @inheritdoc

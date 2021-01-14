@@ -1,0 +1,17 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.autosuggestField({
+    label: 'Access Token'|t('sherlock'),
+    name: 'accessToken',
+    instructions: 'Rollbar automatically assigns you an Access Token when you create a project. Find this in your project dashboard or at _Settings → Project Access Tokens_.'|t('sherlock'),
+    suggestEnvVars: true,
+    suggestions: craft.cp.getEnvSuggestions(),
+    value: integration.accessToken,
+    errors: integration.getErrors('accessToken'),
+}) }}
+
+<div class="light">
+    {{ 'The environment will be automatically sent using the `ENVIRONMENT` environment variable, defaulting to `production` if not set.'|t('sherlock')|markdown }}
+</div>
+
+<hr>

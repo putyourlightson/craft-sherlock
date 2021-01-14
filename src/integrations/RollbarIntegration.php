@@ -7,37 +7,31 @@ namespace putyourlightson\sherlock\integrations;
 
 use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
-use craft\validators\UrlValidator;
+use InvalidArgumentException;
 use putyourlightson\sherlock\Sherlock;
-use Sentry;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Rollbar\Rollbar;
 
 /**
  * @property-read string $settingsHtml
  */
-class SentryIntegration extends BaseIntegration
+class RollbarIntegration extends BaseIntegration
 {
     /**
      * @inheritdoc
      */
-    protected $requiredClass = 'Sentry\SentrySdk';
+    protected $requiredClass = 'Rollbar\Rollbar';
 
     /**
      * @var string|null
      */
-    public $dsn;
-
-    /**
-     * @var float|null
-     */
-    public $tracesSampleRate;
+    public $accessToken;
 
     /**
      * @inheritdoc
      */
     public static function displayName(): string
     {
-        return 'Sentry';
+        return 'Rollbar';
     }
 
     /**
@@ -45,7 +39,7 @@ class SentryIntegration extends BaseIntegration
      */
     public static function displayDescription(): string
     {
-        return 'Integration with Sentry.io error and performance monitoring.';
+        return 'Integration with Rollbar.com error and exception reporting.';
     }
 
     /**
@@ -58,7 +52,7 @@ class SentryIntegration extends BaseIntegration
         $behaviors['parser'] = [
             'class' => EnvAttributeParserBehavior::class,
             'attributes' => [
-                'dsn',
+                'accessToken',
             ],
         ];
 
@@ -68,22 +62,11 @@ class SentryIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function attributeLabels(): array
-    {
-        return [
-            'dsn' => Craft::t('blitz', 'Data Source Name (DSN)'),
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
-            [['dsn', 'tracesSampleRate'], 'required'],
-            [['dsn'], UrlValidator::class],
-            [['tracesSampleRate'], 'double', 'min' => 0, 'max' => 1],
+            [['accessToken'], 'required'],
+            [['accessToken'], 'string', 'length' => 32],
         ];
     }
 
@@ -92,7 +75,7 @@ class SentryIntegration extends BaseIntegration
      */
     public function getSettingsHtml(): string
     {
-        return Craft::$app->getView()->renderTemplate('sherlock/_integrations/sentry', [
+        return Craft::$app->getView()->renderTemplate('sherlock/_integrations/rollbar', [
             'integration' => $this,
         ]);
     }
@@ -106,7 +89,7 @@ class SentryIntegration extends BaseIntegration
             return '';
         }
 
-        return Craft::t('sherlock', 'The Sentry PHP SDK must be installed with composer for the integration to be able to run: `composer require sentry/sdk`');
+        return Craft::t('sherlock', 'The Rollbar PHP SDK must be installed with composer for the integration to be able to run: `composer require rollbar/rollbar`');
     }
 
     /**
@@ -115,21 +98,20 @@ class SentryIntegration extends BaseIntegration
     public function run()
     {
         if (!$this->getIsInstalled()) {
-            Craft::dd(Sentry\SentrySdk::class);
             return;
         }
 
         $config = [
-            'dsn' => Craft::parseEnv($this->dsn),
-            'traces_sample_rate' => (float)$this->tracesSampleRate,
+            'access_token' => Craft::parseEnv($this->accessToken),
+            'environment' => CRAFT_ENVIRONMENT,
         ];
 
         // Catch exception, otherwise the CP cannot be accessed
         try {
-            Sentry\init($config);
+            Rollbar::init($config);
         }
-        catch (InvalidOptionsException $exception) {
-            Sherlock::$plugin->log(Craft::t('sherlock', 'Sentry integration error: ').$exception->getMessage());
+        catch (InvalidArgumentException $exception) {
+            Sherlock::$plugin->log(Craft::t('sherlock', 'Rollbar integration error: ').$exception->getMessage());
         }
     }
 }

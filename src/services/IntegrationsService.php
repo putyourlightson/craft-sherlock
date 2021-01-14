@@ -8,6 +8,7 @@ namespace putyourlightson\sherlock\services;
 use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Component as ComponentHelper;
+use putyourlightson\sherlock\integrations\RollbarIntegration;
 use putyourlightson\sherlock\integrations\SentryIntegration;
 use putyourlightson\sherlock\integrations\IntegrationInterface;
 use putyourlightson\sherlock\Sherlock;
@@ -25,6 +26,7 @@ class IntegrationsService extends Component
     const EVENT_REGISTER_INTEGRATION_TYPES = 'registerIntegrationTypes';
 
     public $integrationTypes = [
+        RollbarIntegration::class,
         SentryIntegration::class,
     ];
 

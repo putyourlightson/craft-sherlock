@@ -676,7 +676,7 @@ class TestsService extends Component
             }
         }
         catch (GuzzleException $exception) {
-            $message = Craft::t('sherlock', 'unable to connect to "{url}". Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]);
+            $message = Craft::t('sherlock', 'Unable to connect to "{url}". Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]);
 
             Sherlock::$plugin->log($message);
             Sherlock::$plugin->log($exception->getMessage());
