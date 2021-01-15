@@ -69,18 +69,15 @@ class Sherlock extends Plugin
 
         self::$plugin = $this;
 
-        // TODO: remove
-        $this->edition = self::EDITION_LITE;
-
-        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
-            return;
-        }
-
         $this->_registerComponents();
         $this->_registerTwigExtensions();
         $this->_registerVariables();
 
         $this->integrations->runEnabledIntegrations();
+
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return;
+        }
 
         $this->security->applyRestrictions();
         $this->security->applyHeaderProtection();
