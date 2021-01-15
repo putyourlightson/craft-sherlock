@@ -1,7 +1,9 @@
 {% extends 'sherlock/_layouts/tests' %}
 
 {% do view.registerAssetBundle('putyourlightson\\sherlock\\assets\\SherlockAsset') %}
-{% do view.registerCssFile(craft.app.assetManager.getPublishedUrl('@putyourlightson/sherlock/resources/css/scans.css', true)) %}
+{% do view.registerCssFile(
+    craft.app.assetManager.getPublishedUrl('@putyourlightson/sherlock/resources/css/scans.css', true)
+) %}
 
 {% set title = 'Sherlock' %}
 
