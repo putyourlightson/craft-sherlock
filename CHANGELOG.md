@@ -18,6 +18,7 @@
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
 - Added integration with Sentry.io. 
 - Added logging to a dedicated `sherlock.log` file.
+- Added unit tests.
 
 ### Changed
 - Changed the HTTPS tests to ensure that an encrypted HTTPS connection is required.

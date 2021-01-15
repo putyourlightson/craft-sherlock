@@ -118,12 +118,11 @@ class TestsService extends Component
     /**
      * Run test
      *
-     * @param $test
-     *
+     * @param string $test
      * @return TestModel
      * @throws HttpException
      */
-    public function runTest($test): TestModel
+    public function runTest(string $test): TestModel
     {
         $this->_beforeRunTests();
 
@@ -322,7 +321,8 @@ class TestsService extends Component
 
                     // How this works was changed in 3.6.0
                     // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
-                    if (version_compare(Craft::$app->getVersion(), '3.6.0', '>=')) {
+                    // TODO: change version comparison to 3.6.0 once released
+                    if (version_compare(Craft::$app->getVersion(), '3.5.99', '>=')) {
                         $unparsedBaseUrl = $currentSite->getBaseUrl(false);
                     }
                     else {
