@@ -24,6 +24,9 @@ abstract class BaseIntegration extends SavableComponent implements IntegrationIn
     public $enabled = false;
 
     /**
+     * TODO: use `Composer\InstalledVersions::isInstalled` to check for required package in 4.0.0
+     * https://getcomposer.org/doc/07-runtime.md#installed-versions
+     *
      * @inheritdoc
      */
     public function getIsInstalled(): bool
