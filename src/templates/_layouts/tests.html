@@ -152,8 +152,28 @@
             url: 'http://php.net/supported-versions.php',
         },
     },
-    webAliasInBaseUrl: {
-        name: 'Web Alias In Base URL',
+    adminUsername: {
+        name: 'Admin Username',
+        type: 'user',
+        typeName: 'User',
+        details: {
+            pass: 'No admin account with username "admin" exists' ,
+            warning: 'An admin account with username "admin" exists',
+        },
+        info: 'Since admin accounts have the highest privileges in Craft, it is better to avoid having any with the username "admin", which is easily guessable. This makes it harder for potential attackers to target admin user accounts.',
+    },
+    requireEmailVerification: {
+        name: 'Require Email Verification',
+        type: 'user',
+        typeName: 'User Setting',
+        details: {
+            pass: 'Require email verification is enabled',
+            warning: 'Require email verification is disabled',
+        },
+        info: 'Requiring that new email addresses are verified before getting saved to user accounts ensures that they are genuine and active email addresses. Not doing so can lead to fake accounts being created by spam bots.',
+    },
+    webAliasInSiteBaseUrl: {
+        name: 'Web Alias In Site Base URL',
         typeName: 'Alias',
         type: 'alias',
         details: {
@@ -161,6 +181,20 @@
             warning: 'Dynamic @web alias is used in site’s base URL',
         },
         info: 'When using the @web alias in your site’s base URL, it should be explicitly defined rather than dynamically generated. Leaving it dynamic could introduce a cache poisoning vulnerability, and Craft won’t be able to reliably determine which site is being requested. This can result in issues when running console commands.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/3.x/config/#aliases',
+        },
+    },
+    webAliasInVolumeBaseUrl: {
+        name: 'Web Alias In Volume Base URL',
+        typeName: 'Alias',
+        type: 'alias',
+        details: {
+            pass: 'Dynamic @web alias not used in volume base URL',
+            warning: 'Dynamic @web alias is used in volume base URL:',
+        },
+        info: 'When using the @web alias in your asset volume’s base URL, it should be explicitly defined rather than dynamically generated. Leaving it dynamic could introduce a cache poisoning vulnerability, and Craft won’t be able to reliably determine which volume is being requested. This can result in issues when running console commands.',
         link: {
             label: 'Craft Docs',
             url: 'https://craftcms.com/docs/3.x/config/#aliases',
@@ -282,26 +316,6 @@
             label: 'MDN Web Docs',
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection',
         },
-    },
-    adminUsername: {
-        name: 'Admin Username',
-        type: 'user',
-        typeName: 'User',
-        details: {
-            pass: 'No admin account with username "admin" exists' ,
-            warning: 'An admin account with username "admin" exists',
-        },
-        info: 'Since admin accounts have the highest privileges in Craft, it is better to avoid having any with the username "admin", which is easily guessable. This makes it harder for potential attackers to target admin user accounts.',
-    },
-    requireEmailVerification: {
-        name: 'Require Email Verification',
-        type: 'user',
-        typeName: 'User Setting',
-        details: {
-            pass: 'Require email verification is enabled',
-            warning: 'Require email verification is disabled',
-        },
-        info: 'Requiring that new email addresses are verified before getting saved to user accounts ensures that they are genuine and active email addresses. Not doing so can lead to fake accounts being created by spam bots.',
     },
     blowfishHashCost: {
         name: 'Blowfish Hash Cost',

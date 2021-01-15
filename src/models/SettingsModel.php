@@ -143,7 +143,19 @@ class SettingsModel extends Model
         ],
     ];
 
-    public $webAliasInBaseUrl = [
+    // Setup
+
+    public $adminUsername = [];
+
+    public $requireEmailVerification = [
+        'canFail' => true,
+    ];
+
+    public $webAliasInSiteBaseUrl = [
+        'forceFail' => true,
+    ];
+
+    public $webAliasInVolumeBaseUrl = [
         'forceFail' => true,
     ];
 
@@ -178,14 +190,6 @@ class SettingsModel extends Model
     ];
 
     public $xXssProtection = [];
-
-    // Users
-
-    public $adminUsername = [];
-
-    public $requireEmailVerification = [
-        'canFail' => true,
-    ];
 
     // General config settings
 

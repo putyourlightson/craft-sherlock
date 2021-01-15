@@ -64,7 +64,12 @@ class TestsService extends Component
             'craftFolderPermissions',
             'craftFoldersAboveWebRoot',
             'phpVersion',
-            'webAliasInBaseUrl',
+
+            // Setup
+            'adminUsername',
+            'requireEmailVerification',
+            'webAliasInSiteBaseUrl',
+            'webAliasInVolumeBaseUrl',
 
             // Headers
             'contentSecurityPolicy',
@@ -75,10 +80,6 @@ class TestsService extends Component
             'xContentTypeOptions',
             'xFrameOptions',
             'xXssProtection',
-
-            // Users
-            'adminUsername',
-            'requireEmailVerification',
 
             // General config settings
             'blowfishHashCost',
@@ -242,7 +243,7 @@ class TestsService extends Component
                     }
                 }
 
-                if (count($filesFailed)) {
+                if (!empty($filesFailed)) {
                     $testModel->failTest();
 
                     $testModel->value = implode(', ', $filesFailed);
@@ -265,7 +266,7 @@ class TestsService extends Component
                     }
                 }
 
-                if (count($pathsFailed)) {
+                if (!empty($pathsFailed)) {
                     $testModel->failTest();
 
                     $testModel->value = implode(', ', $pathsFailed);
@@ -290,7 +291,7 @@ class TestsService extends Component
                     }
                 }
 
-                if (count($pathsFailed)) {
+                if (!empty($pathsFailed)) {
                     $testModel->failTest();
 
                     $testModel->value = implode(', ', $pathsFailed);
@@ -315,7 +316,23 @@ class TestsService extends Component
 
                 break;
 
-            case 'webAliasInBaseUrl':
+            case 'adminUsername':
+                $user = Craft::$app->getUsers()->getUserByUsernameOrEmail('admin');
+
+                if ($user && $user->admin) {
+                    $testModel->failTest();
+                }
+
+                break;
+
+            case 'requireEmailVerification':
+                if (Craft::$app->getProjectConfig()->get('users.requireEmailVerification') === false) {
+                    $testModel->failTest();
+                }
+
+                break;
+
+            case 'webAliasInSiteBaseUrl':
                 if (Craft::$app->getRequest()->isWebAliasSetDynamically) {
                     $currentSite = Craft::$app->getSites()->getCurrentSite();
 
@@ -331,6 +348,25 @@ class TestsService extends Component
 
                     if (strpos($unparsedBaseUrl, '@web') !== false) {
                         $testModel->failTest();
+                    }
+                }
+
+                break;
+
+            case 'webAliasInVolumeBaseUrl':
+                if (Craft::$app->getRequest()->isWebAliasSetDynamically) {
+                    $volumes = Craft::$app->getVolumes()->getAllVolumes();
+                    $volumesFailed = [];
+
+                    foreach ($volumes as $volume) {
+                        if ($volume->hasUrls && strpos($volume->url, '@web') !== false) {
+                            $volumesFailed[] = $volume->name;
+                        }
+                    }
+
+                    if (!empty($volumesFailed)) {
+                        $testModel->failTest();
+                        $testModel->value = implode(' , ', $volumesFailed);
                     }
                 }
 
@@ -455,22 +491,6 @@ class TestsService extends Component
                 }
                 else {
                     $testModel->value = '"'.$value.'"';
-                }
-
-                break;
-
-            case 'adminUsername':
-                $user = Craft::$app->getUsers()->getUserByUsernameOrEmail('admin');
-
-                if ($user && $user->admin) {
-                    $testModel->failTest();
-                }
-
-                break;
-
-            case 'requireEmailVerification':
-                if (Craft::$app->getProjectConfig()->get('users.requireEmailVerification') === false) {
-                    $testModel->failTest();
                 }
 
                 break;

@@ -4,6 +4,8 @@
 
 ### Added
 - Added Lite, Plus and Pro editions.
+- Added integration with [Sentry](https://sentry.io/). 
+- Added integration with [Rollbar](https://rollbar.com/). 
 - Added multi site functionality for security scans.
 - Added the ability to add a Content Security Policy in the plugin settings.
 - Added the ability to add HTTP Headers in the plugin settings.
@@ -14,9 +16,9 @@
 - Added the Admin Username test.
 - Added the Defer Public Registration Password test.
 - Added the Elevated Session Duration test.
-- Added the Web Alias In Base URL test.
+- Added the Web Alias In Base Site URL test.
+- Added the Web Alias In Base Volume URL test.
 - Added PHP version support thresholds up until PHP 8.0 ([supported versions](https://www.php.net/supported-versions.php)).
-- Added integration with Sentry.io. 
 - Added logging to a dedicated `sherlock.log` file.
 - Added unit tests.
 

@@ -61,7 +61,9 @@ return [
         //'disabledTests' => [],
 
         /**
+         * =========================================================================
          * Individual test settings.
+         * =========================================================================
          *
 
         // Updates
@@ -110,7 +112,16 @@ return [
                 '8.0' => '2023-11-26',
             ],
         ],
-        'webAliasInBaseUrl => [
+
+        // Setup
+        'adminUsername' => [],
+        'requireEmailVerification' => [
+            'canFail' => true,
+        ],
+        'webAliasInSiteBaseUrl => [
+            'forceFail' => true,
+        ],
+        'webAliasInVolumeBaseUrl => [
             'forceFail' => true,
         ],
 
@@ -137,12 +148,6 @@ return [
             'canFail' => true,
         ],
         'xXssProtection' => [],
-
-        // Users
-        'adminUsername' => [],
-        'requireEmailVerification' => [
-            'canFail' => true,
-        ],
 
         // General config settings
         'blowfishHashCost' => [

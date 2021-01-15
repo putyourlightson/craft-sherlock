@@ -18,11 +18,6 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 class SentryIntegration extends BaseIntegration
 {
     /**
-     * @inheritdoc
-     */
-    protected $requiredClass = 'Sentry\SentrySdk';
-
-    /**
      * @var string|null
      */
     public $dsn;
@@ -45,7 +40,7 @@ class SentryIntegration extends BaseIntegration
      */
     public static function displayDescription(): string
     {
-        return 'Integration with [Sentry.io](https://sentry.io/) error and performance monitoring.';
+        return 'Integration with [Sentry](https://sentry.io/) error and performance monitoring.';
     }
 
     /**
@@ -95,6 +90,14 @@ class SentryIntegration extends BaseIntegration
         return Craft::$app->getView()->renderTemplate('sherlock/_integrations/sentry', [
             'integration' => $this,
         ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIsInstalled(): bool
+    {
+        return function_exists('Sentry\init');
     }
 
     /**

@@ -42,14 +42,14 @@ class TestsTest extends Unit
         $this->assertFalse($testModel->pass);
     }
 
-    public function testWebAliasInBaseUrl()
+    public function testWebAliasInSiteBaseUrl()
     {
-        $testModel = Sherlock::$plugin->tests->runTest('webAliasInBaseUrl');
+        $testModel = Sherlock::$plugin->tests->runTest('webAliasInSiteBaseUrl');
         $this->assertTrue($testModel->pass);
 
         Craft::$app->getRequest()->isWebAliasSetDynamically = true;
         Craft::$app->getSites()->getCurrentSite()->setBaseUrl('@web');
-        $testModel = Sherlock::$plugin->tests->runTest('webAliasInBaseUrl');
+        $testModel = Sherlock::$plugin->tests->runTest('webAliasInSiteBaseUrl');
         $this->assertFalse($testModel->pass);
     }
 }
