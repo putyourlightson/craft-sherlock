@@ -20,7 +20,7 @@
 - Added logging to a dedicated `sherlock.log` file.
 
 ### Changed
-- Changed the HTTPS in control panel test to ensure that an encrypted HTTPS connection is forced.
+- Changed the HTTPS tests to ensure that an encrypted HTTPS connection is required.
 - Non-critical Craft and plugin updates now display warnings instead of failures in high security mode.
 - The `X-XSS-Protection` header now only display a warning instead of a failure ([reasoning](https://scotthelme.co.uk/security-headers-updates/#removing-the-x-xss-protection-header)). 
 - Renamed "Live Mode" to "Monitoring".

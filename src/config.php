@@ -79,7 +79,7 @@ return [
             'forceFail' => true,
         ],
         'httpsFrontEnd' => [
-            'canFail' => true,
+            'forceFail' => true,
         ],
 
         // System

@@ -107,7 +107,7 @@ class SettingsModel extends Model
     ];
 
     public $httpsFrontEnd = [
-        'canFail' => true,
+        'forceFail' => true,
     ];
 
     // System
