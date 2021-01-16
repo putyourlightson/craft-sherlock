@@ -128,20 +128,22 @@
 
             <div id="contentSecurityPolicySettings" {% if not settings.contentSecurityPolicySettings.enabled %} class="hidden"{% endif %}>
 
+                {% set infoText = 'Before enabling enforcing of the policy, be sure to thoroughly test your site with reporting enabled. Not doing so could result in aspects of your site being broken or not functioning as expected.' %}
                 {{ forms.lightswitchField({
                     offLabel: 'Report Only'|t('sherlock'),
                     onLabel: 'Enforce'|t('sherlock'),
                     name: 'contentSecurityPolicySettings[enforce]',
-                    instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock'),
+                    instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock') ~ macros.info(infoText),
                     warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
                     on: settings.contentSecurityPolicySettings.enforce,
                 }) }}
 
+                {% set infoText = 'Using the "HTTP Header" option is generally recommended and is required when using "Report Only" mode. If using a static cache such as Blitz with server redirects (so that requests are never handled by Craft) then you should consider either selecting the "Meta Tag" option or manually adding the HTTP header to your server configuration file.' %}
                 {{ forms.lightswitchField({
                     offLabel: 'Meta Tag'|t('sherlock'),
                     onLabel: 'HTTP Header'|t('sherlock'),
                     name: 'contentSecurityPolicySettings[header]',
-                    instructions: 'Whether to set the content security policy using a meta tag (recommended for statically cached sites) or a HTTP header (recommended for dynamic sites).'|t('sherlock'),
+                    instructions: 'Whether to set the content security policy using a meta tag or a HTTP header.'|t('sherlock') ~ macros.info(infoText),
                     warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
                     on: settings.contentSecurityPolicySettings.header,
                 }) }}
