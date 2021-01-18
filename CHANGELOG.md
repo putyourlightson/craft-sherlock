@@ -24,6 +24,7 @@
 
 ### Changed
 - Changed the HTTPS tests to ensure that an encrypted HTTPS connection is required.
+- Changed the file and folder permissions test criteria.
 - Non-critical Craft and plugin updates now display warnings instead of failures in high security mode.
 - The `X-XSS-Protection` header now only display a warning instead of a failure ([reasoning](https://scotthelme.co.uk/security-headers-updates/#removing-the-x-xss-protection-header)). 
 - Renamed "Live Mode" to "Monitoring".

@@ -228,11 +228,11 @@ class TestsService extends Component
                 break;
 
             case 'craftFilePermissions':
-                $configPath = Craft::getAlias('@config');
                 $files = [
-                    'config/db.php' => $configPath.'/db.php',
-                    'config/general.php' => $configPath.'/general.php',
-                    'config/license.key' => $configPath.'/license.key',
+                    '.env' => Craft::getAlias('@root/.env'),
+                    'composer.json' => Craft::getAlias('@root/composer.json'),
+                    'composer.lock' => Craft::getAlias('@root/composer.lock'),
+                    'config/license.key' => Craft::getAlias('@config/license.key'),
                 ];
                 $filesFailed = [];
 
@@ -253,9 +253,10 @@ class TestsService extends Component
 
             case 'craftFolderPermissions':
                 $paths = [
-                    'root' => Craft::getAlias('@root'),
-                    'config' => Craft::getAlias('@config'),
+                    'config/project' => Craft::getAlias('@config/project'),
                     'storage' => Craft::getAlias('@storage'),
+                    'vendor' => Craft::getAlias('@vendor'),
+                    'web/cpresources' => Craft::getAlias('@webroot/cpresources'),
                 ];
                 $pathsFailed = [];
 
@@ -282,6 +283,7 @@ class TestsService extends Component
                     'templates' => Craft::getAlias('@templates'),
                 ];
                 $pathsFailed = [];
+
                 $webroot = Craft::getAlias('@webroot');
 
                 foreach ($paths as $key => $path) {
@@ -657,7 +659,6 @@ class TestsService extends Component
             'timeout' => 10,
         ]);
 
-        // Define URL so we have are guaranteed to have something to catch later.
         $url = '';
 
         try {
