@@ -1,0 +1,13 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.autosuggestField({
+    label: 'API Key'|t('sherlock'),
+    name: 'apiKey',
+    instructions: 'Bugsnag automatically assigns you a Notifier API Key when you create a project. Find this in your Bugsnag account under _Project Settings_.'|t('sherlock'),
+    suggestEnvVars: true,
+    suggestions: craft.cp.getEnvSuggestions(),
+    value: integration.apiKey,
+    errors: integration.getErrors('apiKey'),
+}) }}
+
+<hr>

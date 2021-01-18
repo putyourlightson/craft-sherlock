@@ -5,33 +5,41 @@
 
 namespace putyourlightson\sherlock\integrations;
 
+use Bugsnag\Client;
+use Bugsnag\Handler;
 use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
 use InvalidArgumentException;
 use putyourlightson\sherlock\Sherlock;
-use Rollbar\Rollbar;
 
 /**
  * @property-read string $settingsHtml
  */
-class RollbarIntegration extends BaseIntegration
+class BugsnagIntegration extends BaseIntegration
 {
     /**
      * @inheritdoc
      */
-    protected $requiredClass = 'Rollbar\Rollbar';
+    protected $requiredClass = 'Bugsnag\Client';
 
     /**
      * @var string|null
      */
-    public $accessToken;
+    public $apiKey;
+
+    /**
+     * Can be overridden using config settings only.
+     *
+     * @var string|null
+     */
+    public $notifyEndpoint;
 
     /**
      * @inheritdoc
      */
     public static function displayName(): string
     {
-        return 'Rollbar';
+        return 'Bugsnag';
     }
 
     /**
@@ -39,7 +47,7 @@ class RollbarIntegration extends BaseIntegration
      */
     public static function displayDescription(): string
     {
-        return 'Integration with [Rollbar](https://rollbar.com/) error and exception reporting.';
+        return 'Integration with [Bugsnag](https://bugsnag.com/) error and exception monitoring.';
     }
 
     /**
@@ -52,7 +60,7 @@ class RollbarIntegration extends BaseIntegration
         $behaviors['parser'] = [
             'class' => EnvAttributeParserBehavior::class,
             'attributes' => [
-                'accessToken',
+                'apiKey',
             ],
         ];
 
@@ -62,11 +70,21 @@ class RollbarIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
+    public function attributeLabels(): array
+    {
+        return [
+            'apiKey' => Craft::t('sherlock', 'API Key'),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules(): array
     {
         return [
-            [['accessToken'], 'required'],
-            [['accessToken'], 'string', 'length' => 32],
+            [['apiKey'], 'required'],
+            [['apiKey'], 'string', 'length' => 32],
         ];
     }
 
@@ -75,7 +93,7 @@ class RollbarIntegration extends BaseIntegration
      */
     public function getSettingsHtml(): string
     {
-        return Craft::$app->getView()->renderTemplate('sherlock/_integrations/rollbar', [
+        return Craft::$app->getView()->renderTemplate('sherlock/_integrations/bugsnag', [
             'integration' => $this,
         ]);
     }
@@ -89,7 +107,7 @@ class RollbarIntegration extends BaseIntegration
             return '';
         }
 
-        return Craft::t('sherlock', 'The Rollbar PHP SDK must be installed with composer for the integration to be able to run: `composer require rollbar/rollbar:^1`');
+        return Craft::t('sherlock', 'The Bugsnag PHP SDK must be installed with composer for the integration to be able to run: `composer require bugsnag/bugsnag:^3.0`');
     }
 
     /**
@@ -101,17 +119,13 @@ class RollbarIntegration extends BaseIntegration
             return;
         }
 
-        $config = [
-            'access_token' => Craft::parseEnv($this->accessToken),
-            'environment' => CRAFT_ENVIRONMENT,
-        ];
-
         // Catch exception, otherwise the CP cannot be accessed
         try {
-            Rollbar::init($config);
+            $bugsnag = Client::make(Craft::parseEnv($this->apiKey), $this->notifyEndpoint);
+            Handler::register($bugsnag);
         }
         catch (InvalidArgumentException $exception) {
-            Sherlock::$plugin->log(Craft::t('sherlock', 'Rollbar integration error: ').$exception->getMessage());
+            Sherlock::$plugin->log(Craft::t('sherlock', 'Bugsnag integration error: ').$exception->getMessage());
         }
     }
 }

@@ -4,8 +4,9 @@
 
 ### Added
 - Added Lite, Plus and Pro editions.
-- Added integration with [Sentry](https://sentry.io/). 
+- Added integration with [Bugsnag](https://bugsnag.com/). 
 - Added integration with [Rollbar](https://rollbar.com/). 
+- Added integration with [Sentry](https://sentry.io/). 
 - Added multi site functionality for security scans.
 - Added the ability to add a Content Security Policy in the plugin settings.
 - Added the ability to add HTTP Headers in the plugin settings.

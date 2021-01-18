@@ -66,7 +66,7 @@ class SentryIntegration extends BaseIntegration
     public function attributeLabels(): array
     {
         return [
-            'dsn' => Craft::t('blitz', 'Data Source Name (DSN)'),
+            'dsn' => Craft::t('sherlock', 'Data Source Name (DSN)'),
         ];
     }
 
