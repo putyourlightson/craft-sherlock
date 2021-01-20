@@ -1,7 +1,7 @@
 [![Stable Version](https://img.shields.io/packagist/v/putyourlightson/craft-sherlock?label=stable)]((https://packagist.org/packages/putyourlightson/craft-sherlock))
 [![Total Downloads](https://img.shields.io/packagist/dt/putyourlightson/craft-sherlock)](https://packagist.org/packages/putyourlightson/craft-sherlock)
 
-<p align="center"><img width="130" src="https://putyourlightson.com/assets/logos/sherlock.svg"></p>
+<p align="center"><img width="130" src="https://putyourlightson.com/assets/logos/sherlock-3.svg"></p>
 
 # Sherlock Plugin for Craft CMS
 
