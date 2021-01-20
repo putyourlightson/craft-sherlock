@@ -49,7 +49,7 @@ class SettingsModel extends Model
         'enabled' => false,
         'enforce' => false,
         'header' => true,
-        'directives' => [[]],
+        'directives' => [[1, 'default-src', "'self'"]],
     ];
 
     /**

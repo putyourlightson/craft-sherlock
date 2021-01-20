@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0 - Unreleased
+## 3.0.0 - 2021-01-20
 
 ### Added
 - Added Lite, Plus and Pro editions.
