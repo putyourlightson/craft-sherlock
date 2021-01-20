@@ -15,7 +15,7 @@ Learn more and read the documentation at [putyourlightson.com/plugins/sherlock Â
 
 ## License
 
-This plugin requires a commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/sherlock).
+This plugin requires a free or commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/sherlock).
 
 ## Requirements
 
