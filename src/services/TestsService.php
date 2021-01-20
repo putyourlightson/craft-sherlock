@@ -228,25 +228,20 @@ class TestsService extends Component
                 break;
 
             case 'craftFilePermissions':
-                $files = [
+                $paths = [
                     '.env' => Craft::getAlias('@root/.env'),
+                    '.env.php' => Craft::getAlias('@root/.env.php'),
                     'composer.json' => Craft::getAlias('@root/composer.json'),
                     'composer.lock' => Craft::getAlias('@root/composer.lock'),
                     'config/license.key' => Craft::getAlias('@config/license.key'),
                 ];
-                $filesFailed = [];
 
-                foreach ($files as $key => $file) {
-                    // If the file is writable by everyone
-                    if (substr(decoct(fileperms($file)), -1) >= 6) {
-                        $filesFailed[] = $key;
-                    }
-                }
+                $pathsFailed = $this->_getPathsWritableByEveryone($paths);
 
-                if (!empty($filesFailed)) {
+                if (!empty($pathsFailed)) {
                     $testModel->failTest();
 
-                    $testModel->value = implode(', ', $filesFailed);
+                    $testModel->value = implode(', ', array_keys($pathsFailed));
                 }
 
                 break;
@@ -258,19 +253,13 @@ class TestsService extends Component
                     'vendor' => Craft::getAlias('@vendor'),
                     'web/cpresources' => Craft::getAlias('@webroot/cpresources'),
                 ];
-                $pathsFailed = [];
 
-                foreach ($paths as $key => $path) {
-                    // If the path is writable by everyone
-                    if (substr(decoct(fileperms($path)), -1) >= 6) {
-                        $pathsFailed[] = $key;
-                    }
-                }
+                $pathsFailed = $this->_getPathsWritableByEveryone($paths);
 
                 if (!empty($pathsFailed)) {
                     $testModel->failTest();
 
-                    $testModel->value = implode(', ', $pathsFailed);
+                    $testModel->value = implode(', ', array_keys($pathsFailed));
                 }
 
                 break;
@@ -730,6 +719,26 @@ class TestsService extends Component
         $value = strip_tags(urldecode($value));
 
         return $value;
+    }
+
+    /**
+     * Returns paths that are writable by everyone.
+     *
+     * @param array $paths
+     * @return array
+     */
+    private function _getPathsWritableByEveryone(array $paths): array
+    {
+        $writablePaths = [];
+
+        foreach ($paths as $key => $path) {
+            // If the path exists and is writable by everyone
+            if ((is_file($path) || is_dir($path)) && substr(decoct(fileperms($path)), -1) >= 6) {
+                $writablePaths[$key] = $path;
+            }
+        }
+
+        return $writablePaths;
     }
 
     /**

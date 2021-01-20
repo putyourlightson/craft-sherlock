@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.1 - Unreleased
+
+### Fixed
+- Fixed an exception that was being thrown when one of the files being checked did not exist ([#21](https://github.com/putyourlightson/craft-sherlock/issues/21)).
+
 ## 3.0.0 - 2021-01-20
 
 ### Added
