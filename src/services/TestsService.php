@@ -251,7 +251,7 @@ class TestsService extends Component
                     'config/project' => Craft::getAlias('@config/project'),
                     'storage' => Craft::getAlias('@storage'),
                     'vendor' => Craft::getAlias('@vendor'),
-                    'web/cpresources' => Craft::getAlias('@webroot/cpresources'),
+                    'webroot/cpresources' => Craft::getAlias('@webroot/cpresources'),
                 ];
 
                 $pathsFailed = $this->_getPathsWritableByEveryone($paths);

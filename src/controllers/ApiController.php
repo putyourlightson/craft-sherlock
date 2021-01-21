@@ -34,7 +34,7 @@ class ApiController extends Controller
         }
 
         if (Sherlock::$plugin->getIsLite()) {
-            throw new ForbiddenHttpException(Craft::t('sherlock', 'Sherlock Plus is required to perform this action.'));
+            throw new ForbiddenHttpException(Craft::t('sherlock', 'The Plus edition of Sherlock is required to perform this action.'));
         }
 
         $key = Craft::$app->getRequest()->getParam('key', '');
