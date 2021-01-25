@@ -143,6 +143,10 @@ class SettingsModel extends Model
         ],
     ];
 
+    public $phpComposerVersion = [
+        'forceFail' => true,
+    ];
+
     // Setup
 
     public $adminUsername = [];

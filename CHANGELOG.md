@@ -1,6 +1,9 @@
 # Changelog
 
-## 3.0.1 - Unreleased
+## 3.1.0 - Unreleased
+
+### Added
+- Added the PHP Composer Version test.
 
 ### Fixed
 - Fixed an exception that was being thrown when one of the files being checked did not exist ([#21](https://github.com/putyourlightson/craft-sherlock/issues/21)).

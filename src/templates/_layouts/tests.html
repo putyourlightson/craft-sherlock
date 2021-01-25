@@ -6,7 +6,7 @@
         name: 'Critical Craft Updates',
         type: 'upload',
         typeName: 'Software Update',
-        'safeValue': true,
+        safeValue: true,
         details: {
             pass: 'No critical Craft updates available',
             warning: 'Apply critical Craft updates:',
@@ -23,7 +23,7 @@
         name: 'Critical Plugin Updates',
         type: 'plugin',
         typeName: 'Plugins',
-        'safeValue': true,
+        safeValue: true,
         details: {
             pass: 'No critical plugin updates available',
             warning: 'Apply critical plugin updates:',
@@ -36,7 +36,7 @@
         name: 'Craft Updates',
         type: 'upload',
         typeName: 'Software Update',
-        'safeValue': true,
+        safeValue: true,
         details: {
             pass: 'No Craft updates available',
             warning: 'Your version of Craft is behind the latest version',
@@ -51,7 +51,7 @@
         name: 'Plugin Updates',
         type: 'plugin',
         typeName: 'Plugins',
-        'safeValue': true,
+        safeValue: true,
         details: {
             pass: 'No plugin updates available',
             warning: 'Update plugins to latest versions:',
@@ -152,6 +152,20 @@
             url: 'http://php.net/supported-versions.php',
         },
     },
+    phpComposerVersion: {
+        name: 'PHP Composer Version',
+        type: 'code',
+        typeName: 'Server Language',
+        details: {
+            pass: 'Composer is using the correct PHP version',
+            warning: 'Set the PHP version in composer.json to',
+        },
+        info: 'Craft adds a platform requirement to the project’s main composer.json file (config → platform → php) when it is installed. You should change this version to reflect that used on your production web server. Doing so will ensure that the latest versions of dependencies will be used, according to their PHP version requirements.',
+        link: {
+            label: 'Composer Platform',
+            url: 'https://getcomposer.org/doc/06-config.md#platform',
+        },
+    },
     adminUsername: {
         name: 'Admin Username',
         type: 'user',
@@ -225,7 +239,7 @@
         details: {
             pass: 'Access to other sites is not granted',
             warning: 'Access is granted to:',
-            'fail': 'Remove CORS access:',
+            fail: 'Remove CORS access:',
         },
         info: 'Cross-Origin Resource Sharing (CORS) is an HTTP-header based mechanism that allows a server to indicate any other origins (domain, scheme, or port) than its own from which a browser should permit loading of resources. CORS also relies on a mechanism by which browsers make a preflight request to the server hosting the cross-origin resource, in order to check that the server will permit the actual request. In that preflight, the browser sends headers that indicate the HTTP method and headers that will be used in the actual request.',
         link: {

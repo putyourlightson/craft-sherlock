@@ -31,7 +31,7 @@ $(document).ready(function()
         $('.sherlock').hide();
         $('.running').show();
 
-        $.get($(this).data('url'), function() {
+        $.get($(this).attr('data-url'), function() {
             location.reload();
         }).fail(function(xhr) {
             var error = xhr.responseText;

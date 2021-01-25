@@ -64,6 +64,7 @@ class TestsService extends Component
             'craftFolderPermissions',
             'craftFoldersAboveWebRoot',
             'phpVersion',
+            'phpComposerVersion',
 
             // Setup
             'adminUsername',
@@ -307,6 +308,31 @@ class TestsService extends Component
 
                 break;
 
+            case 'phpComposerVersion':
+                $version = PHP_VERSION;
+                $json = json_decode(file_get_contents(Craft::getAlias('@root/composer.json')));
+                $requiredVersion = $json->config->platform->php ?? null;
+
+                if (empty($requiredVersion)) {
+                    break;
+                }
+
+                $versionParts = explode('.', $version);
+                $versionMinor = $versionParts[0].'.'.$versionParts[1];
+                $requiredVersionParts = explode('.', $requiredVersion);
+                $requiredVersionMinor = $requiredVersionParts[0].'.'.$requiredVersionParts[1];
+
+                if (version_compare($requiredVersionMinor, $versionMinor, '<')) {
+                    $testModel->failTest();
+                    $testModel->value = PHP_VERSION;
+                }
+                elseif (version_compare($requiredVersion, $version, '<')) {
+                    $testModel->warning = true;
+                    $testModel->value = PHP_VERSION;
+                }
+
+                break;
+
             case 'adminUsername':
                 $user = Craft::$app->getUsers()->getUserByUsernameOrEmail('admin');
 
@@ -380,8 +406,8 @@ class TestsService extends Component
                     $testModel->value = 'Content-Security-Policy '.($headerSet ? 'header' : 'meta tag').' ';
 
                     if (strpos($value, 'unsafe-inline') !== false || strpos($value, 'unsafe-eval') !== false) {
-                        $testModel->value .= 'contains "unsafe" values';
                         $testModel->warning = true;
+                        $testModel->value .= 'contains "unsafe" values';
                     }
                     else {
                         $testModel->value .= 'is set';
