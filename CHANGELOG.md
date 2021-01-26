@@ -1,7 +1,6 @@
 # Changelog
 
-## 3.1.0 - Unreleased
-
+## 3.1.0 - 2021-01-26
 ### Added
 - Added the PHP Composer Version test.
 
@@ -9,7 +8,6 @@
 - Fixed an exception that was being thrown when one of the files being checked did not exist ([#21](https://github.com/putyourlightson/craft-sherlock/issues/21)).
 
 ## 3.0.0 - 2021-01-20
-
 ### Added
 - Added Lite, Plus and Pro editions.
 - Added integration with [Bugsnag](https://bugsnag.com/). 

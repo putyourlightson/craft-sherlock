@@ -144,7 +144,7 @@ class SettingsModel extends Model
     ];
 
     public $phpComposerVersion = [
-        'forceFail' => true,
+        'canFail' => true,
     ];
 
     // Setup

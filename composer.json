@@ -36,7 +36,7 @@
         "schemaVersion": "3.0.0",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-sherlock/v2/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-sherlock/v3/CHANGELOG.md",
         "class": "putyourlightson\\sherlock\\Sherlock"
     }
 }
