@@ -353,7 +353,7 @@ class TestsService extends Component
                 if (Craft::$app->getRequest()->isWebAliasSetDynamically) {
                     $currentSite = Craft::$app->getSites()->getCurrentSite();
 
-                    // How this works was changed in 3.6.0
+                    // How this works was changed in 3.6.0 (use 3.5.99 to account for 3.6.0 beta versions)
                     // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
                     if (version_compare(Craft::$app->getVersion(), '3.5.99', '>=')) {
                         $unparsedBaseUrl = $currentSite->getBaseUrl(false);
