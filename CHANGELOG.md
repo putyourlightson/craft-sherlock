@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1 - Unreleased
+### Fixed
+- Fixed a bug in which the Content Security Policy meta tag was not being recognised if it contained line breaks ([#23](https://github.com/putyourlightson/craft-sherlock/issues/23)).
+
 ## 3.1.0 - 2021-01-26
 ### Added
 - Added the PHP Composer Version test.

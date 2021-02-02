@@ -29,17 +29,17 @@ class TestsService extends Component
     /**
      * @var Updates
      */
-    private $_updates;
+    public $updates;
 
     /**
      * @var array|null
      */
-    private $_siteUrlResponse;
+    public $siteUrlResponse;
 
     /**
      * @var string|null
      */
-    private $_cpUrlResponse;
+    public $cpUrlResponse;
 
     /**
      * Get test names
@@ -118,6 +118,74 @@ class TestsService extends Component
     }
 
     /**
+     * Performs preps before running tests.
+     *
+     * @throws HttpException
+     */
+    public function beforeRunTests()
+    {
+        // Ensure we only run this method once
+        if ($this->updates !== null) {
+            return;
+        }
+
+        // Get updates, forcing a refresh
+        if (empty($this->updates)) {
+            $this->updates = Craft::$app->getUpdates()->getUpdates(true);
+        }
+
+        $client = Craft::createGuzzleClient([
+            'timeout' => 10,
+        ]);
+
+        $url = '';
+
+        try {
+            $currentSite = Craft::$app->getSites()->getCurrentSite();
+
+            // Get current site URL response
+            $url = $currentSite->getBaseUrl();
+
+            $response = $client->get($url);
+            $this->siteUrlResponse['headers'] = $response->getHeaders();
+            $this->siteUrlResponse['body'] = $response->getBody()->getContents();
+
+            if (strpos($url, 'https://') === 0) {
+                // Get redirect URL scheme of insecure URL
+                $client->get(str_replace('https://', 'http://', $url), [
+                    'on_stats' => function(TransferStats $stats) {
+                        $this->siteUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
+                    },
+                ]);
+            }
+
+            // Get CP URL response
+            $url = UrlHelper::baseCpUrl();
+
+            if (strpos($url, 'http') !== 0) {
+                $url = trim($currentSite->getBaseUrl(), '/').'/'.Craft::$app->getConfig()->getGeneral()->cpTrigger;
+            }
+
+            if (strpos($url, 'https://') === 0) {
+                // Get redirect URL scheme of insecure URL
+                $client->get(str_replace('https://', 'http://', $url), [
+                    'on_stats' => function(TransferStats $stats) {
+                        $this->cpUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
+                    },
+                ]);
+            }
+        }
+        catch (GuzzleException $exception) {
+            $message = Craft::t('sherlock', 'Unable to connect to "{url}". Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]);
+
+            Sherlock::$plugin->log($message);
+            Sherlock::$plugin->log($exception->getMessage());
+
+            throw new NotFoundHttpException($message);
+        }
+    }
+
+    /**
      * Run test
      *
      * @param string $test
@@ -126,17 +194,17 @@ class TestsService extends Component
      */
     public function runTest(string $test): TestModel
     {
-        $this->_beforeRunTests();
+        $this->beforeRunTests();
 
         $testModel = new TestModel(Sherlock::$plugin->settings->{$test});
         $testModel->highSecurityLevel = Sherlock::$plugin->settings->highSecurityLevel;
 
         switch ($test) {
             case 'criticalCraftUpdates':
-                if ($this->_updates->cms->getHasCritical()) {
+                if ($this->updates->cms->getHasCritical()) {
                     $criticalCraftUpdates = [];
 
-                    foreach ($this->_updates->cms->releases as $release) {
+                    foreach ($this->updates->cms->releases as $release) {
                         if ($release->critical) {
                             $criticalCraftUpdates[] = '
                                 <a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> 
@@ -154,8 +222,8 @@ class TestsService extends Component
             case 'criticalPluginUpdates':
                 $criticalPluginUpdates = [];
 
-                if (!empty($this->_updates->plugins)) {
-                    foreach ($this->_updates->plugins as $handle => $update) {
+                if (!empty($this->updates->plugins)) {
+                    foreach ($this->updates->plugins as $handle => $update) {
                         if ($update->getHasCritical()) {
                             /** @var Plugin $plugin */
                             $plugin = Craft::$app->getPlugins()->getPlugin($handle);
@@ -180,7 +248,7 @@ class TestsService extends Component
                 break;
 
             case 'craftUpdates':
-                if ($this->_updates->cms->getHasReleases()) {
+                if ($this->updates->cms->getHasReleases()) {
                     $testModel->failTest();
                 }
 
@@ -189,8 +257,8 @@ class TestsService extends Component
             case 'pluginUpdates':
                 $pluginUpdates = [];
 
-                if (!empty($this->_updates->plugins)) {
-                    foreach ($this->_updates->plugins as $handle => $update) {
+                if (!empty($this->updates->plugins)) {
+                    foreach ($this->updates->plugins as $handle => $update) {
                         if (!empty($update->releases)) {
                             $latestRelease = $update->getLatest();
 
@@ -215,14 +283,14 @@ class TestsService extends Component
                 break;
 
             case 'httpsControlPanel':
-                if (empty($this->_cpUrlResponse['scheme']) || $this->_cpUrlResponse['scheme'] != 'https') {
+                if (empty($this->cpUrlResponse['scheme']) || $this->cpUrlResponse['scheme'] != 'https') {
                     $testModel->failTest();
                 }
 
                 break;
 
             case 'httpsFrontEnd':
-                if (empty($this->_siteUrlResponse['scheme']) || $this->_siteUrlResponse['scheme'] != 'https') {
+                if (empty($this->siteUrlResponse['scheme']) || $this->siteUrlResponse['scheme'] != 'https') {
                     $testModel->failTest();
                 }
 
@@ -394,7 +462,7 @@ class TestsService extends Component
 
                 if (!$headerSet) {
                     // Look for meta tag
-                    preg_match('/<meta http-equiv="Content-Security-Policy" content="(.*?)"/', $this->_siteUrlResponse['body'], $matches);
+                    preg_match('/<meta http-equiv="Content-Security-Policy" content="(.*?)"/si', $this->siteUrlResponse['body'], $matches);
                     $value = $matches[1] ?? '';
                 }
 
@@ -653,74 +721,6 @@ class TestsService extends Component
     }
 
     /**
-     * Performs preps before running tests.
-     *
-     * @throws HttpException
-     */
-    private function _beforeRunTests()
-    {
-        // Ensure we only run this method once
-        if ($this->_updates !== null) {
-            return;
-        }
-
-        // Get updates, forcing a refresh
-        if (empty($this->_updates)) {
-            $this->_updates = Craft::$app->getUpdates()->getUpdates(true);
-        }
-
-        $client = Craft::createGuzzleClient([
-            'timeout' => 10,
-        ]);
-
-        $url = '';
-
-        try {
-            $currentSite = Craft::$app->getSites()->getCurrentSite();
-
-            // Get current site URL response
-            $url = $currentSite->getBaseUrl();
-
-            $response = $client->get($url);
-            $this->_siteUrlResponse['headers'] = $response->getHeaders();
-            $this->_siteUrlResponse['body'] = $response->getBody()->getContents();
-
-            if (strpos($url, 'https://') === 0) {
-                // Get redirect URL scheme of insecure URL
-                $client->get(str_replace('https://', 'http://', $url), [
-                    'on_stats' => function(TransferStats $stats) {
-                        $this->_siteUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
-                    },
-                ]);
-            }
-
-            // Get CP URL response
-            $url = UrlHelper::baseCpUrl();
-
-            if (strpos($url, 'http') !== 0) {
-                $url = trim($currentSite->getBaseUrl(), '/').'/'.Craft::$app->getConfig()->getGeneral()->cpTrigger;
-            }
-
-            if (strpos($url, 'https://') === 0) {
-                // Get redirect URL scheme of insecure URL
-                $client->get(str_replace('https://', 'http://', $url), [
-                    'on_stats' => function(TransferStats $stats) {
-                        $this->_cpUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
-                    },
-                ]);
-            }
-        }
-        catch (GuzzleException $exception) {
-            $message = Craft::t('sherlock', 'Unable to connect to "{url}". Please ensure that the site is reachable and that the system is turned on.', ['url' => $url]);
-
-            Sherlock::$plugin->log($message);
-            Sherlock::$plugin->log($exception->getMessage());
-
-            throw new NotFoundHttpException($message);
-        }
-    }
-
-    /**
      * Returns a header value.
      *
      * @param string $name
@@ -730,11 +730,11 @@ class TestsService extends Component
     private function _getHeaderValue(string $name): string
     {
         // Use lower-case name if it exists in the header
-        if (!empty($this->_siteUrlResponse['headers'][strtolower($name)])) {
+        if (!empty($this->siteUrlResponse['headers'][strtolower($name)])) {
             $name = strtolower($name);
         }
 
-        $value = $this->_siteUrlResponse['headers'][$name] ?? '';
+        $value = $this->siteUrlResponse['headers'][$name] ?? '';
 
         if (is_array($value)) {
             $value = $value[0] ?? '';

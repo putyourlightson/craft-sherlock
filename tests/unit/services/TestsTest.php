@@ -21,21 +21,57 @@ class TestsTest extends Unit
      */
     protected $tester;
 
-    /**
-     * Test all tests together, otherwise each test will result in new Guzzle calls.
-     */
-    public function testAllTests()
+    protected function _before()
     {
-        Craft::$app->getSites()->getCurrentSite()->setBaseUrl('http://craft3/');
+        Sherlock::$plugin->settings->highSecurityLevel = true;
 
+        // Set to non-null value so a Guzzle request will not be made
+        Sherlock::$plugin->tests->updates = [];
+    }
+
+    public function testHttpsControlPanel()
+    {
+        Sherlock::$plugin->tests->cpUrlResponse['scheme'] = 'http';
         $testModel = Sherlock::$plugin->tests->runTest('httpsControlPanel');
         $this->assertFalse($testModel->pass);
+    }
 
+    public function testHttpsFrontEnd()
+    {
+        Sherlock::$plugin->tests->siteUrlResponse['scheme'] = 'http';
         $testModel = Sherlock::$plugin->tests->runTest('httpsFrontEnd');
         $this->assertFalse($testModel->pass);
+    }
 
+    public function testContentSecurityPolicyHeader()
+    {
+        Sherlock::$plugin->tests->siteUrlResponse['headers']['Content-Security-Policy'] = "default-src 'unsafe-inline'";
+        $testModel = Sherlock::$plugin->tests->runTest('contentSecurityPolicy');
+        $this->assertTrue($testModel->pass);
+        $this->assertTrue($testModel->warning);
+    }
+
+    public function testContentSecurityPolicyMetaTag()
+    {
+        Sherlock::$plugin->tests->siteUrlResponse['body'] = '
+            <html>
+                <head>
+                    <meta http-equiv="Content-Security-Policy" content="
+                        default-src \'unsafe-inline\'
+                    ">
+                </head>
+            </html>
+        ';
+        $testModel = Sherlock::$plugin->tests->runTest('contentSecurityPolicy');
+        $this->assertTrue($testModel->pass);
+        $this->assertTrue($testModel->warning);
+    }
+
+    public function testWebAliasInSiteBaseUrl()
+    {
         $testModel = Sherlock::$plugin->tests->runTest('webAliasInSiteBaseUrl');
         $this->assertTrue($testModel->pass);
+
         Craft::$app->getRequest()->isWebAliasSetDynamically = true;
         Craft::$app->getSites()->getCurrentSite()->setBaseUrl('@web');
         $testModel = Sherlock::$plugin->tests->runTest('webAliasInSiteBaseUrl');
