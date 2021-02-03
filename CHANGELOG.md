@@ -1,8 +1,9 @@
 # Changelog
 
-## 3.1.1 - Unreleased
+## 3.1.1 - 2021-02-03
 ### Fixed
 - Fixed a bug in which the Content Security Policy meta tag was not being recognised if it contained line breaks ([#23](https://github.com/putyourlightson/craft-sherlock/issues/23)).
+- Fixed a bug in which the `sherlock/scans/run-scan` action was requiring the user to be logged in ([#24](https://github.com/putyourlightson/craft-sherlock/issues/24)).
 
 ## 3.1.0 - 2021-01-26
 ### Added

@@ -26,17 +26,21 @@ class ScansController extends Controller
      *
      * @throws ForbiddenHttpException
      */
-    public function init()
+    public function beforeAction($action): bool
     {
-        parent::init();
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
 
         // Allow deprecated `run-scan` action
-        if ($this->id == 'run-scan') {
-            return;
+        if ($action->id == 'run-scan') {
+            return true;
         }
 
         // Require permission
         $this->requirePermission('accessplugin-sherlock');
+
+        return true;
     }
 
     /**
