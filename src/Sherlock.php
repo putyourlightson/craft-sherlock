@@ -213,7 +213,7 @@ class Sherlock extends Plugin
     {
         Event::on(Cp::class, Cp::EVENT_REGISTER_ALERTS,
             function(RegisterCpAlertsEvent $event) {
-                $event->alerts = $this->security->getCpAlerts();
+                $event->alerts[] = $this->security->getCpAlerts();
             }
         );
     }

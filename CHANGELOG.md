@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.2 - Unreleased
+### Fixed
+- Fixed a bug in which control panel alerts were being overwritten instead of merged ([#27](https://github.com/putyourlightson/craft-sherlock/issues/27)).
+
 ## 3.1.1 - 2021-02-03
 ### Fixed
 - Fixed a bug in which the Content Security Policy meta tag was not being recognised if it contained line breaks ([#23](https://github.com/putyourlightson/craft-sherlock/issues/23)).
