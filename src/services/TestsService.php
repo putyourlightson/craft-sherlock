@@ -390,12 +390,9 @@ class TestsService extends Component
                 $requiredVersionParts = explode('.', $requiredVersion);
                 $requiredVersionMinor = $requiredVersionParts[0].'.'.$requiredVersionParts[1];
 
+                // Only compare minor version
                 if (version_compare($requiredVersionMinor, $versionMinor, '<')) {
                     $testModel->failTest();
-                    $testModel->value = PHP_VERSION;
-                }
-                elseif (version_compare($requiredVersion, $version, '<')) {
-                    $testModel->warning = true;
                     $testModel->value = PHP_VERSION;
                 }
 

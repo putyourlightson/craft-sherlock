@@ -1,6 +1,9 @@
 # Changelog
 
 ## 3.1.2 - Unreleased
+### Changed
+- Changed the PHP Composer Version test to only compare the minor version and not the patch version.
+
 ### Fixed
 - Fixed a bug in which control panel alerts were being overwritten instead of merged ([#27](https://github.com/putyourlightson/craft-sherlock/issues/27)).
 
