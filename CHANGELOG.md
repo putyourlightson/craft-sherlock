@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.1.2 - Unreleased
+## 3.1.2 - 2021-03-30
 ### Changed
 - Changed the PHP Composer Version test to only compare the minor version and not the patch version.
 
