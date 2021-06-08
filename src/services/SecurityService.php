@@ -159,7 +159,7 @@ class SecurityService extends Component
      *
      * @return bool
      */
-    private function _matchIpAddresses(array $ipAddresses, $userIp = null): bool
+    private function _matchIpAddresses(array $ipAddresses, string $userIp = null): bool
     {
         foreach ($ipAddresses as $ipAddress) {
             $ipAddress = is_array($ipAddress) ? $ipAddress[0] : $ipAddress;

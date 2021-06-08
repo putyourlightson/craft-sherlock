@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.3 - 2021-06-08
+### Fixed
+- Fixed a bug in which the plugin migration that adds the site ID column could be ignored in rare cases ([#31](https://github.com/putyourlightson/craft-sherlock/issues/31)).
+
 ## 3.1.2 - 2021-03-30
 ### Changed
 - Changed the PHP Composer Version test to only compare the minor version and not the patch version.
