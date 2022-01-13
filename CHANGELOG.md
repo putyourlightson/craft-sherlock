@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.4 - 2022-01-13
+### Fixed
+- Fixed a bug that was throwing an exception on the settings page in versions of Craft less than 3.6.0 ([#33](https://github.com/putyourlightson/craft-sherlock/issues/33)).
+
 ## 3.1.3 - 2021-06-08
 ### Fixed
 - Fixed a bug in which the plugin migration that adds the site ID column could be ignored in rare cases ([#31](https://github.com/putyourlightson/craft-sherlock/issues/31)).

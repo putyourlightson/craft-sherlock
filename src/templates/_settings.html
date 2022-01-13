@@ -87,6 +87,7 @@
 
                 {{ forms.editableTableField({
                     name: 'headerProtectionSettings[headers]',
+                    id: 'headerProtectionSettings-headers',
                     warning: (config.headerProtectionSettings is defined ? macros.configWarning('headerProtectionSettings')),
                     cols: [
                         {
@@ -150,6 +151,7 @@
 
                 {{ forms.editableTableField({
                     name: 'contentSecurityPolicySettings[directives]',
+                    id: 'contentSecurityPolicySettings-directives',
                     warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
                     cols: [
                         {
@@ -226,6 +228,7 @@
                 {{ forms.editableTableField({
                     label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'restrictControlPanelIpAddresses'),
+                    id: 'restrictControlPanelIpAddresses',
                     instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
                     warning: (config.restrictControlPanelIpAddresses is defined ? macros.configWarning('restrictControlPanelIpAddresses')),
                     cols: [
@@ -243,6 +246,7 @@
                 {{ forms.editableTableField({
                     label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'restrictFrontEndIpAddresses'),
+                    id: 'restrictFrontEndIpAddresses',
                     instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
                     warning: (config.restrictFrontEndIpAddresses is defined ? macros.configWarning('restrictFrontEndIpAddresses')),
                     cols: [
