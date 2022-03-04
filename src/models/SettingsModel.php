@@ -55,14 +55,14 @@ class SettingsModel extends Model
     public string $apiKey = '';
 
     /**
-     * @var array
+     * @var array|string
      */
-    public array $restrictControlPanelIpAddresses = [];
+    public array|string $restrictControlPanelIpAddresses = [];
 
     /**
-     * @var array
+     * @var array|string
      */
-    public array $restrictFrontEndIpAddresses = [];
+    public array|string $restrictFrontEndIpAddresses = [];
 
     /**
      * @var array The integration type classes to add to the plugin’s default integration types.
@@ -75,9 +75,9 @@ class SettingsModel extends Model
     public array $integrationSettings = [];
 
     /**
-     * @var mixed
+     * @var array
      */
-    public mixed $disabledTests = [];
+    public array $disabledTests = [];
 
     /**
      * Individual test settings

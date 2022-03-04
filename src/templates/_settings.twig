@@ -112,6 +112,9 @@
                     rows: settings.headerProtectionSettings.headers,
                     minRows: 1,
                     addRowLabel: 'Add a header'|t('sherlock'),
+                    allowAdd: true,
+                    allowDelete: true,
+                    allowReorder: true,
                 }) }}
 
             </div>
@@ -198,6 +201,9 @@
                     rows: settings.contentSecurityPolicySettings.directives,
                     minRows: 1,
                     addRowLabel: 'Add a directive'|t('sherlock'),
+                    allowAdd: true,
+                    allowDelete: true,
+                    allowReorder: true,
                 }) }}
 
             </div>
@@ -241,6 +247,9 @@
                     ],
                     rows: (isLite ? [] : settings.restrictControlPanelIpAddresses),
                     addRowLabel: 'Add an IP address'|t('sherlock'),
+                    allowAdd: true,
+                    allowDelete: true,
+                    allowReorder: true,
                 }) }}
 
                 {{ forms.editableTableField({
@@ -259,6 +268,9 @@
                     ],
                     rows: (isLite ? [] : settings.restrictFrontEndIpAddresses),
                     addRowLabel: 'Add an IP address'|t('sherlock'),
+                    allowAdd: true,
+                    allowDelete: true,
+                    allowReorder: true,
                 }) }}
 
             {% endset %}
