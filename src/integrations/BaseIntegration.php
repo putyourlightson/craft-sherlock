@@ -5,6 +5,7 @@
 
 namespace putyourlightson\sherlock\integrations;
 
+use Composer\InstalledVersions;
 use craft\base\SavableComponent;
 
 /**
@@ -14,28 +15,26 @@ use craft\base\SavableComponent;
 abstract class BaseIntegration extends SavableComponent implements IntegrationInterface
 {
     /**
-     * @var string|null A class that the integration requires.
+     * @var string|null A package that the integration requires.
      */
-    protected $requiredClass;
+    protected ?string $requiredPackage = null;
 
     /**
      * @var bool Whether the integration is enabled.
      */
-    public $enabled = false;
+    public bool $enabled = false;
 
     /**
-     * TODO: use `Composer\InstalledVersions::isInstalled` to check for required package in 4.0.0
-     * https://getcomposer.org/doc/07-runtime.md#installed-versions
-     *
      * @inheritdoc
      */
     public function getIsInstalled(): bool
     {
-        if ($this->requiredClass === null) {
+        if ($this->requiredPackage === null) {
             return true;
         }
 
-        return class_exists($this->requiredClass);
+        /** @noinspection PhpMultipleClassDeclarationsInspection */
+        return InstalledVersions::isInstalled($this->requiredPackage);
     }
 
     /**

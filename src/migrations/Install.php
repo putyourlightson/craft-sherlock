@@ -9,13 +9,10 @@ use craft\db\Migration;
 use craft\records\Site;
 use putyourlightson\sherlock\records\ScanRecord;
 
-/**
- * Install Migration
- */
 class Install extends Migration
 {
     /**
-     * @return boolean
+     * @inheritdoc
      */
     public function safeUp(): bool
     {
@@ -43,7 +40,7 @@ class Install extends Migration
     }
 
     /**
-     * @return boolean
+     * @inheritdoc
      */
     public function safeDown(): bool
     {

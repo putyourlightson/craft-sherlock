@@ -5,69 +5,66 @@
 
 namespace putyourlightson\sherlock\models;
 
-use putyourlightson\sherlock\base\BaseModel;
+use craft\base\Model;
 
-/**
- * Test Model
- */
-class TestModel extends BaseModel
+class TestModel extends Model
 {
     /**
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * @var bool
      */
-    public $canFail = false;
+    public bool $canFail = false;
 
     /**
      * @var bool
      */
-    public $forceFail = false;
+    public bool $forceFail = false;
 
     /**
      * @var int
      */
-    public $threshold = 0;
+    public int $threshold = 0;
 
     /**
      * @var mixed|null
      */
-    public $thresholds;
+    public mixed $thresholds;
 
     /**
      * @var string|null
      */
-    public $format;
+    public ?string $format;
 
     /**
      * @var bool
      */
-    public $pass = true;
+    public bool $pass = true;
 
     /**
      * @var bool
      */
-    public $warning = false;
+    public bool $warning = false;
 
     /**
      * @var string
      */
-    public $value = '';
+    public string $value = '';
 
     /**
      * @var bool
      */
-    public $highSecurityLevel = false;
+    public bool $highSecurityLevel = false;
 
     /**
      * Fail test
      */
     public function failTest()
     {
-        $this->pass = $this->forceFail ? false : !($this->canFail && $this->highSecurityLevel);
+        $this->pass = !$this->forceFail && !($this->canFail && $this->highSecurityLevel);
         $this->warning = true;
     }
 }

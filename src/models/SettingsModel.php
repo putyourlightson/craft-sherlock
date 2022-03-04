@@ -9,30 +9,27 @@ use Craft;
 use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
 
-/**
- * SettingsModel
- */
 class SettingsModel extends Model
 {
     /**
      * @var bool
      */
-    public $monitor = false;
+    public bool $monitor = false;
 
     /**
      * @var mixed
      */
-    public $notificationEmailAddresses;
+    public mixed $notificationEmailAddresses = null;
 
     /**
      * @var bool
      */
-    public $highSecurityLevel = false;
+    public bool $highSecurityLevel = false;
 
     /**
      * @var array
      */
-    public $headerProtectionSettings = [
+    public array $headerProtectionSettings = [
         'enabled' => true,
         'headers' => [
             [true, 'Strict-Transport-Security', 'max-age=31536000'],
@@ -45,7 +42,7 @@ class SettingsModel extends Model
     /**
      * @var array
      */
-    public $contentSecurityPolicySettings = [
+    public array $contentSecurityPolicySettings = [
         'enabled' => false,
         'enforce' => false,
         'header' => true,
@@ -55,32 +52,32 @@ class SettingsModel extends Model
     /**
      * @var string
      */
-    public $apiKey;
+    public string $apiKey = '';
 
     /**
      * @var array
      */
-    public $restrictControlPanelIpAddresses = [];
+    public array $restrictControlPanelIpAddresses = [];
 
     /**
      * @var array
      */
-    public $restrictFrontEndIpAddresses = [];
+    public array $restrictFrontEndIpAddresses = [];
 
     /**
      * @var array The integration type classes to add to the plugin’s default integration types.
      */
-    public $integrationTypes = [];
+    public array $integrationTypes = [];
 
     /**
      * @var array The integration settings.
      */
-    public $integrationSettings = [];
+    public array $integrationSettings = [];
 
     /**
      * @var mixed
      */
-    public $disabledTests = [];
+    public mixed $disabledTests = [];
 
     /**
      * Individual test settings
@@ -88,43 +85,43 @@ class SettingsModel extends Model
 
     // Updates
 
-    public $criticalCraftUpdates = [
+    public array $criticalCraftUpdates = [
         'forceFail' => true,
     ];
 
-    public $criticalPluginUpdates = [
+    public array $criticalPluginUpdates = [
         'forceFail' => true,
     ];
 
-    public $craftUpdates = [];
+    public array $craftUpdates = [];
 
-    public $pluginUpdates = [];
+    public array $pluginUpdates = [];
 
     // HTTPS
 
-    public $httpsControlPanel = [
+    public array $httpsControlPanel = [
         'forceFail' => true,
     ];
 
-    public $httpsFrontEnd = [
+    public array $httpsFrontEnd = [
         'forceFail' => true,
     ];
 
     // System
 
-    public $craftFilePermissions = [
+    public array $craftFilePermissions = [
         'canFail' => true,
     ];
 
-    public $craftFolderPermissions = [
+    public array $craftFolderPermissions = [
         'canFail' => true,
     ];
 
-    public $craftFoldersAboveWebRoot = [
+    public array $craftFoldersAboveWebRoot = [
         'canFail' => true,
     ];
 
-    public $phpVersion = [
+    public array $phpVersion = [
         'canFail' => true,
         'thresholds' => [
             '5.0' => '2005-09-05',
@@ -143,143 +140,143 @@ class SettingsModel extends Model
         ],
     ];
 
-    public $phpComposerVersion = [
+    public array $phpComposerVersion = [
         'canFail' => true,
     ];
 
     // Setup
 
-    public $adminUsername = [];
+    public array $adminUsername = [];
 
-    public $requireEmailVerification = [
+    public array $requireEmailVerification = [
         'canFail' => true,
     ];
 
-    public $webAliasInSiteBaseUrl = [
+    public array $webAliasInSiteBaseUrl = [
         'forceFail' => true,
     ];
 
-    public $webAliasInVolumeBaseUrl = [
+    public array $webAliasInVolumeBaseUrl = [
         'forceFail' => true,
     ];
 
     // Headers
 
-    public $contentSecurityPolicy = [
+    public array $contentSecurityPolicy = [
         'canFail' => true,
     ];
 
-    public $cors = [
+    public array $cors = [
         'forceFail' => true,
     ];
 
-    public $expectCT = [
+    public array $expectCT = [
         'canFail' => true,
     ];
 
-    public $referrerPolicy = [
+    public array $referrerPolicy = [
         'canFail' => true,
     ];
 
-    public $strictTransportSecurity = [
+    public array $strictTransportSecurity = [
         'canFail' => true,
     ];
 
-    public $xContentTypeOptions = [
+    public array $xContentTypeOptions = [
         'canFail' => true,
     ];
 
-    public $xFrameOptions = [
+    public array $xFrameOptions = [
         'canFail' => true,
     ];
 
-    public $xXssProtection = [];
+    public array $xXssProtection = [];
 
     // General config settings
 
-    public $blowfishHashCost = [
+    public array $blowfishHashCost = [
         'threshold' => 13,
     ];
 
-    public $cooldownDuration = [
+    public array $cooldownDuration = [
         'threshold' => 300, // 5 minutes
     ];
 
-    public $cpTrigger = [];
+    public array $cpTrigger = [];
 
-    public $defaultDirMode = [
+    public array $defaultDirMode = [
         'canFail' => true,
         'threshold' => 0775,
     ];
 
-    public $defaultFileMode = [
+    public array $defaultFileMode = [
         'canFail' => true,
         'threshold' => 0664,
     ];
 
-    public $defaultTokenDuration = [
+    public array $defaultTokenDuration = [
         'canFail' => true,
         'threshold' => 86400, // 1 day
     ];
 
-    public $deferPublicRegistrationPassword = [];
+    public array $deferPublicRegistrationPassword = [];
 
-    public $devMode = [
+    public array $devMode = [
         'forceFail' => true,
     ];
 
-    public $elevatedSessionDuration = [
+    public array $elevatedSessionDuration = [
         'canFail' => true,
         'threshold' => 300, // 5 minutes
     ];
 
-    public $enableCsrfProtection = [
+    public array $enableCsrfProtection = [
         'canFail' => true,
     ];
 
-    public $invalidLoginWindowDuration = [
+    public array $invalidLoginWindowDuration = [
         'threshold' => 3600, // 1 hour
     ];
 
-    public $maxInvalidLogins = [
+    public array $maxInvalidLogins = [
         'canFail' => true,
         'threshold' => 5,
     ];
 
-    public $preventUserEnumeration = [
+    public array $preventUserEnumeration = [
         'canFail' => true,
     ];
 
-    public $rememberedUserSessionDuration = [
+    public array $rememberedUserSessionDuration = [
         'threshold' => 12096004, // 14 days
     ];
 
-    public $requireMatchingUserAgentForSession = [];
+    public array $requireMatchingUserAgentForSession = [];
 
-    public $requireUserAgentAndIpForSession = [];
+    public array $requireUserAgentAndIpForSession = [];
 
-    public $sanitizeSvgUploads = [
+    public array $sanitizeSvgUploads = [
         'canFail' => true,
     ];
 
-    public $testToEmailAddress = [
+    public array $testToEmailAddress = [
         'canFail' => true,
     ];
 
-    public $translationDebugOutput = [
+    public array $translationDebugOutput = [
         'canFail' => true,
     ];
 
-    public $useSecureCookies = [
+    public array $useSecureCookies = [
         'canFail' => true,
     ];
 
-    public $userSessionDuration = [
+    public array $userSessionDuration = [
         'canFail' => true,
         'threshold' => 3600, // 1 hour
     ];
 
-    public $verificationCodeDuration = [
+    public array $verificationCodeDuration = [
         'canFail' => true,
         'threshold' => 86400, // 1 day
     ];

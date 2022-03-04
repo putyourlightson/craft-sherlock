@@ -12,7 +12,7 @@ use Twig\Extension\GlobalsInterface;
 class SherlockTwigExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
-     * @inheritdoc
+     * Returns globals.
      */
     public function getGlobals(): array
     {

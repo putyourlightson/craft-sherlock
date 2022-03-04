@@ -7,6 +7,7 @@ namespace putyourlightson\sprigtests\unit\services;
 
 use Codeception\Test\Unit;
 use Craft;
+use craft\models\Updates;
 use putyourlightson\sherlock\Sherlock;
 use UnitTester;
 
@@ -26,7 +27,7 @@ class TestsTest extends Unit
         Sherlock::$plugin->settings->highSecurityLevel = true;
 
         // Set to non-null value so a Guzzle request will not be made
-        Sherlock::$plugin->tests->updates = [];
+        Sherlock::$plugin->tests->updates = new Updates();
     }
 
     public function testHttpsControlPanel()

@@ -20,14 +20,12 @@ use yii\web\HttpException;
 class SecurityService extends Component
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $_nonce;
+    private ?string $_nonce = null;
 
     /**
      * Applies restrictions.
-     *
-     * @throws HttpException
      */
     public function applyRestrictions()
     {
@@ -114,8 +112,6 @@ class SecurityService extends Component
 
     /**
      * Returns CP alerts.
-     *
-     * @return array
      */
     public function getCpAlerts(): array
     {
@@ -139,8 +135,6 @@ class SecurityService extends Component
 
     /**
      * Returns or generates a nonce.
-     *
-     * @return string
      */
     public function getNonce(): string
     {
@@ -155,9 +149,6 @@ class SecurityService extends Component
      * Matches IP addresses.
      *
      * @param string[] $ipAddresses
-     * @param string|null $userIp
-     *
-     * @return bool
      */
     private function _matchIpAddresses(array $ipAddresses, string $userIp = null): bool
     {

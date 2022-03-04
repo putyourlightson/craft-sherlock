@@ -8,15 +8,10 @@ namespace putyourlightson\sherlock\variables;
 use putyourlightson\sherlock\models\ScanModel;
 use putyourlightson\sherlock\Sherlock;
 
-/**
- * Sherlock Variable
- */
 class SherlockVariable
 {
     /**
      * Returns a nonce.
-     *
-     * @return string
      */
     public function getNonce(): string
     {
@@ -24,9 +19,7 @@ class SherlockVariable
     }
 
     /**
-     * Get last scan
-     *
-     * @return ScanModel
+     * Returns the last scan.
      */
     public function getLastScan(): ScanModel
     {
@@ -34,9 +27,7 @@ class SherlockVariable
     }
 
     /**
-     * Get all scans
-     *
-     * @return array
+     * Returns all scans.
      */
     public function getAllScans(): array
     {
@@ -44,9 +35,7 @@ class SherlockVariable
     }
 
     /**
-     * Returns whether the security level is high
-     *
-     * @return bool
+     * Returns whether the security level is high.
      */
     public function isHighSecurityLevel(): bool
     {
@@ -54,7 +43,7 @@ class SherlockVariable
     }
 
     /**
-     * Run scan
+     * Runs a scan.
      */
     public function runScan()
     {

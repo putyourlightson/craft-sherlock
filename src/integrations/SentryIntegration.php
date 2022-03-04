@@ -7,6 +7,7 @@ namespace putyourlightson\sherlock\integrations;
 
 use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
+use craft\helpers\App;
 use craft\validators\UrlValidator;
 use putyourlightson\sherlock\Sherlock;
 use Sentry;
@@ -18,14 +19,19 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 class SentryIntegration extends BaseIntegration
 {
     /**
-     * @var string|null
+     * @inheritdoc
      */
-    public $dsn;
+    protected ?string $requiredPackage = 'sentry/sdk';
 
     /**
-     * @var float|null
+     * @var string|null
      */
-    public $tracesSampleRate;
+    public ?string $dsn = null;
+
+    /**
+     * @var float|string|null
+     */
+    public float|string|null $tracesSampleRate = null;
 
     /**
      * @inheritdoc
@@ -73,7 +79,7 @@ class SentryIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    public function defineRules(): array
     {
         return [
             [['dsn', 'tracesSampleRate'], 'required'],
@@ -115,14 +121,14 @@ class SentryIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(): void
     {
         if (!$this->getIsInstalled()) {
             return;
         }
 
         $config = [
-            'dsn' => Craft::parseEnv($this->dsn),
+            'dsn' => App::parseEnv($this->dsn),
             'traces_sample_rate' => (float)$this->tracesSampleRate,
         ];
 

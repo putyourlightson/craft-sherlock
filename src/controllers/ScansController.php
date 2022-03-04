@@ -8,33 +8,17 @@ namespace putyourlightson\sherlock\controllers;
 use Craft;
 use craft\web\Controller;
 use putyourlightson\sherlock\Sherlock;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * Scans Controller
- */
 class ScansController extends Controller
 {
     /**
-     * For the deprecated `run-scan` action
-     */
-    protected $allowAnonymous = ['run-scan'];
-
-    /**
      * @inheritdoc
-     *
-     * @throws ForbiddenHttpException
      */
     public function beforeAction($action): bool
     {
         if (!parent::beforeAction($action)) {
             return false;
-        }
-
-        // Allow deprecated `run-scan` action
-        if ($action->id == 'run-scan') {
-            return true;
         }
 
         // Require permission
@@ -44,8 +28,7 @@ class ScansController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     * @return Response
+     * Renders the main Sherlock template.
      */
     public function actionIndex(string $siteHandle = null): Response
     {
@@ -58,30 +41,18 @@ class ScansController extends Controller
             }
         }
 
-        // Render the template
         return $this->renderTemplate('sherlock/index');
     }
 
     /**
-     * Runs a scan.
-     *
-     * @param int|null $siteId
-     * @return Response
+     * Runs a scan via an AJAX request.
      */
     public function actionRunScanAjax(int $siteId = null): Response
     {
+        $this->requireAcceptsJson();
+
         Sherlock::$plugin->scans->runScan($siteId);
 
         return $this->asJson(['success' => true]);
-    }
-
-    /**
-     * Deprecated in 3.0.0, use `api/run-scan` instead.
-     *
-     * @deprecated
-     */
-    public function actionRunScan()
-    {
-        Sherlock::$plugin->runAction('api/run-scan');
     }
 }

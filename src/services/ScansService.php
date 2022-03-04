@@ -13,18 +13,12 @@ use putyourlightson\sherlock\models\ScanModel;
 use putyourlightson\sherlock\records\ScanRecord;
 use putyourlightson\sherlock\Sherlock;
 
-/**
- * @property-read ScanModel|null $lastScan
- */
 class ScansService extends Component
 {
     /**
      * Returns the last scan.
-     *
-     * @param int|null $siteId
-     * @return ScanModel|null
      */
-    public function getLastScan(int $siteId = null)
+    public function getLastScan(int $siteId = null): ?ScanModel
     {
         $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
 
@@ -37,8 +31,8 @@ class ScansService extends Component
             return null;
         }
 
-        /** @var ScanModel $scan */
-        $scan = ScanModel::populateModel($scanRecord);
+        $scan = new ScanModel();
+        $scan->setAttributes($scanRecord->getAttributes(), false);
 
         return $scan;
     }
@@ -46,29 +40,32 @@ class ScansService extends Component
     /**
      * Returns all scans.
      *
-     * @param int|null $siteId
-     * @param int|null $offsetId
-     * @return array
+     * @return ScanModel[]
      */
     public function getAllScans(int $siteId = null, int $offsetId = 0): array
     {
         $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
 
         // Get records offset by ID
-        $scanRecords = ScanRecord::find()
+        $records = ScanRecord::find()
             ->where(['siteId' => $siteId])
             ->andWhere('id > :offsetId', [':offsetId' => $offsetId])
             ->orderBy('dateCreated desc')
             ->all();
 
-        return ScanModel::populateModels($scanRecords);
+        $scans = [];
+
+        foreach ($records as $record) {
+            $scan = new ScanModel();
+            $scan->setAttributes($record->getAttributes(), false);
+            $scans[] = $scan;
+        }
+
+        return $scans;
     }
 
     /**
      * Runs a scan.
-     *
-     * @param int|null $siteId
-     * @param callable|null $setProgressHandler
      */
     public function runScan(int $siteId = null, callable $setProgressHandler = null)
     {
@@ -82,7 +79,7 @@ class ScansService extends Component
         // Create model
         $scanModel = new ScanModel([
             'siteId' => $siteId,
-            'highSecurityLevel' => (bool)Sherlock::$plugin->settings->highSecurityLevel,
+            'highSecurityLevel' => Sherlock::$plugin->settings->highSecurityLevel,
         ]);
 
         $tests = Sherlock::$plugin->tests->getTestNames();
@@ -122,7 +119,7 @@ class ScansService extends Component
         }
 
         // Populate & save record
-        $scanRecord = new ScanRecord;
+        $scanRecord = new ScanRecord();
         $scanRecord->setAttributes($scanModel->getAttributes(), false);
 
         // Simplify results
@@ -195,10 +192,6 @@ class ScansService extends Component
 
     /**
      * Sends and logs notification email.
-     *
-     * @param string $subject
-     * @param string $body
-     * @param string $log
      */
     private function _sendLogNotificationEmail(string $subject, string $body, string $log)
     {
@@ -212,7 +205,6 @@ class ScansService extends Component
 
         $message->send();
 
-        // Log notification email
         Sherlock::$plugin->log($log.Sherlock::$plugin->settings->notificationEmailAddresses);
     }
 }

@@ -16,7 +16,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\TransferStats;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
-use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -27,24 +26,24 @@ use yii\web\NotFoundHttpException;
 class TestsService extends Component
 {
     /**
-     * @var Updates
+     * @var Updates|null
      */
-    public $updates;
+    public ?Updates $updates = null;
 
     /**
-     * @var array|null
+     * @var array
      */
-    public $siteUrlResponse;
+    public array $siteUrlResponse = [];
 
     /**
-     * @var string|null
+     * @var array
      */
-    public $cpUrlResponse;
+    public array $cpUrlResponse = [];
 
     /**
      * Get test names
      *
-     * @return array
+     * @return string[]
      */
     public function getTestNames(): array
     {
@@ -119,8 +118,6 @@ class TestsService extends Component
 
     /**
      * Performs preps before running tests.
-     *
-     * @throws HttpException
      */
     public function beforeRunTests()
     {
@@ -130,9 +127,7 @@ class TestsService extends Component
         }
 
         // Get updates, forcing a refresh
-        if (empty($this->updates)) {
-            $this->updates = Craft::$app->getUpdates()->getUpdates(true);
-        }
+        $this->updates = Craft::$app->getUpdates()->getUpdates(true);
 
         $client = Craft::createGuzzleClient([
             'timeout' => 10,
@@ -150,8 +145,9 @@ class TestsService extends Component
             $this->siteUrlResponse['headers'] = $response->getHeaders();
             $this->siteUrlResponse['body'] = $response->getBody()->getContents();
 
-            if (strpos($url, 'https://') === 0) {
+            if (str_starts_with($url, 'https://')) {
                 // Get redirect URL scheme of insecure URL
+                /** @noinspection HttpUrlsUsage */
                 $client->get(str_replace('https://', 'http://', $url), [
                     'on_stats' => function(TransferStats $stats) {
                         $this->siteUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
@@ -162,12 +158,13 @@ class TestsService extends Component
             // Get CP URL response
             $url = UrlHelper::baseCpUrl();
 
-            if (strpos($url, 'http') !== 0) {
+            if (!str_starts_with($url, 'http')) {
                 $url = trim($currentSite->getBaseUrl(), '/').'/'.Craft::$app->getConfig()->getGeneral()->cpTrigger;
             }
 
-            if (strpos($url, 'https://') === 0) {
+            if (str_starts_with($url, 'https://')) {
                 // Get redirect URL scheme of insecure URL
+                /** @noinspection HttpUrlsUsage */
                 $client->get(str_replace('https://', 'http://', $url), [
                     'on_stats' => function(TransferStats $stats) {
                         $this->cpUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
@@ -186,11 +183,7 @@ class TestsService extends Component
     }
 
     /**
-     * Run test
-     *
-     * @param string $test
-     * @return TestModel
-     * @throws HttpException
+     * Runs a test.
      */
     public function runTest(string $test): TestModel
     {
@@ -346,7 +339,7 @@ class TestsService extends Component
 
                 foreach ($paths as $key => $path) {
                     // If the webroot is a substring of the path
-                    if (strpos($path, $webroot) !== false) {
+                    if (str_contains($path, $webroot)) {
                         $pathsFailed[] = $key;
                     }
                 }
@@ -417,17 +410,9 @@ class TestsService extends Component
             case 'webAliasInSiteBaseUrl':
                 if (Craft::$app->getRequest()->isWebAliasSetDynamically) {
                     $currentSite = Craft::$app->getSites()->getCurrentSite();
+                    $unparsedBaseUrl = $currentSite->getBaseUrl(false);
 
-                    // How this works was changed in 3.6.0 (use 3.5.99 to account for 3.6.0 beta versions)
-                    // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
-                    if (version_compare(Craft::$app->getVersion(), '3.5.99', '>=')) {
-                        $unparsedBaseUrl = $currentSite->getBaseUrl(false);
-                    }
-                    else {
-                        $unparsedBaseUrl = $currentSite->baseUrl;
-                    }
-
-                    if (strpos($unparsedBaseUrl, '@web') !== false) {
+                    if (str_contains($unparsedBaseUrl, '@web')) {
                         $testModel->failTest();
                     }
                 }
@@ -440,7 +425,8 @@ class TestsService extends Component
                     $volumesFailed = [];
 
                     foreach ($volumes as $volume) {
-                        if ($volume->hasUrls && strpos($volume->url, '@web') !== false) {
+                        $filesystem = $volume->getFs();
+                        if ($filesystem->hasUrls && str_contains($filesystem->url, '@web')) {
                             $volumesFailed[] = $volume->name;
                         }
                     }
@@ -470,7 +456,7 @@ class TestsService extends Component
                 else {
                     $testModel->value = 'Content-Security-Policy '.($headerSet ? 'header' : 'meta tag').' ';
 
-                    if (strpos($value, 'unsafe-inline') !== false || strpos($value, 'unsafe-eval') !== false) {
+                    if (str_contains($value, 'unsafe-inline') || str_contains($value, 'unsafe-eval')) {
                         $testModel->warning = true;
                         $testModel->value .= 'contains "unsafe" values';
                     }
@@ -489,10 +475,6 @@ class TestsService extends Component
                         $testModel->failTest();
                     }
                     else {
-                        if (is_array($value)) {
-                            $value = implode(', ', $value);
-                        }
-
                         $testModel->warning = true;
                     }
 
@@ -719,10 +701,6 @@ class TestsService extends Component
 
     /**
      * Returns a header value.
-     *
-     * @param string $name
-     *
-     * @return string
      */
     private function _getHeaderValue(string $name): string
     {
@@ -738,6 +716,7 @@ class TestsService extends Component
         }
 
         // URL decode and strip tags to make it safe to output raw
+        /** @noinspection PhpUnnecessaryLocalVariableInspection */
         $value = strip_tags(urldecode($value));
 
         return $value;
@@ -765,11 +744,8 @@ class TestsService extends Component
 
     /**
      * Returns a formatted date.
-     *
-     * @param int|string|DateTime $date
-     * @return string
      */
-    private function _formatDate($date): string
+    private function _formatDate(DateTime|int|string $date): string
     {
         return Craft::$app->getFormatter()->asDate($date, 'long');
     }

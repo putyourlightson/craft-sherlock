@@ -7,6 +7,7 @@ namespace putyourlightson\sherlock\integrations;
 
 use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
+use craft\helpers\App;
 use InvalidArgumentException;
 use putyourlightson\sherlock\Sherlock;
 use Rollbar\Rollbar;
@@ -19,12 +20,12 @@ class RollbarIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    protected $requiredClass = 'Rollbar\Rollbar';
+    protected ?string $requiredPackage = 'rollbar/rollbar';
 
     /**
      * @var string|null
      */
-    public $accessToken;
+    public ?string $accessToken = null;
 
     /**
      * @inheritdoc
@@ -62,7 +63,7 @@ class RollbarIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    public function defineRules(): array
     {
         return [
             [['accessToken'], 'required'],
@@ -89,20 +90,20 @@ class RollbarIntegration extends BaseIntegration
             return '';
         }
 
-        return Craft::t('sherlock', 'The Rollbar PHP SDK must be installed with composer for the integration to be able to run: `composer require rollbar/rollbar:^1`');
+        return Craft::t('sherlock', 'The Rollbar PHP SDK must be installed with composer for the integration to be able to run: `composer require rollbar/rollbar`');
     }
 
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(): void
     {
         if (!$this->getIsInstalled()) {
             return;
         }
 
         $config = [
-            'access_token' => Craft::parseEnv($this->accessToken),
+            'access_token' => App::parseEnv($this->accessToken),
             'environment' => CRAFT_ENVIRONMENT,
         ];
 

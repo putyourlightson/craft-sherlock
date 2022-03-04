@@ -9,6 +9,7 @@ use Bugsnag\Client;
 use Bugsnag\Handler;
 use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
+use craft\helpers\App;
 use InvalidArgumentException;
 use putyourlightson\sherlock\Sherlock;
 
@@ -20,19 +21,19 @@ class BugsnagIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    protected $requiredClass = 'Bugsnag\Client';
+    protected ?string $requiredPackage = 'bugsnag/bugsnag';
 
     /**
      * @var string|null
      */
-    public $apiKey;
+    public ?string $apiKey = null;
 
     /**
      * Can be overridden using config settings only.
      *
      * @var string|null
      */
-    public $notifyEndpoint;
+    public ?string $notifyEndpoint = null;
 
     /**
      * @inheritdoc
@@ -80,7 +81,7 @@ class BugsnagIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    public function defineRules(): array
     {
         return [
             [['apiKey'], 'required'],
@@ -107,13 +108,13 @@ class BugsnagIntegration extends BaseIntegration
             return '';
         }
 
-        return Craft::t('sherlock', 'The Bugsnag PHP SDK must be installed with composer for the integration to be able to run: `composer require bugsnag/bugsnag:^3.0`');
+        return Craft::t('sherlock', 'The Bugsnag PHP SDK must be installed with composer for the integration to be able to run: `composer require bugsnag/bugsnag`');
     }
 
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(): void
     {
         if (!$this->getIsInstalled()) {
             return;
@@ -121,7 +122,7 @@ class BugsnagIntegration extends BaseIntegration
 
         // Catch exception, otherwise the CP cannot be accessed
         try {
-            $bugsnag = Client::make(Craft::parseEnv($this->apiKey), $this->notifyEndpoint);
+            $bugsnag = Client::make(App::parseEnv($this->apiKey), $this->notifyEndpoint);
             Handler::register($bugsnag);
         }
         catch (InvalidArgumentException $exception) {

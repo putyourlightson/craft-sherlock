@@ -14,8 +14,6 @@ class SettingsController extends Controller
 {
     /**
      * Edit the plugin settings.
-     *
-     * @return Response
      */
     public function actionEdit(): Response
     {
@@ -41,10 +39,8 @@ class SettingsController extends Controller
 
     /**
      * Saves the plugin settings.
-     *
-     * @return Response|null
      */
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -68,14 +64,14 @@ class SettingsController extends Controller
         // Validate
         $settings->validate();
 
-        if ($settings->hasErrors() || $hasIntegrationErrors) {
+        if ($settings->hasErrors()
+            || $hasIntegrationErrors
+            || !Craft::$app->getPlugins()->savePluginSettings(Sherlock::$plugin, $settings->getAttributes())
+        ) {
             Craft::$app->getSession()->setError(Craft::t('sherlock', 'Couldn’t save plugin settings.'));
 
             return null;
         }
-
-        // Save it
-        Craft::$app->getPlugins()->savePluginSettings(Sherlock::$plugin, $settings->getAttributes());
 
         Craft::$app->getSession()->setNotice(Craft::t('sherlock', 'Plugin settings saved.'));
 

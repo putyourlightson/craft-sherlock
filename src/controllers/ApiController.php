@@ -6,26 +6,22 @@
 namespace putyourlightson\sherlock\controllers;
 
 use Craft;
+use craft\helpers\App;
 use craft\web\Controller;
 use putyourlightson\sherlock\Sherlock;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
-/**
- * API Controller
- */
 class ApiController extends Controller
 {
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
+    protected int|bool|array $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
 
     /**
      * @inheritdoc
-     *
-     * @throws HttpException
      */
     public function beforeAction($action): bool
     {
@@ -38,7 +34,7 @@ class ApiController extends Controller
         }
 
         $key = Craft::$app->getRequest()->getParam('key', '');
-        $apiKey = Craft::parseEnv(Sherlock::$plugin->settings->apiKey);
+        $apiKey = App::parseEnv(Sherlock::$plugin->settings->apiKey);
 
         // Verify provided key against API key
         if (empty($key) || empty($apiKey) || $key != $apiKey) {
@@ -50,21 +46,16 @@ class ApiController extends Controller
 
     /**
      * Runs a scan.
-     *
-     * @param int|null $siteId
      */
-    public function actionRunScan(int $siteId = null)
+    public function actionRunScan(int $siteId = null): Response
     {
         Sherlock::$plugin->scans->runScan($siteId);
 
-        exit('Success');
+        return $this->asRaw('Success');
     }
 
     /**
      * Returns the last scan.
-     *
-     * @param int|null $siteId
-     * @return Response
      */
     public function actionGetLastScan(int $siteId = null): Response
     {
@@ -73,9 +64,6 @@ class ApiController extends Controller
 
     /**
      * Returns all scans.
-     *
-     * @param int|null $siteId
-     * @return Response
      */
     public function actionGetAllScans(int $siteId = null): Response
     {

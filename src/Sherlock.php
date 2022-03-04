@@ -28,28 +28,30 @@ use putyourlightson\sherlock\variables\SherlockVariable;
 use yii\base\Event;
 
 /**
- * Sherlock Plugin
- *
- * @property-read  IntegrationsService $integrations
- * @property-read  ScansService $scans
- * @property-read  SecurityService $security
- * @property-read  TestsService $tests
- *
+ * @property-read IntegrationsService $integrations
+ * @property-read ScansService $scans
+ * @property-read SecurityService $security
+ * @property-read TestsService $tests
  * @property-read bool $isLite
  * @property-read bool $isPro
  * @property-read SettingsModel $settings
  */
 class Sherlock extends Plugin
 {
-    // Edition constants
-    const EDITION_LITE = 'lite';
-    const EDITION_PLUS = 'plus';
-    const EDITION_PRO = 'pro';
+    /**
+     * Lite
+     */
+    public const EDITION_LITE = 'lite';
 
     /**
-     * @var Sherlock
+     * Plus
      */
-    public static $plugin;
+    public const EDITION_PLUS = 'plus';
+
+    /**
+     * Pro
+     */
+    public const EDITION_PRO = 'pro';
 
     /**
      * @inheritdoc
@@ -63,7 +65,35 @@ class Sherlock extends Plugin
         ];
     }
 
-    public function init()
+    /**
+     * @var Sherlock
+     */
+    public static Sherlock $plugin;
+
+    /**
+     * @inheritdoc
+     */
+    public bool $hasCpSection = true;
+
+    /**
+     * @inheritdoc
+     */
+    public bool $hasCpSettings = true;
+
+    /**
+     * @inheritdoc
+     */
+    public string $schemaVersion = '3.1.3';
+
+    /**
+     * @inheritdoc
+     */
+    public string $minVersionRequired = '3.1.3';
+
+    /**
+     * @inheritdoc
+     */
+    public function init(): void
     {
         parent::init();
 
@@ -94,10 +124,6 @@ class Sherlock extends Plugin
 
     /**
      * Logs an action.
-     *
-     * @param string $message
-     * @param array $params
-     * @param string $type
      */
     public function log(string $message, array $params = [], string $type = 'info')
     {
@@ -154,7 +180,7 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Registers the components
+     * Registers the components.
      */
     private function _registerComponents()
     {
@@ -167,7 +193,7 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Registers Twig extensions
+     * Registers Twig extensions.
      */
     private function _registerTwigExtensions()
     {
@@ -187,7 +213,7 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Registers CP URL rules event
+     * Registers CP URL rules event.
      */
     private function _registerCpUrlRules()
     {
@@ -207,7 +233,7 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Registers CP alerts
+     * Registers CP alerts.
      */
     private function _registerCpAlerts()
     {

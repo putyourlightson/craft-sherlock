@@ -24,9 +24,12 @@ class IntegrationsService extends Component
     /**
      * @event RegisterComponentTypesEvent
      */
-    const EVENT_REGISTER_INTEGRATION_TYPES = 'registerIntegrationTypes';
+    public const EVENT_REGISTER_INTEGRATION_TYPES = 'registerIntegrationTypes';
 
-    public $integrationTypes = [
+    /**
+     * @var string[] The available integration types.
+     */
+    public array $integrationTypes = [
         BugsnagIntegration::class,
         RollbarIntegration::class,
         SentryIntegration::class,
@@ -113,14 +116,11 @@ class IntegrationsService extends Component
 
     /**
      * Creates and returns an integration type with the optional provided settings.
-     *
-     * @param string $type
-     * @param array $settings
-     * @return IntegrationInterface
      */
     public function createType(string $type, array $settings = []): IntegrationInterface
     {
         /** @var IntegrationInterface $integration */
+        /** @noinspection PhpUnnecessaryLocalVariableInspection */
         $integration = ComponentHelper::createComponent([
             'type' => $type,
             'settings' => $settings,

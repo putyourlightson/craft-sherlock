@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0-alpha.1 - 2022-03-04
+### Added
+- Added compatibility with Craft 4.
+
 ## 3.1.4 - 2022-01-13
 ### Fixed
 - Fixed a bug that was throwing an exception on the settings page in versions of Craft less than 3.6.0 ([#33](https://github.com/putyourlightson/craft-sherlock/issues/33)).

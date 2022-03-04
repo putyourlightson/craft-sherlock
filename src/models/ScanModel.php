@@ -5,44 +5,41 @@
 
 namespace putyourlightson\sherlock\models;
 
+use craft\base\Model;
 use craft\helpers\Json;
 use DateTime;
-use putyourlightson\sherlock\base\BaseModel;
 
-/**
- * Scan Model
- */
-class ScanModel extends BaseModel
+class ScanModel extends Model
 {
     /**
-     * @var int
+     * @var int|null
      */
-    public $id;
+    public ?int $id = null;
 
     /**
-     * @var int
+     * @var int|null
      */
-    public $siteId;
-
-    /**
-     * @var bool
-     */
-    public $highSecurityLevel = false;
+    public ?int $siteId = null;
 
     /**
      * @var bool
      */
-    public $pass = true;
+    public bool $highSecurityLevel = false;
 
     /**
      * @var bool
      */
-    public $warning = false;
+    public bool $pass = true;
+
+    /**
+     * @var bool
+     */
+    public bool $warning = false;
 
     /**
      * @var mixed
      */
-    public $results = [
+    public mixed $results = [
         'fail' => [],
         'warning' => [],
         'pass' => [],
@@ -51,12 +48,12 @@ class ScanModel extends BaseModel
     /**
      * @var DateTime
      */
-    public $dateCreated;
+    public DateTime $dateCreated;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
