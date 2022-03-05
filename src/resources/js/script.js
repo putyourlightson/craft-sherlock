@@ -30,12 +30,13 @@ $(document).ready(function()
 
         $('.sherlock').hide();
         $('.running').show();
+        $('.running #graphic').addClass('spinner')
 
         $.get($(this).attr('data-url'), function() {
             location.reload();
         }).fail(function(xhr) {
             var error = xhr.responseText;
-            $('.running #graphic').addClass('error');
+            $('.running #graphic').addClass('error').removeClass('spinner');
             $('.running #text').addClass('error').html(error);
             $('.running #back').show();
         });

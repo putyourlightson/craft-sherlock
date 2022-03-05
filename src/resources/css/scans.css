@@ -6,3 +6,7 @@
 .info-hud {
     line-height: 21px;
 }
+
+#content #graphic.error {
+    background-repeat: no-repeat;
+}

@@ -49,8 +49,6 @@ class ScansController extends Controller
      */
     public function actionRunScanAjax(int $siteId = null): Response
     {
-        $this->requireAcceptsJson();
-
         Sherlock::$plugin->scans->runScan($siteId);
 
         return $this->asJson(['success' => true]);
