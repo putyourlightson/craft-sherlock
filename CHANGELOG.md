@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0-alpha.1 - 2022-03-04
+## 4.0.0-alpha - 2022-03-04
 ### Added
 - Added compatibility with Craft 4.
 
