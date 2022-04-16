@@ -12,7 +12,7 @@ class TestModel extends Model
     /**
      * @var string
      */
-    public string $name;
+    public string $name = '';
 
     /**
      * @var bool
@@ -32,12 +32,12 @@ class TestModel extends Model
     /**
      * @var mixed|null
      */
-    public mixed $thresholds;
+    public mixed $thresholds = null;
 
     /**
      * @var string|null
      */
-    public ?string $format;
+    public ?string $format = null;
 
     /**
      * @var bool
