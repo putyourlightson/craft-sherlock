@@ -33,4 +33,14 @@ interface IntegrationInterface extends SavableComponentInterface
      * Runs the integration.
      */
     public function run(): void;
+
+    /**
+     * @inerhitdoc
+     */
+    public function hasErrors($attribute = null): bool;
+
+    /**
+     * @inerhitdoc
+     */
+    public function validate($attributeNames = null, $clearErrors = true);
 }

@@ -54,38 +54,10 @@ class BugsnagIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function behaviors(): array
-    {
-        $behaviors = parent::behaviors();
-
-        $behaviors['parser'] = [
-            'class' => EnvAttributeParserBehavior::class,
-            'attributes' => [
-                'apiKey',
-            ],
-        ];
-
-        return $behaviors;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels(): array
     {
         return [
             'apiKey' => Craft::t('sherlock', 'API Key'),
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function defineRules(): array
-    {
-        return [
-            [['apiKey'], 'required'],
-            [['apiKey'], 'string', 'length' => 32],
         ];
     }
 
@@ -126,7 +98,33 @@ class BugsnagIntegration extends BaseIntegration
             Handler::register($bugsnag);
         }
         catch (InvalidArgumentException $exception) {
-            Sherlock::$plugin->log(Craft::t('sherlock', 'Bugsnag integration error: ').$exception->getMessage());
+            Sherlock::$plugin->log(Craft::t('sherlock', 'Bugsnag integration error: ') . $exception->getMessage());
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineBehaviors(): array
+    {
+        return [
+            'parser' => [
+                'class' => EnvAttributeParserBehavior::class,
+                'attributes' => [
+                    'apiKey',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        return [
+            [['apiKey'], 'required'],
+            [['apiKey'], 'string', 'length' => 32],
+        ];
     }
 }

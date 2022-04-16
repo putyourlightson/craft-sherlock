@@ -284,7 +284,20 @@ class SettingsModel extends Model
     /**
      * @inheritdoc
      */
-    public function behaviors(): array
+    public function attributeLabels(): array
+    {
+        $labels = parent::attributeLabels();
+
+        // Set the field labels
+        $labels['apiKey'] = Craft::t('sherlock', 'API Key');
+
+        return $labels;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineBehaviors(): array
     {
         return [
             'parser' => [
@@ -297,23 +310,10 @@ class SettingsModel extends Model
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['apiKey'], 'string', 'length' => [32]],
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels(): array
-    {
-        $labels = parent::attributeLabels();
-
-        // Set the field labels
-        $labels['apiKey'] = Craft::t('sherlock', 'API Key');
-
-        return $labels;
     }
 }

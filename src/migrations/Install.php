@@ -31,7 +31,7 @@ class Install extends Migration
                 'uid' => $this->uid(),
             ]);
 
-            $this->createIndex(null, $table, 'siteId', false);
+            $this->createIndex(null, $table, 'siteId');
 
             $this->addForeignKey(null, $table, 'siteId', Site::tableName(), 'id', 'CASCADE', 'CASCADE');
         }

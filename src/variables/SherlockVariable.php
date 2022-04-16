@@ -45,7 +45,7 @@ class SherlockVariable
     /**
      * Runs a scan.
      */
-    public function runScan()
+    public function runScan(): void
     {
         Sherlock::$plugin->scans->runScan();
     }

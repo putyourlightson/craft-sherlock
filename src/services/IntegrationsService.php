@@ -9,9 +9,9 @@ use craft\base\Component;
 use craft\events\RegisterComponentTypesEvent;
 use craft\helpers\Component as ComponentHelper;
 use putyourlightson\sherlock\integrations\BugsnagIntegration;
+use putyourlightson\sherlock\integrations\IntegrationInterface;
 use putyourlightson\sherlock\integrations\RollbarIntegration;
 use putyourlightson\sherlock\integrations\SentryIntegration;
-use putyourlightson\sherlock\integrations\IntegrationInterface;
 use putyourlightson\sherlock\Sherlock;
 use yii\base\Event;
 
@@ -120,7 +120,6 @@ class IntegrationsService extends Component
     public function createType(string $type, array $settings = []): IntegrationInterface
     {
         /** @var IntegrationInterface $integration */
-        /** @noinspection PhpUnnecessaryLocalVariableInspection */
         $integration = ComponentHelper::createComponent([
             'type' => $type,
             'settings' => $settings,

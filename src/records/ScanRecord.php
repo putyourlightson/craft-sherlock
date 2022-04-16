@@ -19,9 +19,9 @@ use craft\db\ActiveRecord;
  */
 class ScanRecord extends ActiveRecord
 {
-     /**
-     * @inheritdoc
-     */
+    /**
+    * @inheritdoc
+    */
     public static function tableName(): string
     {
         return '{{%sherlock}}';

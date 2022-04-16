@@ -250,7 +250,7 @@ class Sherlock extends Plugin
     private function _registerAfterInstallEvent()
     {
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
+            function(PluginEvent $event) {
                 if ($event->plugin === $this) {
                     // Don't proceed if plugin exists in incoming project config, otherwise updates won't be applied
                     // https://github.com/putyourlightson/craft-campaign/issues/191

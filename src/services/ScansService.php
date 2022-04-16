@@ -141,7 +141,7 @@ class ScansService extends Component
 
         $scanRecord->save();
 
-        Sherlock::$plugin->log('Scan run on site ID '.$siteId.' by '.$runBy.' with result: '.($scanModel->pass ? 'pass'.($scanModel->warning ? ' with warnings' : '') : 'fail'));
+        Sherlock::$plugin->log('Scan run on site ID ' . $siteId . ' by ' . $runBy . ' with result: ' . ($scanModel->pass ? 'pass' . ($scanModel->warning ? ' with warnings' : '') : 'fail'));
 
         if (!$scanModel->pass
             && !Sherlock::$plugin->getIsLite()
@@ -172,7 +172,7 @@ class ScansService extends Component
             // Send & log notification email
             $this->_sendLogNotificationEmail(
                 'Security Scan Failed',
-                'Sherlock security scan for site "'.$site->name.'" failed: ',
+                'Sherlock security scan for site "' . $site->name . '" failed: ',
                 'Sent email about failed scan to '
             );
         }
@@ -184,7 +184,7 @@ class ScansService extends Component
             // Send & log notification email
             $this->_sendLogNotificationEmail(
                 'Security Scan Critical Updates',
-                'Sherlock security scan for site "'.$site->name.'" detected critical updates: ',
+                'Sherlock security scan for site "' . $site->name . '" detected critical updates: ',
                 'Sent email about critical updates to '
             );
         }
@@ -200,11 +200,11 @@ class ScansService extends Component
         /** @var Message $message*/
         $message = $mailer->compose()
             ->setTo(Sherlock::$plugin->settings->notificationEmailAddresses)
-            ->setSubject(Craft::$app->getSites()->getCurrentSite()->name.' - '.$subject)
-            ->setHtmlBody($body.UrlHelper::cpUrl('sherlock'));
+            ->setSubject(Craft::$app->getSites()->getCurrentSite()->name . ' - ' . $subject)
+            ->setHtmlBody($body . UrlHelper::cpUrl('sherlock'));
 
         $message->send();
 
-        Sherlock::$plugin->log($log.Sherlock::$plugin->settings->notificationEmailAddresses);
+        Sherlock::$plugin->log($log . Sherlock::$plugin->settings->notificationEmailAddresses);
     }
 }

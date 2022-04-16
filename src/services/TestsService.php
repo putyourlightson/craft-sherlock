@@ -159,7 +159,7 @@ class TestsService extends Component
             $url = UrlHelper::baseCpUrl();
 
             if (!str_starts_with($url, 'http')) {
-                $url = trim($currentSite->getBaseUrl(), '/').'/'.Craft::$app->getConfig()->getGeneral()->cpTrigger;
+                $url = trim($currentSite->getBaseUrl(), '/') . '/' . Craft::$app->getConfig()->getGeneral()->cpTrigger;
             }
 
             if (str_starts_with($url, 'https://')) {
@@ -200,8 +200,8 @@ class TestsService extends Component
                     foreach ($this->updates->cms->releases as $release) {
                         if ($release->critical) {
                             $criticalCraftUpdates[] = '
-                                <a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#'.str_replace('.', '-', $release->version).'" target="_blank">'.$release->version.'</a> 
-                                <span class="info">Version '.$release->version.' is a critical update, released on '.$this->_formatDate($release->date).'.</span>
+                                <a href="https://github.com/craftcms/cms/blob/master/CHANGELOG-v3.md#' . str_replace('.', '-', $release->version) . '" target="_blank">' . $release->version . '</a> 
+                                <span class="info">Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date) . '.</span>
                             ';
                         }
                     }
@@ -224,8 +224,8 @@ class TestsService extends Component
                             foreach ($update->releases as $release) {
                                 if ($release->critical) {
                                     $criticalPluginUpdates[] = '
-                                        <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
-                                        <span class="info">Version '.$release->version.' is a critical update, released on '.$this->_formatDate($release->date).'.</span>
+                                        <a href="' . $plugin->changelogUrl . '" target="_blank">' . $plugin->name . '</a> 
+                                        <span class="info">Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date) . '.</span>
                                     ';
                                 }
                             }
@@ -260,8 +260,8 @@ class TestsService extends Component
 
                             if ($plugin !== null) {
                                 $pluginUpdates[] = '
-                                    <a href="'.$plugin->changelogUrl.'" target="_blank">'.$plugin->name.'</a> 
-                                    <span class="info">Local version '.$plugin->version.' is '.count($update->releases).' release'.(count($update->releases) != 1 ? 's' : '').' behind latest version '.$latestRelease->version.', released on '.$this->_formatDate($latestRelease->date).'.</span>
+                                    <a href="' . $plugin->changelogUrl . '" target="_blank">' . $plugin->name . '</a> 
+                                    <span class="info">Local version ' . $plugin->version . ' is ' . count($update->releases) . ' release' . (count($update->releases) != 1 ? 's' : '') . ' behind latest version ' . $latestRelease->version . ', released on ' . $this->_formatDate($latestRelease->date) . '.</span>
                                 ';
                             }
                         }
@@ -365,7 +365,7 @@ class TestsService extends Component
                     $eolDate = $testModel->thresholds[$value];
                 }
 
-                $testModel->value = $version.($eolDate ? ' (until '.$eolDate.')' : '');
+                $testModel->value = $version . ($eolDate ? ' (until ' . $eolDate . ')' : '');
 
                 break;
 
@@ -379,9 +379,9 @@ class TestsService extends Component
                 }
 
                 $versionParts = explode('.', $version);
-                $versionMinor = $versionParts[0].'.'.$versionParts[1];
+                $versionMinor = $versionParts[0] . '.' . $versionParts[1];
                 $requiredVersionParts = explode('.', $requiredVersion);
-                $requiredVersionMinor = $requiredVersionParts[0].'.'.$requiredVersionParts[1];
+                $requiredVersionMinor = $requiredVersionParts[0] . '.' . $requiredVersionParts[1];
 
                 // Only compare minor version
                 if (version_compare($requiredVersionMinor, $versionMinor, '<')) {
@@ -449,12 +449,12 @@ class TestsService extends Component
                     $value = $matches[1] ?? '';
                 }
 
-                if (empty($value)){
+                if (empty($value)) {
                     $testModel->failTest();
                     $testModel->value = 'Neither Content-Security-Policy header nor meta tag are set';
                 }
                 else {
-                    $testModel->value = 'Content-Security-Policy '.($headerSet ? 'header' : 'meta tag').' ';
+                    $testModel->value = 'Content-Security-Policy ' . ($headerSet ? 'header' : 'meta tag') . ' ';
 
                     if (str_contains($value, 'unsafe-inline') || str_contains($value, 'unsafe-eval')) {
                         $testModel->warning = true;
@@ -478,7 +478,7 @@ class TestsService extends Component
                         $testModel->warning = true;
                     }
 
-                    $testModel->value = '"'.$value.'"';
+                    $testModel->value = '"' . $value . '"';
                 }
 
                 break;
@@ -499,7 +499,7 @@ class TestsService extends Component
                     $testModel->failTest();
                 }
                 else {
-                    $testModel->value = '"'.$value.'"';
+                    $testModel->value = '"' . $value . '"';
                 }
 
                 break;
@@ -511,7 +511,7 @@ class TestsService extends Component
                     $testModel->failTest();
                 }
                 else {
-                    $testModel->value = '"'.$value.'"';
+                    $testModel->value = '"' . $value . '"';
                 }
 
                 break;
@@ -523,7 +523,7 @@ class TestsService extends Component
                     $testModel->failTest();
                 }
                 else {
-                    $testModel->value = '"'.$value.'"';
+                    $testModel->value = '"' . $value . '"';
                 }
 
                 break;
@@ -535,7 +535,7 @@ class TestsService extends Component
                     $testModel->failTest();
                 }
                 else {
-                    $testModel->value = '"'.$value.'"';
+                    $testModel->value = '"' . $value . '"';
                 }
 
                 break;
@@ -553,7 +553,7 @@ class TestsService extends Component
                     $testModel->failTest();
                 }
                 else {
-                    $testModel->value = '"'.$value.'"';
+                    $testModel->value = '"' . $value . '"';
                 }
 
                 break;
@@ -587,9 +587,8 @@ class TestsService extends Component
                 if ($value > $testModel->threshold) {
                     $testModel->failTest();
                 }
-
                 else {
-                    $testModel->value = $value ? '0'.decoct($value) : 'null';
+                    $testModel->value = $value ? '0' . decoct($value) : 'null';
                 }
 
                 break;
@@ -602,7 +601,6 @@ class TestsService extends Component
                 if ($seconds > $testModel->threshold) {
                     $testModel->failTest();
                 }
-
                 else {
                     $testModel->value = $value;
                 }

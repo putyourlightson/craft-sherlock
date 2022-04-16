@@ -42,7 +42,7 @@ class ScansController extends Controller
      */
     public function actionRun(int $siteId = null)
     {
-        $this->stdout(Craft::t('sherlock', 'Running security scan...').PHP_EOL, BaseConsole::FG_YELLOW);
+        $this->stdout(Craft::t('sherlock', 'Running security scan...') . PHP_EOL, BaseConsole::FG_YELLOW);
 
         $tests = Sherlock::$plugin->tests->getTestNames();
 
@@ -56,10 +56,10 @@ class ScansController extends Controller
 
         if ($lastScan) {
             if ($lastScan->pass) {
-                $this->stdout(Craft::t('sherlock', 'Your site has passed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan'.($lastScan->warning ? ' with warnings' : '').'. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]).PHP_EOL, BaseConsole::FG_GREEN);
+                $this->stdout(Craft::t('sherlock', 'Your site has passed the Sherlock ' . ($lastScan->highSecurityLevel ? 'high' : 'standard') . ' security scan' . ($lastScan->warning ? ' with warnings' : '') . '. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]) . PHP_EOL, BaseConsole::FG_GREEN);
             }
             else {
-                $this->stdout(Craft::t('sherlock', 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]).PHP_EOL, BaseConsole::FG_RED);
+                $this->stdout(Craft::t('sherlock', 'Your site has failed the Sherlock ' . ($lastScan->highSecurityLevel ? 'high' : 'standard') . ' security scan. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]) . PHP_EOL, BaseConsole::FG_RED);
             }
         }
     }

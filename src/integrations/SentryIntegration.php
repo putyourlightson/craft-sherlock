@@ -52,39 +52,10 @@ class SentryIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function behaviors(): array
-    {
-        $behaviors = parent::behaviors();
-
-        $behaviors['parser'] = [
-            'class' => EnvAttributeParserBehavior::class,
-            'attributes' => [
-                'dsn',
-            ],
-        ];
-
-        return $behaviors;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels(): array
     {
         return [
             'dsn' => Craft::t('sherlock', 'Data Source Name (DSN)'),
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function defineRules(): array
-    {
-        return [
-            [['dsn', 'tracesSampleRate'], 'required'],
-            [['dsn'], UrlValidator::class],
-            [['tracesSampleRate'], 'double', 'min' => 0, 'max' => 1],
         ];
     }
 
@@ -137,7 +108,34 @@ class SentryIntegration extends BaseIntegration
             Sentry\init($config);
         }
         catch (InvalidOptionsException $exception) {
-            Sherlock::$plugin->log(Craft::t('sherlock', 'Sentry integration error: ').$exception->getMessage());
+            Sherlock::$plugin->log(Craft::t('sherlock', 'Sentry integration error: ') . $exception->getMessage());
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineBehaviors(): array
+    {
+        return [
+            'parser' => [
+                'class' => EnvAttributeParserBehavior::class,
+                'attributes' => [
+                    'dsn',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        return [
+            [['dsn', 'tracesSampleRate'], 'required'],
+            [['dsn'], UrlValidator::class],
+            [['tracesSampleRate'], 'double', 'min' => 0, 'max' => 1],
+        ];
     }
 }

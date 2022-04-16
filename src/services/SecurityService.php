@@ -91,8 +91,8 @@ class SecurityService extends Component
 
             foreach ($settings['directives'] as $directive) {
                 if ($directive[0]) {
-                    $directive[2] = str_replace('{nonce}', 'nonce-'.$nonce, $directive[2]);
-                    $value .= trim($directive[1]).' '.trim($directive[2]).'; ';
+                    $directive[2] = str_replace('{nonce}', 'nonce-' . $nonce, $directive[2]);
+                    $value .= trim($directive[1]) . ' ' . trim($directive[2]) . '; ';
                 }
             }
 
@@ -127,7 +127,7 @@ class SecurityService extends Component
         $lastScan = Sherlock::$plugin->scans->getLastScan();
 
         if ($lastScan && !$lastScan->pass) {
-            $alerts[] = 'Your site has failed the Sherlock '.($lastScan->highSecurityLevel ? 'high' : 'standard').' security scan. <a href="'.UrlHelper::cpUrl('sherlock').'" class="go">View last scan</a>';
+            $alerts[] = 'Your site has failed the Sherlock ' . ($lastScan->highSecurityLevel ? 'high' : 'standard') . ' security scan. <a href="' . UrlHelper::cpUrl('sherlock') . '" class="go">View last scan</a>';
         }
 
         return $alerts;
@@ -148,7 +148,7 @@ class SecurityService extends Component
     /**
      * Matches IP addresses.
      *
-     * @param string[] $ipAddresses
+     * @param string[]|string[][] $ipAddresses
      */
     private function _matchIpAddresses(array $ipAddresses, string $userIp = null): bool
     {
@@ -156,7 +156,7 @@ class SecurityService extends Component
             $ipAddress = is_array($ipAddress) ? $ipAddress[0] : $ipAddress;
             $ipAddress = str_replace(['\*', '\?'], ['.*', '.'], preg_quote($ipAddress));
 
-            if (preg_match('/^'.$ipAddress.'$/', $userIp)) {
+            if (preg_match('/^' . $ipAddress . '$/', $userIp)) {
                 return true;
             }
         }

@@ -6,7 +6,6 @@
 namespace putyourlightson\sherlock\models;
 
 use craft\base\Model;
-use craft\helpers\Json;
 use DateTime;
 
 class ScanModel extends Model
@@ -37,27 +36,16 @@ class ScanModel extends Model
     public bool $warning = false;
 
     /**
-     * @var mixed
+     * @var array
      */
-    public mixed $results = [
+    public array $results = [
         'fail' => [],
         'warning' => [],
         'pass' => [],
     ];
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      */
-    public DateTime $dateCreated;
-
-    /**
-     * @inheritdoc
-     */
-    public function init(): void
-    {
-        parent::init();
-
-        // Decode results if not array
-        $this->results = is_array($this->results) ? $this->results : Json::decode($this->results);
-    }
+    public ?DateTime $dateCreated = null;
 }

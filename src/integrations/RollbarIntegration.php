@@ -46,34 +46,6 @@ class RollbarIntegration extends BaseIntegration
     /**
      * @inheritdoc
      */
-    public function behaviors(): array
-    {
-        $behaviors = parent::behaviors();
-
-        $behaviors['parser'] = [
-            'class' => EnvAttributeParserBehavior::class,
-            'attributes' => [
-                'accessToken',
-            ],
-        ];
-
-        return $behaviors;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function defineRules(): array
-    {
-        return [
-            [['accessToken'], 'required'],
-            [['accessToken'], 'string', 'length' => 32],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getSettingsHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('sherlock/_integrations/rollbar', [
@@ -112,7 +84,33 @@ class RollbarIntegration extends BaseIntegration
             Rollbar::init($config);
         }
         catch (InvalidArgumentException $exception) {
-            Sherlock::$plugin->log(Craft::t('sherlock', 'Rollbar integration error: ').$exception->getMessage());
+            Sherlock::$plugin->log(Craft::t('sherlock', 'Rollbar integration error: ') . $exception->getMessage());
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineBehaviors(): array
+    {
+        return [
+            'parser' => [
+                'class' => EnvAttributeParserBehavior::class,
+                'attributes' => [
+                    'accessToken',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        return [
+            [['accessToken'], 'required'],
+            [['accessToken'], 'string', 'length' => 32],
+        ];
     }
 }
