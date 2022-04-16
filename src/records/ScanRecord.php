@@ -8,14 +8,12 @@ namespace putyourlightson\sherlock\records;
 use craft\db\ActiveRecord;
 
 /**
- * Scan Record
- *
  * @property int $id
  * @property int $siteId
- * @property bool $highSecurityLevel          High security level
- * @property bool $pass                       Pass
- * @property bool $warning                    Warning
- * @property mixed $results                   Results
+ * @property bool $highSecurityLevel
+ * @property bool $pass
+ * @property bool $warning
+ * @property array $results
  */
 class ScanRecord extends ActiveRecord
 {
