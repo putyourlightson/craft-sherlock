@@ -32,6 +32,7 @@ class SettingsModel extends Model
     public array $headerProtectionSettings = [
         'enabled' => true,
         'headers' => [
+            [true, 'Referrer-Policy', 'no-referrer-when-downgrade'],
             [true, 'Strict-Transport-Security', 'max-age=31536000'],
             [true, 'X-Content-Type-Options', 'nosniff'],
             [true, 'X-Frame-Options', 'SAMEORIGIN'],
@@ -121,22 +122,12 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
+    // https://www.php.net/supported-versions.php
     public array $phpVersion = [
         'canFail' => true,
         'thresholds' => [
-            '5.0' => '2005-09-05',
-            '5.1' => '2006-07-24',
-            '5.2' => '2011-01-06',
-            '5.3' => '2014-07-14',
-            '5.4' => '2015-09-03',
-            '5.5' => '2016-07-10',
-            '5.6' => '2018-12-31',
-            '7.0' => '2018-12-03',
-            '7.1' => '2019-12-01',
-            '7.2' => '2020-11-30',
-            '7.3' => '2021-12-06',
-            '7.4' => '2022-11-28',
             '8.0' => '2023-11-26',
+            '8.1' => '2024-11-25',
         ],
     ];
 
