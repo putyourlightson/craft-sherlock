@@ -14,10 +14,12 @@ use craft\helpers\App;
 use craft\helpers\Cp;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use craft\log\MonologTarget;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
-use putyourlightson\logtofile\LogToFile;
+use Monolog\Formatter\LineFormatter;
+use Psr\Log\LogLevel;
 use putyourlightson\sherlock\models\SettingsModel;
 use putyourlightson\sherlock\services\IntegrationsService;
 use putyourlightson\sherlock\services\ScansService;
@@ -26,6 +28,7 @@ use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\twigextensions\SherlockTwigExtension;
 use putyourlightson\sherlock\variables\SherlockVariable;
 use yii\base\Event;
+use yii\log\Logger;
 
 /**
  * @property-read IntegrationsService $integrations
@@ -100,6 +103,7 @@ class Sherlock extends Plugin
         self::$plugin = $this;
 
         $this->_registerComponents();
+        $this->_registerLogTarget();
         $this->_registerTwigExtensions();
         $this->_registerVariables();
 
@@ -123,13 +127,13 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Logs an action.
+     * Logs a message.
      */
-    public function log(string $message, array $params = [], string $type = 'info')
+    public function log(string $message, array $params = [], int $type = Logger::LEVEL_INFO): void
     {
         $message = Craft::t('sherlock', $message, $params);
 
-        LogToFile::log($message, 'sherlock', $type);
+        Craft::getLogger()->log($message, $type, 'sherlock');
     }
 
     /**
@@ -189,6 +193,24 @@ class Sherlock extends Plugin
             'scans' => ScansService::class,
             'security' => SecurityService::class,
             'tests' => TestsService::class,
+        ]);
+    }
+
+    /**
+     * Registers a custom log target, keeping the format as simple as possible.
+     *
+     * @see LineFormatter::SIMPLE_FORMAT
+     */
+    private function _registerLogTarget(): void
+    {
+        Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
+            'name' => 'blitz',
+            'categories' => ['blitz'],
+            'level' => LogLevel::INFO,
+            'formatter' => new LineFormatter(
+                format: "[%datetime%] %message%\n",
+                dateFormat: 'Y-m-d H:i:s',
+            ),
         ]);
     }
 
