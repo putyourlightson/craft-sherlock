@@ -204,8 +204,8 @@ class Sherlock extends Plugin
     private function _registerLogTarget(): void
     {
         Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
-            'name' => 'blitz',
-            'categories' => ['blitz'],
+            'name' => 'sherlock',
+            'categories' => ['sherlock'],
             'level' => LogLevel::INFO,
             'formatter' => new LineFormatter(
                 format: "[%datetime%] %message%\n",
