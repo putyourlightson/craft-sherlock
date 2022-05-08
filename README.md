@@ -19,12 +19,16 @@ This plugin requires a free or commercial license purchasable through the [Craft
 
 ## Requirements
 
-Craft CMS 3.1.0 or later.
+This plugin requires [Craft CMS](https://craftcms.com/) 3.1.0 or later, or 4.0.0 or later.
 
 ## Installation
 
 To install the plugin, search for "Sherlock" in the Craft Plugin Store, or install manually using composer.
 
-    composer require putyourlightson/craft-sherlock
+```shell
+composer require putyourlightson/craft-sherlock
+```
 
-<small>Created by [PutYourLightsOn](https://putyourlightson.com/).</small>
+---
+
+Created by [PutYourLightsOn](https://putyourlightson.com/).
