@@ -57,6 +57,26 @@ class Sherlock extends Plugin
     public const EDITION_PRO = 'pro';
 
     /**
+     * @var Sherlock
+     */
+    public static Sherlock $plugin;
+
+    /**
+     * @inerhitdoc
+     */
+    public static function config(): array
+    {
+        return [
+            'components' => [
+                'integrations' =>  ['class' => IntegrationsService::class],
+                'scans' =>  ['class' => ScansService::class],
+                'security' =>  ['class' => SecurityService::class],
+                'tests' =>  ['class' => TestsService::class],
+            ],
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public static function editions(): array
@@ -67,11 +87,6 @@ class Sherlock extends Plugin
             self::EDITION_PRO,
         ];
     }
-
-    /**
-     * @var Sherlock
-     */
-    public static Sherlock $plugin;
 
     /**
      * @inheritdoc
@@ -102,10 +117,9 @@ class Sherlock extends Plugin
 
         self::$plugin = $this;
 
-        $this->_registerComponents();
+        $this->_registerVariables();
         $this->_registerLogTarget();
         $this->_registerTwigExtensions();
-        $this->_registerVariables();
 
         $this->integrations->runEnabledIntegrations();
 
@@ -184,16 +198,15 @@ class Sherlock extends Plugin
     }
 
     /**
-     * Registers the components.
+     * Registers variables.
      */
-    private function _registerComponents()
+    private function _registerVariables()
     {
-        $this->setComponents([
-            'integrations' => IntegrationsService::class,
-            'scans' => ScansService::class,
-            'security' => SecurityService::class,
-            'tests' => TestsService::class,
-        ]);
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
+            /** @var CraftVariable $variable */
+            $variable = $event->sender;
+            $variable->set('sherlock', SherlockVariable::class);
+        });
     }
 
     /**
@@ -207,6 +220,8 @@ class Sherlock extends Plugin
             'name' => 'sherlock',
             'categories' => ['sherlock'],
             'level' => LogLevel::INFO,
+            'logContext' => false,
+            'allowLineBreaks' => false,
             'formatter' => new LineFormatter(
                 format: "[%datetime%] %message%\n",
                 dateFormat: 'Y-m-d H:i:s',
@@ -220,18 +235,6 @@ class Sherlock extends Plugin
     private function _registerTwigExtensions()
     {
         Craft::$app->getView()->registerTwigExtension(new SherlockTwigExtension());
-    }
-
-    /**
-     * Registers variables.
-     */
-    private function _registerVariables()
-    {
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
-            /** @var CraftVariable $variable */
-            $variable = $event->sender;
-            $variable->set('sherlock', SherlockVariable::class);
-        });
     }
 
     /**
