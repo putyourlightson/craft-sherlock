@@ -16,6 +16,7 @@ use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\log\MonologTarget;
 use craft\services\Plugins;
+use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use Monolog\Formatter\LineFormatter;
@@ -114,7 +115,6 @@ class Sherlock extends Plugin
     public function init(): void
     {
         parent::init();
-
         self::$plugin = $this;
 
         $this->_registerVariables();
@@ -131,7 +131,7 @@ class Sherlock extends Plugin
         $this->security->applyHeaderProtection();
 
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
-            $this->security->applyContentSecurityPolicy();
+            $this->_registerContentSecurityPolicy();
         }
         elseif (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->_registerCpUrlRules();
@@ -235,6 +235,18 @@ class Sherlock extends Plugin
     private function _registerTwigExtensions()
     {
         Craft::$app->getView()->registerTwigExtension(new SherlockTwigExtension());
+    }
+
+    /**
+     * Registers the content security policy.
+     */
+    private function _registerContentSecurityPolicy()
+    {
+        Event::on(Application::class, Application::EVENT_INIT,
+            function () {
+                $this->security->applyContentSecurityPolicy();
+            }
+        );
     }
 
     /**

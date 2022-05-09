@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.1 - 2022-05-09
+### Changed
+- Element queries are now deferred, avoiding potential issues with element queries being executed before Craft has fully initialised.
+
 ## 4.0.0 - 2022-05-04
 ### Added
 - Added compatibility with Craft 4.
