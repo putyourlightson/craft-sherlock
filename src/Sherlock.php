@@ -69,10 +69,10 @@ class Sherlock extends Plugin
     {
         return [
             'components' => [
-                'integrations' =>  ['class' => IntegrationsService::class],
-                'scans' =>  ['class' => ScansService::class],
-                'security' =>  ['class' => SecurityService::class],
-                'tests' =>  ['class' => TestsService::class],
+                'integrations' => ['class' => IntegrationsService::class],
+                'scans' => ['class' => ScansService::class],
+                'security' => ['class' => SecurityService::class],
+                'tests' => ['class' => TestsService::class],
             ],
         ];
     }
@@ -243,7 +243,7 @@ class Sherlock extends Plugin
     private function _registerContentSecurityPolicy()
     {
         Event::on(Application::class, Application::EVENT_INIT,
-            function () {
+            function() {
                 $this->security->applyContentSecurityPolicy();
             }
         );
