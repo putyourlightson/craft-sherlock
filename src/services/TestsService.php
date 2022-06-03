@@ -99,6 +99,7 @@ class TestsService extends Component
             'requireMatchingUserAgentForSession',
             'requireUserAgentAndIpForSession',
             'sanitizeSvgUploads',
+            'sendPoweredByHeader',
             'testToEmailAddress',
             'translationDebugOutput',
             'userSessionDuration',
@@ -511,7 +512,14 @@ class TestsService extends Component
                     $testModel->failTest();
                 }
                 else {
-                    $testModel->value = '"' . $value . '"';
+                    $seconds = ConfigHelper::durationInSeconds($value);
+
+                    if ($seconds < $testModel->threshold) {
+                        $testModel->warning = true;
+                    }
+                    else {
+                        $testModel->value = '"' . $value . '"';
+                    }
                 }
 
                 break;
@@ -572,6 +580,7 @@ class TestsService extends Component
 
             case 'deferPublicRegistrationPassword':
             case 'devMode':
+            case 'sendPoweredByHeader':
             case 'testToEmailAddress':
             case 'translationDebugOutput':
                 if (Craft::$app->getConfig()->getGeneral()->{$test}) {

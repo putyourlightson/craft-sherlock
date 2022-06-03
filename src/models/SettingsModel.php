@@ -171,6 +171,7 @@ class SettingsModel extends Model
 
     public array $strictTransportSecurity = [
         'canFail' => true,
+        'threshold' => 15552000, // 6 months
     ];
 
     public array $xContentTypeOptions = [
@@ -248,6 +249,10 @@ class SettingsModel extends Model
 
     public array $sanitizeSvgUploads = [
         'canFail' => true,
+    ];
+
+    public array $sendPoweredByHeader = [
+        'canFail' => false,
     ];
 
     public array $testToEmailAddress = [

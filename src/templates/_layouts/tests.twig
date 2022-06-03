@@ -16,7 +16,7 @@
             If, for whatever reason, it is not possible to update the site, then you should at least make yourself aware of the gravity of the vulnerability that the updates addressed and the potential consequences of not applying the fixes.',
         link: {
             label: 'Changelog',
-            url: 'https://github.com/craftcms/cms/blob/master/CHANGELOG.md',
+            url: 'https://github.com/craftcms/cms/blob/main/CHANGELOG.md',
         },
     },
     criticalPluginUpdates: {
@@ -44,7 +44,7 @@
         info: 'Craft updates can contain security enhancements and bug fixes that are not deemed critical, so it is nevertheless recommended to apply them whenever possible.',
         link: {
             label: 'Changelog',
-            url: 'https://github.com/craftcms/cms/blob/master/CHANGELOG.md',
+            url: 'https://github.com/craftcms/cms/blob/main/CHANGELOG.md',
         },
     },
     pluginUpdates: {
@@ -101,7 +101,7 @@
         info: 'The file permissions of the files that Craft must be able to write to. Set these to at most 0664, which will grant read and write for the owner and group, read for everyone else.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
+            url: 'https://craftcms.com/docs/4.x/installation.html#step-2-set-the-file-permissions',
         },
     },
     craftFolderPermissions: {
@@ -115,7 +115,7 @@
         info: 'The folder permissions of the folders that Craft must be able to write to. Set these to at most 0775, which will grant everything for the owner and group, read and execute for everyone else.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/installation.html#step-2-set-the-file-permissions',
+            url: 'https://craftcms.com/docs/4.x/installation.html#step-2-set-the-file-permissions',
         },
     },
     craftFoldersAboveWebRoot: {
@@ -129,7 +129,7 @@
         info: 'Keeping the Craft folders above the web root ensures that no one can access any of their files directly.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/directory-structure.html',
+            url: 'https://craftcms.com/docs/4.x/directory-structure.html',
         },
     },
     phpVersion: {
@@ -197,7 +197,7 @@
         info: 'When using the @web alias in your site’s base URL, it should be explicitly defined rather than dynamically generated. Leaving it dynamic could introduce a cache poisoning vulnerability, and Craft won’t be able to reliably determine which site is being requested. This can result in issues when running console commands.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/#aliases',
+            url: 'https://craftcms.com/docs/4.x/config/#aliases',
         },
     },
     webAliasInVolumeBaseUrl: {
@@ -211,7 +211,7 @@
         info: 'When using the @web alias in your asset volume’s base URL, it should be explicitly defined rather than dynamically generated. Leaving it dynamic could introduce a cache poisoning vulnerability, and Craft won’t be able to reliably determine which volume is being requested. This can result in issues when running console commands.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/#aliases',
+            url: 'https://craftcms.com/docs/4.x/config/#aliases',
         },
     },
     contentSecurityPolicy: {
@@ -276,14 +276,14 @@
         },
     },
     strictTransportSecurity: {
-        name: 'Strict-Transport-Security Header',
+        name: 'Strict-Transport-Security Header (HSTS)',
         type: 'secure',
         typeName: 'HTTP Header',
         details: {
             pass: 'Strict-Transport-Security header is set to',
-            warning: 'Set Strict-Transport-Security header to "max-age=31536000"',
+            warning: 'Set Strict-Transport-Security header to "max-age=15552000"',
         },
-        info: 'The Strict-Transport-Security header (often abbreviated as HSTS) lets a web site tell browsers that it should only be accessed using HTTPS, instead of using HTTP.',
+        info: 'The Strict-Transport-Security header (often abbreviated as HSTS) lets a web site tell browsers that it should only be accessed using HTTPS, instead of using HTTP. Setting this to 15552000 or more will ensure that browsers remember this setting for at least 6 months.',
         link: {
             label: 'MDN Web Docs',
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security',
@@ -342,7 +342,7 @@
         info: 'The higher the cost value, the longer it takes to generate a password hash and to verify against it. For best protection against brute force attacks, set it to the highest value that is tolerable on your server.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#blowfishhashcost',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#blowfishhashcost',
         },
     },
     cooldownDuration: {
@@ -356,7 +356,7 @@
         info: 'The amount of time a user must wait before re-attempting to log in after their account is locked due to too many failed login attempts. Setting this to false will keep the account locked indefinitely. Setting this to 300 will keep the account locked for 5 minutes.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#cooldownduration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#cooldownduration',
         },
     },
     cpTrigger: {
@@ -370,7 +370,7 @@
         info: 'This is the URI segment that triggers Craft to load the control panel rather than the front-end website. Changing this to something other than the default "admin" can help prevent people from guessing the access point to your site’s control panel.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#cptrigger',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#cptrigger',
         },
     },
     defaultDirMode: {
@@ -384,7 +384,7 @@
         info: 'The permissions Craft will use when creating a new folder on the file system. Set this to at most 0775, which will grant everything for the owner and group, read and execute for everyone else. If set to null, the permission will be determined by the current environment.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaultdirmode',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#defaultdirmode',
         },
     },
     defaultFileMode: {
@@ -398,7 +398,7 @@
         info: 'The permissions Craft will use when creating a new file on the file system. Set this to at most 0664, which will grant read and write for the owner and group, read for everyone else. If set to null, the permission will be determined by the current environment.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaultfilemode',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#defaultfilemode',
         },
     },
     defaultTokenDuration: {
@@ -412,7 +412,7 @@
         info: 'The duration that system tokens should last for. Setting this to 86400 or less will ensure that system tokens expire after at most 1 day.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#defaulttokenduration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#defaulttokenduration',
         },
     },
     deferPublicRegistrationPassword: {
@@ -426,7 +426,7 @@
         info: 'By default, Craft will require a password field to be submitted on front-end, public user registrations. Setting this to true will no longer require it on the initial registration form. If you have email verification enabled, new users will set their password once they’ve clicked on the verification link in the email. If you don’t, the only way they can set their password is to go through your forgot password workflow.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#deferpublicregistrationpassword',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#deferpublicregistrationpassword',
         },
     },
     devMode: {
@@ -440,7 +440,7 @@
         info: 'Dev mode is intended for testing and debugging your site and outputs performance related data on the front-end. It should never be enabled in production environments.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#devmode',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#devmode',
         },
     },
     elevatedSessionDuration: {
@@ -454,7 +454,7 @@
         info: 'The amount of time a user’s elevated session will last, which is required for some sensitive actions (e.g. user group/permission assignment). Setting this to 300 or less will allow sensitive actions to be performed for at most 5 minutes.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#elevatedsessionduration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#elevatedsessionduration',
         },
     },
     enableCsrfProtection: {
@@ -468,7 +468,7 @@
         info: 'Cross-Site Request Forgery (CSRF) protection ensures that all POST requests to Craft must be accompanied by a CSRF token, otherwise the request will be rejected with a 400 error. This helps to prevent attacks that force unwanted actions to be executed on behalf of a user that is authenticated and logged in to Craft.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#enablecsrfprotection',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#enablecsrfprotection',
         },
     },
     invalidLoginWindowDuration: {
@@ -482,7 +482,7 @@
         info: 'The amount of time to track invalid login attempts for a user, for determining if Craft should lock an account. Setting this to at least 3600 will ensure that invalid login attempts are tracked for at least 1 hour.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#invalidloginwindowduration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#invalidloginwindowduration',
         },
     },
     maxInvalidLogins: {
@@ -496,7 +496,7 @@
         info: 'The number of invalid login attempts Craft will allow within the specified duration before the account gets locked. Set this to 5 or less to help prevent a brute force attack.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#maxinvalidlogins',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#maxinvalidlogins',
         },
     },
     preventUserEnumeration: {
@@ -510,7 +510,7 @@
         info: 'When true, Craft will always return a successful response in the forgot password flow, making it difficult to enumerate users. When set to false and you go through the forgot password flow from the control panel login page, you’ll get distinct messages indicating whether the username/email exists and whether an email was sent with further instructions. This can be helpful for the user attempting to log in but allow for username/email enumeration based on the response.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#preventuserenumeration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#preventuserenumeration',
         },
     },
     rememberedUserSessionDuration: {
@@ -524,7 +524,7 @@
         info: 'The amount of time a user stays logged in if "Remember Me" is checked on the login page. Setting this to 1209600 or less will ensure that users are remembered for at most 2 weeks.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#rememberedusersessionduration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#rememberedusersessionduration',
         },
     },
     requireMatchingUserAgentForSession: {
@@ -538,7 +538,7 @@
         info: 'Whether Craft should require a matching user agent string when restoring a user session from a cookie. Keeping this enabled will prevent users switching to different browsers/devices while remaining logged in.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#requirematchinguseragentforsession',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#requirematchinguseragentforsession',
         },
     },
     requireUserAgentAndIpForSession: {
@@ -552,7 +552,7 @@
         info: 'Whether Craft should require the existence of a user agent string and IP address when creating a new user session. Keeping this enabled will help prevent user sessions being created for bots.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#requireuseragentandipforsession',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#requireuseragentandipforsession',
         },
     },
     sanitizeSvgUploads: {
@@ -566,7 +566,21 @@
         info: 'Whether Craft should sanitize uploaded SVG files and strip out potential malicious-looking content. This should definitely be enabled if you are accepting SVG uploads from untrusted sources.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#sanitizesvguploads',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#sanitizesvguploads',
+        },
+    },
+    sendPoweredByHeader: {
+        name: 'Send Powered By Header',
+        type: 'settings',
+        typeName: 'Config Setting',
+        details: {
+            pass: 'Powered By header is disabled',
+            warning: 'Set the powered by header to false',
+        },
+        info: 'Whether an `X-Powered-By` header should be sent, helping services like BuiltWith and Wappalyzer identify that the site is running on Craft, but which can also be abused by website scrapers looking to identify Craft sites.',
+        link: {
+            label: 'Craft Docs',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#sendpoweredbyheader',
         },
     },
     testToEmailAddress: {
@@ -580,7 +594,7 @@
         info: 'If set, all system emails will be sent to this email address. It is intended for testing and should be disabled in live production environments.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#testtoemailaddress',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#testtoemailaddress',
         },
     },
     translationDebugOutput: {
@@ -594,7 +608,7 @@
         info: 'If enabled, this setting will wrap all strings that are run through `Craft::t()` or the `|translate` and `|t` filters with "@" symbols. It is intended for debugging and should absolutely be disabled in production environments.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#translationdebugoutput',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#translationdebugoutput',
         },
     },
     userSessionDuration: {
@@ -608,7 +622,7 @@
         info: 'The amount of time a user stays logged in. Setting this to false will allow users to stay logged in as long as their browser is open. Setting this to 3600 or less will allow users to stay logged in for at most 1 hour.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#usersessionduration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#usersessionduration',
         },
     },
     useSecureCookies: {
@@ -622,7 +636,7 @@
         info: 'Whether Craft should set the secure flag on its cookies, limiting them to only be sent on secure (SSL) requests. Setting this to "on" or "auto" will ensure that the secure flag is set.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#usesecurecookies',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#usesecurecookies',
         },
     },
     verificationCodeDuration: {
@@ -636,7 +650,7 @@
         info: 'The amount of time a user verification code can be used before expiring. Setting this to 86400 or less will ensure that the user verification code expires after at most 1 day.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/3.x/config/config-settings.html#verificationcodeduration',
+            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#verificationcodeduration',
         },
     },
 } %}

@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.2 - 2022-06-03
+### Added
+- Added a test for the `Send Powered By Header` config setting.
+
+### Changed
+- Improved the `Strict-Transport-Security Header` test.
+
 ## 4.0.1 - 2022-05-09
 ### Changed
 - Element queries are now deferred, avoiding potential issues with element queries being executed before Craft has fully initialised.
