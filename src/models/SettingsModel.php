@@ -33,7 +33,7 @@ class SettingsModel extends Model
         'enabled' => true,
         'headers' => [
             [true, 'Referrer-Policy', 'no-referrer-when-downgrade'],
-            [true, 'Strict-Transport-Security', 'max-age=31536000'],
+            [true, 'Strict-Transport-Security', 'max-age=15552000'],
             [true, 'X-Content-Type-Options', 'nosniff'],
             [true, 'X-Frame-Options', 'SAMEORIGIN'],
             [true, 'X-Xss-Protection', '1; mode=block'],

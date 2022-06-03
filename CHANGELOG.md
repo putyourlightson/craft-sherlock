@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.2 - 2022-06-03
+## 4.1.0 - 2022-06-03
 ### Added
 - Added a test for the `Send Powered By Header` config setting.
 

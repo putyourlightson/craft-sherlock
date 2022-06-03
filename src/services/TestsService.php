@@ -512,7 +512,7 @@ class TestsService extends Component
                     $testModel->failTest();
                 }
                 else {
-                    $seconds = ConfigHelper::durationInSeconds($value);
+                    $seconds = explode('=', $value)[1] ?? 0;
 
                     if ($seconds < $testModel->threshold) {
                         $testModel->warning = true;
