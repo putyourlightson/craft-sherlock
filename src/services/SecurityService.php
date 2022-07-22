@@ -11,7 +11,7 @@ use craft\elements\User;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use putyourlightson\sherlock\Sherlock;
-use yii\web\HttpException;
+use yii\web\ForbiddenHttpException;
 
 /**
  * @property-read string $nonce
@@ -39,7 +39,7 @@ class SecurityService extends Component
 
         if (!empty($restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
             if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($restrictControlPanelIpAddresses, $request->getUserIP())) {
-                throw new HttpException(503);
+                throw new ForbiddenHttpException();
             }
         }
 
@@ -47,7 +47,7 @@ class SecurityService extends Component
 
         if (!empty($restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
             if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($restrictFrontEndIpAddresses, $request->getUserIP())) {
-                throw new HttpException(503);
+                throw new ForbiddenHttpException();
             }
         }
     }

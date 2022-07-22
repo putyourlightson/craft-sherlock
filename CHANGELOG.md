@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.1 - Unreleased
+### Changed
+- Changed the HTTP error code from `503` to `403` when access to the site is denied ([#36](https://github.com/putyourlightson/craft-sherlock/issues/36)).
+
 ## 4.1.0 - 2022-06-03
 ### Added
 - Added a test for the `Send Powered By Header` config setting.
