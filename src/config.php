@@ -132,9 +132,6 @@ return [
         'cors' => [
             'forceFail' => true,
         ],
-        'expectCT' => [
-            'canFail' => true,
-        ],
         'referrerPolicy' => [
             'canFail' => true,
         ],

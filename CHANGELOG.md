@@ -1,8 +1,11 @@
 # Changelog
 
-## 4.1.1 - Unreleased
+## 4.2.0 - 2022-09-01
 ### Changed
 - Changed the HTTP error code from `503` to `403` when access to the site is denied ([#36](https://github.com/putyourlightson/craft-sherlock/issues/36)).
+
+### Removed
+- Removed the test for `Expect-CT` headers, since it became obsolete in June 2021 ([source](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT#browser_compatibility)).
 
 ## 4.1.0 - 2022-06-03
 ### Added

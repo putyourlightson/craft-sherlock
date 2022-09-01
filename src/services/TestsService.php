@@ -74,7 +74,6 @@ class TestsService extends Component
             // Headers
             'contentSecurityPolicy',
             'cors',
-            'expectCT',
             'referrerPolicy',
             'strictTransportSecurity',
             'xContentTypeOptions',
@@ -480,15 +479,6 @@ class TestsService extends Component
                     }
 
                     $testModel->value = '"' . $value . '"';
-                }
-
-                break;
-
-            case 'expectCT':
-                $value = $this->_getHeaderValue('Expect-CT');
-
-                if (empty($value)) {
-                    $testModel->failTest();
                 }
 
                 break;
