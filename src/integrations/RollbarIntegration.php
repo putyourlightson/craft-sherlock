@@ -76,7 +76,7 @@ class RollbarIntegration extends BaseIntegration
 
         $config = [
             'access_token' => App::parseEnv($this->accessToken),
-            'environment' => CRAFT_ENVIRONMENT,
+            'environment' => Craft::$app->getConfig()->env,
         ];
 
         // Catch exception, otherwise the CP cannot be accessed

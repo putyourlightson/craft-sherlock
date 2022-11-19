@@ -3,6 +3,7 @@
 ## 4.2.1 - Unreleased
 ### Changed
 - Updated the supported PHP version test to list the most recent 8.x versions.
+- Changed the Rollbar integration to reference the config service environment instead of the environment constant.
 
 ## 4.2.0 - 2022-09-01
 ### Changed
