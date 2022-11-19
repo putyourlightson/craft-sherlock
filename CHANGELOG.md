@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.1 - Unreleased
+### Changed
+- Updated the supported PHP version test to list the most recent 8.x versions.
+
 ## 4.2.0 - 2022-09-01
 ### Changed
 - Changed the HTTP error code from `503` to `403` when access to the site is denied ([#36](https://github.com/putyourlightson/craft-sherlock/issues/36)).
