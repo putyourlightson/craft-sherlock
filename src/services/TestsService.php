@@ -12,6 +12,7 @@ use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
 use DateTime;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\TransferStats;
 use putyourlightson\sherlock\models\TestModel;
@@ -26,6 +27,11 @@ use yii\web\NotFoundHttpException;
 class TestsService extends Component
 {
     /**
+     * @var Client|null
+     */
+    public ?Client $client = null;
+
+    /**
      * @var Updates|null
      */
     public ?Updates $updates = null;
@@ -36,9 +42,9 @@ class TestsService extends Component
     public array $siteUrlResponse = [];
 
     /**
-     * @var array
+     * @var string|null
      */
-    public array $cpUrlResponse = [];
+    public ?string $cpRedirectScheme = null;
 
     /**
      * Get test names
@@ -122,52 +128,31 @@ class TestsService extends Component
     public function beforeRunTests()
     {
         // Ensure we only run this method once
-        if ($this->updates !== null) {
+        if ($this->client !== null) {
             return;
         }
+
+        $this->client = Craft::createGuzzleClient([
+            'timeout' => 10,
+        ]);
 
         // Get updates, forcing a refresh
         $this->updates = Craft::$app->getUpdates()->getUpdates(true);
 
-        $client = Craft::createGuzzleClient([
-            'timeout' => 10,
-        ]);
-
-        $url = '';
+        // Get current site URL response
+        $url = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
 
         try {
-            $currentSite = Craft::$app->getSites()->getCurrentSite();
-
-            // Get current site URL response
-            $url = $currentSite->getBaseUrl();
-
-            $response = $client->get($url);
+            $response = $this->client->get($url);
             $this->siteUrlResponse['headers'] = $response->getHeaders();
             $this->siteUrlResponse['body'] = $response->getBody()->getContents();
 
             if (str_starts_with($url, 'https://')) {
                 // Get redirect URL scheme of insecure URL
                 /** @noinspection HttpUrlsUsage */
-                $client->get(str_replace('https://', 'http://', $url), [
+                $this->client->get(str_replace('https://', 'http://', $url), [
                     'on_stats' => function(TransferStats $stats) {
                         $this->siteUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
-                    },
-                ]);
-            }
-
-            // Get CP URL response
-            $url = UrlHelper::baseCpUrl();
-
-            if (!str_starts_with($url, 'http')) {
-                $url = trim($currentSite->getBaseUrl(), '/') . '/' . Craft::$app->getConfig()->getGeneral()->cpTrigger;
-            }
-
-            if (str_starts_with($url, 'https://')) {
-                // Get redirect URL scheme of insecure URL
-                /** @noinspection HttpUrlsUsage */
-                $client->get(str_replace('https://', 'http://', $url), [
-                    'on_stats' => function(TransferStats $stats) {
-                        $this->cpUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
                     },
                 ]);
             }
@@ -276,8 +261,30 @@ class TestsService extends Component
                 break;
 
             case 'httpsControlPanel':
-                if (empty($this->cpUrlResponse['scheme']) || $this->cpUrlResponse['scheme'] != 'https') {
-                    $testModel->failTest();
+                // Get CP URL response
+                $url = UrlHelper::baseCpUrl();
+
+                if (!str_starts_with($url, 'http')) {
+                    $baseUrl = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
+                    $url = trim($baseUrl, '/') . '/' . Craft::$app->getConfig()->getGeneral()->cpTrigger;
+                }
+
+                if (str_starts_with($url, 'https://')) {
+                    try {
+                        /** @noinspection HttpUrlsUsage */
+                        $this->client->get(str_replace('https://', 'http://', $url), [
+                            'on_stats' => function(TransferStats $stats) {
+                                $this->cpRedirectScheme = $stats->getEffectiveUri()->getScheme();
+                            },
+                        ]);
+
+                        if (empty($this->cpRedirectScheme) || $this->cpRedirectScheme != 'https') {
+                            $testModel->failTest();
+                        }
+                    }
+                    catch (GuzzleException) {
+                        // An error indicates that insecure requests are blocked, so allow to pass
+                    }
                 }
 
                 break;
