@@ -6,6 +6,9 @@
 - Updated the supported PHP version test to list the most recent 8.x versions.
 - Changed the Rollbar integration to reference the config service environment instead of the environment constant.
 
+### Fixed
+- Fixed a broken changelog link in the Craft updates test.
+
 ## 4.2.0 - 2022-09-01
 ### Changed
 - Changed the HTTP error code from `503` to `403` when access to the site is denied ([#36](https://github.com/putyourlightson/craft-sherlock/issues/36)).
