@@ -261,7 +261,6 @@ class TestsService extends Component
                 break;
 
             case 'httpsControlPanel':
-                // Get CP URL response
                 $url = UrlHelper::baseCpUrl();
 
                 if (!str_starts_with($url, 'http')) {

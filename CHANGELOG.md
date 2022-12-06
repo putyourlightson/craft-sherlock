@@ -2,9 +2,9 @@
 
 ## 4.2.1 - Unreleased
 ### Changed
+- The Control Panel test no longer results in an error if insecure requests are blocked.
 - Updated the supported PHP version test to list the most recent 8.x versions.
 - Changed the Rollbar integration to reference the config service environment instead of the environment constant.
-- The Control Panel test no longer results in an error if insecure requests are blocked.
 
 ## 4.2.0 - 2022-09-01
 ### Changed
