@@ -122,12 +122,15 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
-    // https://www.php.net/supported-versions.php
+    /**
+     * @link https://www.php.net/supported-versions.php
+     */
     public array $phpVersion = [
         'canFail' => true,
         'thresholds' => [
             '8.0' => '2023-11-26',
             '8.1' => '2024-11-25',
+            '8.2' => '2025-12-08',
         ],
     ];
 
