@@ -10,6 +10,7 @@ use craft\console\Controller;
 use craft\helpers\Console;
 use craft\helpers\UrlHelper;
 use putyourlightson\sherlock\Sherlock;
+use yii\console\ExitCode;
 use yii\helpers\BaseConsole;
 
 /**
@@ -40,7 +41,7 @@ class ScansController extends Controller
      *
      * @param int|null $siteId
      */
-    public function actionRun(int $siteId = null)
+    public function actionRun(int $siteId = null): int
     {
         $this->stdout(Craft::t('sherlock', 'Running security scan...') . PHP_EOL, BaseConsole::FG_YELLOW);
 
@@ -62,6 +63,8 @@ class ScansController extends Controller
                 $this->stdout(Craft::t('sherlock', 'Your site has failed the Sherlock ' . ($lastScan->highSecurityLevel ? 'high' : 'standard') . ' security scan. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]) . PHP_EOL, BaseConsole::FG_RED);
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**

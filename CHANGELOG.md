@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.2.2 - Unreleased
+## 4.2.2 - 2022-12-15
 ### Changed
 - Updated the supported PHP version test to include 8.2.
 
