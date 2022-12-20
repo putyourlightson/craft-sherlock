@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.5 - 2022-12-20
+### Changed
+- The Control Panel test no longer results in an error if the web server blocks insecure requests.
+
 ## 3.1.4 - 2022-01-13
 ### Fixed
 - Fixed a bug that was throwing an exception on the settings page in versions of Craft less than 3.6.0 ([#33](https://github.com/putyourlightson/craft-sherlock/issues/33)).

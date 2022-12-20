@@ -12,6 +12,7 @@ use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
 use DateTime;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\TransferStats;
 use putyourlightson\sherlock\models\TestModel;
@@ -27,6 +28,11 @@ use yii\web\NotFoundHttpException;
 class TestsService extends Component
 {
     /**
+     * @var Client|null
+     */
+    public $client = null;
+
+    /**
      * @var Updates
      */
     public $updates;
@@ -39,7 +45,7 @@ class TestsService extends Component
     /**
      * @var string|null
      */
-    public $cpUrlResponse;
+    public $cpRedirectScheme = null;
 
     /**
      * Get test names
@@ -125,52 +131,31 @@ class TestsService extends Component
     public function beforeRunTests()
     {
         // Ensure we only run this method once
-        if ($this->updates !== null) {
+        if ($this->client !== null) {
             return;
         }
 
-        // Get updates, forcing a refresh
-        if (empty($this->updates)) {
-            $this->updates = Craft::$app->getUpdates()->getUpdates(true);
-        }
-
-        $client = Craft::createGuzzleClient([
+        $this->client = Craft::createGuzzleClient([
             'timeout' => 10,
         ]);
 
-        $url = '';
+        // Get updates, forcing a refresh
+        $this->updates = Craft::$app->getUpdates()->getUpdates(true);
+
+        // Get current site URL response
+        $url = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
 
         try {
-            $currentSite = Craft::$app->getSites()->getCurrentSite();
-
-            // Get current site URL response
-            $url = $currentSite->getBaseUrl();
-
-            $response = $client->get($url);
+            $response = $this->client->get($url);
             $this->siteUrlResponse['headers'] = $response->getHeaders();
             $this->siteUrlResponse['body'] = $response->getBody()->getContents();
 
             if (strpos($url, 'https://') === 0) {
                 // Get redirect URL scheme of insecure URL
-                $client->get(str_replace('https://', 'http://', $url), [
+                /** @noinspection HttpUrlsUsage */
+                $this->client->get(str_replace('https://', 'http://', $url), [
                     'on_stats' => function(TransferStats $stats) {
                         $this->siteUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
-                    },
-                ]);
-            }
-
-            // Get CP URL response
-            $url = UrlHelper::baseCpUrl();
-
-            if (strpos($url, 'http') !== 0) {
-                $url = trim($currentSite->getBaseUrl(), '/').'/'.Craft::$app->getConfig()->getGeneral()->cpTrigger;
-            }
-
-            if (strpos($url, 'https://') === 0) {
-                // Get redirect URL scheme of insecure URL
-                $client->get(str_replace('https://', 'http://', $url), [
-                    'on_stats' => function(TransferStats $stats) {
-                        $this->cpUrlResponse['scheme'] = $stats->getEffectiveUri()->getScheme();
                     },
                 ]);
             }
@@ -283,8 +268,31 @@ class TestsService extends Component
                 break;
 
             case 'httpsControlPanel':
-                if (empty($this->cpUrlResponse['scheme']) || $this->cpUrlResponse['scheme'] != 'https') {
-                    $testModel->failTest();
+                // Get CP URL response
+                $url = UrlHelper::baseCpUrl();
+
+                if (!str_starts_with($url, 'http')) {
+                    $baseUrl = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
+                    $url = trim($baseUrl, '/') . '/' . Craft::$app->getConfig()->getGeneral()->cpTrigger;
+                }
+
+                if (str_starts_with($url, 'https://')) {
+                    try {
+                        /** @noinspection HttpUrlsUsage */
+                        $this->client->get(str_replace('https://', 'http://', $url), [
+                            'on_stats' => function(TransferStats $stats) {
+                                $this->cpRedirectScheme = $stats->getEffectiveUri()->getScheme();
+                            },
+                        ]);
+
+                        if (empty($this->cpRedirectScheme) || $this->cpRedirectScheme != 'https') {
+                            $testModel->failTest();
+                        }
+                    }
+                    catch (GuzzleException $exception) {
+                        // An error indicates that insecure requests are blocked, so allow to pass
+                    }
+
                 }
 
                 break;
@@ -378,6 +386,8 @@ class TestsService extends Component
 
             case 'phpComposerVersion':
                 $version = PHP_VERSION;
+
+                /** @noinspection PhpComposerExtensionStubsInspection */
                 $json = json_decode(file_get_contents(Craft::getAlias('@root/composer.json')));
                 $requiredVersion = $json->config->platform->php ?? null;
 
@@ -489,10 +499,6 @@ class TestsService extends Component
                         $testModel->failTest();
                     }
                     else {
-                        if (is_array($value)) {
-                            $value = implode(', ', $value);
-                        }
-
                         $testModel->warning = true;
                     }
 
@@ -738,6 +744,7 @@ class TestsService extends Component
         }
 
         // URL decode and strip tags to make it safe to output raw
+        /** @noinspection PhpUnnecessaryLocalVariableInspection */
         $value = strip_tags(urldecode($value));
 
         return $value;

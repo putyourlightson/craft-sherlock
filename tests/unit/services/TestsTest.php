@@ -31,7 +31,7 @@ class TestsTest extends Unit
 
     public function testHttpsControlPanel()
     {
-        Sherlock::$plugin->tests->cpUrlResponse['scheme'] = 'http';
+        Sherlock::$plugin->tests->cpRedirectScheme = 'http';
         $testModel = Sherlock::$plugin->tests->runTest('httpsControlPanel');
         $this->assertFalse($testModel->pass);
     }
