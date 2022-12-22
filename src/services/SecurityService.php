@@ -154,7 +154,7 @@ class SecurityService extends Component
     /**
      * Matches IP addresses.
      *
-     * @param string[] $ipAddresses
+     * @param string[]|string[][] $ipAddresses
      * @param string|null $userIp
      *
      * @return bool
