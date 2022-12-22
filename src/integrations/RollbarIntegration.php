@@ -82,8 +82,7 @@ class RollbarIntegration extends BaseIntegration
         // Catch exception, otherwise the CP cannot be accessed
         try {
             Rollbar::init($config);
-        }
-        catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException $exception) {
             Sherlock::$plugin->log(Craft::t('sherlock', 'Rollbar integration error: ') . $exception->getMessage());
         }
     }

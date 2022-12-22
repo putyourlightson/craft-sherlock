@@ -71,8 +71,7 @@ class ScansService extends Component
     {
         if ($siteId !== null) {
             Craft::$app->getSites()->setCurrentSite($siteId);
-        }
-        else {
+        } else {
             $siteId = Craft::$app->getSites()->getCurrentSite()->id;
         }
 
@@ -113,8 +112,7 @@ class ScansService extends Component
 
         if ($user) {
             $runBy = $user;
-        }
-        else {
+        } else {
             $runBy = Craft::$app->getRequest()->getIsConsoleRequest() ? 'console command' : 'API';
         }
 

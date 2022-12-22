@@ -100,8 +100,7 @@ class SecurityService extends Component
 
             if ($settings['header']) {
                 Craft::$app->getResponse()->getHeaders()->add($name, $value);
-            }
-            else {
+            } else {
                 Craft::$app->getView()->registerMetaTag([
                     'http-equiv' => $name,
                     'content' => $value,

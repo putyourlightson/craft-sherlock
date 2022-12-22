@@ -147,8 +147,7 @@ class TestsService extends Component
             $response = $this->client->get($this->siteUrl);
             $this->siteUrlResponse['headers'] = $response->getHeaders();
             $this->siteUrlResponse['body'] = $response->getBody()->getContents();
-        }
-        catch (GuzzleException $exception) {
+        } catch (GuzzleException $exception) {
             $message = Craft::t('sherlock', 'Unable to connect to "{url}". Please ensure that the site is reachable and that the system is turned on.', ['url' => $this->siteUrl]);
 
             Sherlock::$plugin->log($message);
@@ -448,15 +447,13 @@ class TestsService extends Component
                 if (empty($value)) {
                     $testModel->failTest();
                     $testModel->value = 'Neither Content-Security-Policy header nor meta tag are set';
-                }
-                else {
+                } else {
                     $testModel->value = 'Content-Security-Policy ' . ($headerSet ? 'header' : 'meta tag') . ' ';
 
                     if (str_contains($value, 'unsafe-inline') || str_contains($value, 'unsafe-eval')) {
                         $testModel->warning = true;
                         $testModel->value .= 'contains "unsafe" values';
-                    }
-                    else {
+                    } else {
                         $testModel->value .= 'is set';
                     }
                 }
@@ -469,8 +466,7 @@ class TestsService extends Component
                 if ($value) {
                     if ($value == '*') {
                         $testModel->failTest();
-                    }
-                    else {
+                    } else {
                         $testModel->warning = true;
                     }
 
@@ -484,8 +480,7 @@ class TestsService extends Component
 
                 if (empty($value)) {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = '"' . $value . '"';
                 }
 
@@ -496,14 +491,12 @@ class TestsService extends Component
 
                 if (empty($value)) {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $seconds = explode('=', $value)[1] ?? 0;
 
                     if ($seconds < $testModel->threshold) {
                         $testModel->warning = true;
-                    }
-                    else {
+                    } else {
                         $testModel->value = '"' . $value . '"';
                     }
                 }
@@ -515,8 +508,7 @@ class TestsService extends Component
 
                 if ($value != 'nosniff') {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = '"' . $value . '"';
                 }
 
@@ -527,8 +519,7 @@ class TestsService extends Component
 
                 if ($value != 'DENY' && $value != 'SAMEORIGIN') {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = '"' . $value . '"';
                 }
 
@@ -545,8 +536,7 @@ class TestsService extends Component
 
                 if ($compareValue != '1;mode=block') {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = '"' . $value . '"';
                 }
 
@@ -581,8 +571,7 @@ class TestsService extends Component
 
                 if ($value > $testModel->threshold) {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = $value ? '0' . decoct($value) : 'null';
                 }
 
@@ -595,8 +584,7 @@ class TestsService extends Component
 
                 if ($seconds > $testModel->threshold) {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = $value;
                 }
 
@@ -616,8 +604,7 @@ class TestsService extends Component
 
                 if ($value < $testModel->threshold) {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = $value;
                 }
 
@@ -630,8 +617,7 @@ class TestsService extends Component
 
                 if ($seconds < $testModel->threshold) {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $testModel->value = $value;
                 }
 
@@ -642,11 +628,9 @@ class TestsService extends Component
 
                 if (!$value) {
                     $testModel->failTest();
-                }
-                elseif ($value > $testModel->threshold) {
+                } elseif ($value > $testModel->threshold) {
                     $testModel->warning = true;
-                }
-                else {
+                } else {
                     $testModel->value = $value;
                 }
 
@@ -660,8 +644,7 @@ class TestsService extends Component
 
                     if ($seconds > $testModel->threshold) {
                         $testModel->failTest();
-                    }
-                    else {
+                    } else {
                         $testModel->value = $value;
                     }
                 }
@@ -674,14 +657,12 @@ class TestsService extends Component
 
                 if (!$value) {
                     $testModel->failTest();
-                }
-                else {
+                } else {
                     $seconds = ConfigHelper::durationInSeconds($value);
 
                     if ($seconds > $testModel->threshold) {
                         $testModel->warning = true;
-                    }
-                    else {
+                    } else {
                         $testModel->value = $value;
                     }
                 }
@@ -763,8 +744,7 @@ class TestsService extends Component
             if ($scheme != 'https') {
                 return false;
             }
-        }
-        catch (GuzzleException) {
+        } catch (GuzzleException) {
             // An error indicates that insecure requests are blocked, so allow to pass
         }
 

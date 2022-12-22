@@ -58,8 +58,7 @@ class ScansController extends Controller
         if ($lastScan) {
             if ($lastScan->pass) {
                 $this->stdout(Craft::t('sherlock', 'Your site has passed the Sherlock ' . ($lastScan->highSecurityLevel ? 'high' : 'standard') . ' security scan' . ($lastScan->warning ? ' with warnings' : '') . '. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]) . PHP_EOL, BaseConsole::FG_GREEN);
-            }
-            else {
+            } else {
                 $this->stdout(Craft::t('sherlock', 'Your site has failed the Sherlock ' . ($lastScan->highSecurityLevel ? 'high' : 'standard') . ' security scan. View the scan result at {url}', ['url' => UrlHelper::cpUrl('sherlock')]) . PHP_EOL, BaseConsole::FG_RED);
             }
         }

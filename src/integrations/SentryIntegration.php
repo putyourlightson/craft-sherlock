@@ -106,8 +106,7 @@ class SentryIntegration extends BaseIntegration
         // Catch exception, otherwise the CP cannot be accessed
         try {
             Sentry\init($config);
-        }
-        catch (InvalidOptionsException $exception) {
+        } catch (InvalidOptionsException $exception) {
             Sherlock::$plugin->log(Craft::t('sherlock', 'Sentry integration error: ') . $exception->getMessage());
         }
     }

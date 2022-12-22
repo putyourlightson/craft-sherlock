@@ -132,8 +132,7 @@ class Sherlock extends Plugin
 
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
             $this->_registerContentSecurityPolicy();
-        }
-        elseif (Craft::$app->getRequest()->getIsCpRequest()) {
+        } elseif (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->_registerCpUrlRules();
             $this->_registerCpAlerts();
             $this->_registerAfterInstallEvent();

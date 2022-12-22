@@ -96,8 +96,7 @@ class BugsnagIntegration extends BaseIntegration
         try {
             $bugsnag = Client::make(App::parseEnv($this->apiKey), $this->notifyEndpoint);
             Handler::register($bugsnag);
-        }
-        catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException $exception) {
             Sherlock::$plugin->log(Craft::t('sherlock', 'Bugsnag integration error: ') . $exception->getMessage());
         }
     }
