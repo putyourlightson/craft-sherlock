@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.6 - 2022-12-21
+### Changed
+- Updated the supported PHP version test to include 8.1 and 8.2.
+
 ## 3.1.5 - 2022-12-20
 ### Changed
 - The Control Panel test no longer results in an error if the web server blocks insecure requests.
