@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.3 - 2022-12-22
+### Changed
+- The front-end HTTPS redirect test no longer results in an error if the web server blocks insecure requests.
+
 ## 4.2.2 - 2022-12-15
 ### Changed
 - Updated the supported PHP version test to include 8.2.

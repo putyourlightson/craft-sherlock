@@ -28,20 +28,20 @@ class TestsTest extends Unit
 
         // Set to non-null value so a Guzzle request will not be made
         Sherlock::$plugin->tests->updates = new Updates();
+
+        Sherlock::$plugin->tests->siteUrl = 'https://putyourlightson.com';
     }
 
     public function testHttpsControlPanel()
     {
-        Sherlock::$plugin->tests->cpRedirectScheme = 'http';
         $testModel = Sherlock::$plugin->tests->runTest('httpsControlPanel');
-        $this->assertFalse($testModel->pass);
+        $this->assertTrue($testModel->pass);
     }
 
     public function testHttpsFrontEnd()
     {
-        Sherlock::$plugin->tests->siteUrlResponse['scheme'] = 'http';
         $testModel = Sherlock::$plugin->tests->runTest('httpsFrontEnd');
-        $this->assertFalse($testModel->pass);
+        $this->assertTrue($testModel->pass);
     }
 
     public function testContentSecurityPolicyHeader()
