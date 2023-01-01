@@ -9,7 +9,7 @@ use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\helpers\App;
 use craft\validators\UrlValidator;
-use putyourlightson\campaign\events\IntegrationConfigEvent;
+use putyourlightson\sherlock\events\IntegrationConfigEvent;
 use putyourlightson\sherlock\Sherlock;
 use Sentry;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;

@@ -11,7 +11,7 @@ use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\helpers\App;
 use InvalidArgumentException;
-use putyourlightson\campaign\events\IntegrationConfigEvent;
+use putyourlightson\sherlock\events\IntegrationConfigEvent;
 use putyourlightson\sherlock\Sherlock;
 
 /**

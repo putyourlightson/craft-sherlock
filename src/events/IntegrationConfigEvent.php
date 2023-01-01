@@ -3,7 +3,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\events;
+namespace putyourlightson\sherlock\events;
 
 use craft\events\CancelableEvent;
 
