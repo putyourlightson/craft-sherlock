@@ -15,6 +15,11 @@ use craft\base\SavableComponent;
 abstract class BaseIntegration extends SavableComponent implements IntegrationInterface
 {
     /**
+     * @event IntegrationConfigEvent
+     */
+    public const BEFORE_RUN_INTEGRATION = 'beforeRunIntegration';
+
+    /**
      * @var string|null A package that the integration requires.
      */
     protected ?string $requiredPackage = null;

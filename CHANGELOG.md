@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.3.0 - Unreleased
+### Added
+- Added the `BaseIntegration::BEFORE_RUN_INTEGRATION` event that can be used to modify the configuration or cancel the running of an integration. 
+
 ## 4.2.3 - 2022-12-22
 ### Changed
 - The front-end HTTPS redirect test no longer results in an error if the web server blocks insecure requests.

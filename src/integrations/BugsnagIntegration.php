@@ -11,6 +11,7 @@ use Craft;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\helpers\App;
 use InvalidArgumentException;
+use putyourlightson\campaign\events\IntegrationConfigEvent;
 use putyourlightson\sherlock\Sherlock;
 
 /**
@@ -92,9 +93,17 @@ class BugsnagIntegration extends BaseIntegration
             return;
         }
 
+        $bugsnag = Client::make(App::parseEnv($this->apiKey), $this->notifyEndpoint);
+
+        $event = new IntegrationConfigEvent(['config' => $bugsnag->getConfig()]);
+        $this->trigger(BaseIntegration::BEFORE_RUN_INTEGRATION, $event);
+
+        if (!$event->isValid) {
+            return;
+        }
+
         // Catch exception, otherwise the CP cannot be accessed
         try {
-            $bugsnag = Client::make(App::parseEnv($this->apiKey), $this->notifyEndpoint);
             Handler::register($bugsnag);
         } catch (InvalidArgumentException $exception) {
             Sherlock::$plugin->log(Craft::t('sherlock', 'Bugsnag integration error: ') . $exception->getMessage());
