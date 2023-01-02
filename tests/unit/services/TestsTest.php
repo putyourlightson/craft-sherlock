@@ -29,6 +29,7 @@ class TestsTest extends Unit
         // Set to non-null value so a Guzzle request will not be made
         Sherlock::$plugin->tests->updates = new Updates();
 
+        // Testing uses a local URL fails in Docker
         Sherlock::$plugin->tests->siteUrl = 'https://putyourlightson.com';
     }
 
@@ -55,8 +56,9 @@ class TestsTest extends Unit
     public function testContentSecurityPolicyMetaTag()
     {
         Sherlock::$plugin->tests->siteUrlResponse['body'] = '
-            <html>
+            <html lang="en">
                 <head>
+                    <title></title>
                     <meta http-equiv="Content-Security-Policy" content="
                         default-src \'unsafe-inline\'
                     ">

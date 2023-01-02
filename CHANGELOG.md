@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.3.0 - Unreleased
+## 4.3.0 - 2023-01-02
 ### Added
 - Added the `BaseIntegration::BEFORE_RUN_INTEGRATION` event that can be used to modify the configuration or cancel the running of an integration. 
 
