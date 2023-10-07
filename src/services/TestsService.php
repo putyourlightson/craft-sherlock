@@ -16,8 +16,10 @@ use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\TransferStats;
+use putyourlightson\sherlock\events\RunTestsEvent;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
+use yii\base\Event;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -27,6 +29,11 @@ use yii\web\NotFoundHttpException;
  */
 class TestsService extends Component
 {
+    /**
+     * @event RunTestsEvent
+     */
+    public const EVENT_BEFORE_RUN_TESTS = 'beforeRunTests';
+
     /**
      * @var Client|null
      */
@@ -126,7 +133,7 @@ class TestsService extends Component
     /**
      * Performs preps before running tests.
      */
-    public function beforeRunTests()
+    public function beforeRunTests(): void
     {
         // Ensure we only run this method once
         if ($this->client !== null) {
@@ -142,6 +149,11 @@ class TestsService extends Component
 
         // Get the current site's base URL if not already set (by unit tests)
         $this->siteUrl = $this->siteUrl ?? Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
+
+        $event = new RunTestsEvent([
+            'client' => $this->client,
+        ]);
+        Event::trigger(static::class, self::EVENT_BEFORE_RUN_TESTS, $event);
 
         try {
             $response = $this->client->get($this->siteUrl);
@@ -175,13 +187,13 @@ class TestsService extends Component
                     foreach ($this->updates->cms->releases as $release) {
                         if ($release->critical) {
                             $criticalCraftUpdates[] = Html::a(
-                                $release->version,
-                                'https://github.com/craftcms/cms/blob/develop/CHANGELOG.md#' . str_replace('.', '-', $release->version)
-                            ) . Html::tag(
-                                'span',
-                                'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date),
-                                ['class' => 'info']
-                            );
+                                    $release->version,
+                                    'https://github.com/craftcms/cms/blob/develop/CHANGELOG.md#' . str_replace('.', '-', $release->version)
+                                ) . Html::tag(
+                                    'span',
+                                    'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date),
+                                    ['class' => 'info']
+                                );
                         }
                     }
 
@@ -203,14 +215,14 @@ class TestsService extends Component
                             foreach ($update->releases as $release) {
                                 if ($release->critical) {
                                     $criticalPluginUpdates[] = Html::a(
-                                        $plugin->name,
-                                        $plugin->changelogUrl,
-                                        ['target' => '_blank'],
-                                    ) . Html::tag(
-                                        'span',
-                                        'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date),
-                                        ['class' => 'info']
-                                    );
+                                            $plugin->name,
+                                            $plugin->changelogUrl,
+                                            ['target' => '_blank'],
+                                        ) . Html::tag(
+                                            'span',
+                                            'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date),
+                                            ['class' => 'info']
+                                        );
                                 }
                             }
                         }
@@ -244,14 +256,14 @@ class TestsService extends Component
 
                             if ($plugin !== null) {
                                 $pluginUpdates[] = Html::a(
-                                    $plugin->name,
-                                    $plugin->changelogUrl,
-                                    ['target' => '_blank'],
-                                ) . Html::tag(
-                                    'span',
-                                    'Local version ' . $plugin->version . ' is ' . count($update->releases) . ' release' . (count($update->releases) != 1 ? 's' : '') . ' behind latest version ' . $latestRelease->version . ', released on ' . $this->_formatDate($latestRelease->date),
-                                    ['class' => 'info']
-                                );
+                                        $plugin->name,
+                                        $plugin->changelogUrl,
+                                        ['target' => '_blank'],
+                                    ) . Html::tag(
+                                        'span',
+                                        'Local version ' . $plugin->version . ' is ' . count($update->releases) . ' release' . (count($update->releases) != 1 ? 's' : '') . ' behind latest version ' . $latestRelease->version . ', released on ' . $this->_formatDate($latestRelease->date),
+                                        ['class' => 'info']
+                                    );
                             }
                         }
                     }

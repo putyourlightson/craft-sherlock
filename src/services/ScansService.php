@@ -8,7 +8,6 @@ namespace putyourlightson\sherlock\services;
 use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
-use craft\mail\Message;
 use putyourlightson\sherlock\models\ScanModel;
 use putyourlightson\sherlock\records\ScanRecord;
 use putyourlightson\sherlock\Sherlock;
@@ -22,6 +21,7 @@ class ScansService extends Component
     {
         $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
 
+        /** @var ScanRecord|null $scanRecord */
         $scanRecord = ScanRecord::find()
             ->where(['siteId' => $siteId])
             ->orderBy('dateCreated desc')
@@ -47,7 +47,8 @@ class ScansService extends Component
         $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
 
         // Get records offset by ID
-        $records = ScanRecord::find()
+        /** @var ScanRecord[] $scanRecords */
+        $scanRecords = ScanRecord::find()
             ->where(['siteId' => $siteId])
             ->andWhere('id > :offsetId', [':offsetId' => $offsetId])
             ->orderBy('dateCreated desc')
@@ -55,9 +56,9 @@ class ScansService extends Component
 
         $scans = [];
 
-        foreach ($records as $record) {
+        foreach ($scanRecords as $scanRecord) {
             $scan = new ScanModel();
-            $scan->setAttributes($record->getAttributes(), false);
+            $scan->setAttributes($scanRecord->getAttributes(), false);
             $scans[] = $scan;
         }
 
@@ -67,7 +68,7 @@ class ScansService extends Component
     /**
      * Runs a scan.
      */
-    public function runScan(int $siteId = null, callable $setProgressHandler = null)
+    public function runScan(int $siteId = null, callable $setProgressHandler = null): void
     {
         if ($siteId !== null) {
             Craft::$app->getSites()->setCurrentSite($siteId);
@@ -155,7 +156,7 @@ class ScansService extends Component
      *
      * @param ScanModel $scanModel
      */
-    private function _sendNotifications(ScanModel $scanModel)
+    private function _sendNotifications(ScanModel $scanModel): void
     {
         // Check failed scan against last scan
         $lastScan = $this->getLastScan();
@@ -191,17 +192,13 @@ class ScansService extends Component
     /**
      * Sends and logs notification email.
      */
-    private function _sendLogNotificationEmail(string $subject, string $body, string $log)
+    private function _sendLogNotificationEmail(string $subject, string $body, string $log): void
     {
-        $mailer = Craft::$app->getMailer();
-
-        /** @var Message $message*/
-        $message = $mailer->compose()
+        Craft::$app->mailer->compose()
             ->setTo(Sherlock::$plugin->settings->notificationEmailAddresses)
             ->setSubject(Craft::$app->getSites()->getCurrentSite()->name . ' - ' . $subject)
-            ->setHtmlBody($body . UrlHelper::cpUrl('sherlock'));
-
-        $message->send();
+            ->setHtmlBody($body . UrlHelper::cpUrl('sherlock'))
+            ->send();
 
         Sherlock::$plugin->log($log . Sherlock::$plugin->settings->notificationEmailAddresses);
     }

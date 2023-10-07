@@ -199,13 +199,15 @@ class Sherlock extends Plugin
     /**
      * Registers variables.
      */
-    private function _registerVariables()
+    private function _registerVariables(): void
     {
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
-            /** @var CraftVariable $variable */
-            $variable = $event->sender;
-            $variable->set('sherlock', SherlockVariable::class);
-        });
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
+            function(Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('sherlock', SherlockVariable::class);
+            }
+        );
     }
 
     /**
@@ -231,7 +233,7 @@ class Sherlock extends Plugin
     /**
      * Registers Twig extensions.
      */
-    private function _registerTwigExtensions()
+    private function _registerTwigExtensions(): void
     {
         Craft::$app->getView()->registerTwigExtension(new SherlockTwigExtension());
     }
@@ -239,7 +241,7 @@ class Sherlock extends Plugin
     /**
      * Registers the content security policy.
      */
-    private function _registerContentSecurityPolicy()
+    private function _registerContentSecurityPolicy(): void
     {
         Event::on(Application::class, Application::EVENT_INIT,
             function() {
@@ -251,7 +253,7 @@ class Sherlock extends Plugin
     /**
      * Registers CP URL rules event.
      */
-    private function _registerCpUrlRules()
+    private function _registerCpUrlRules(): void
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function(RegisterUrlRulesEvent $event) {
@@ -260,8 +262,8 @@ class Sherlock extends Plugin
 
                 // Merge so that settings controller action comes first (important!)
                 $event->rules = array_merge([
-                        'settings/plugins/sherlock' => 'sherlock/settings/edit',
-                    ],
+                    'settings/plugins/sherlock' => 'sherlock/settings/edit',
+                ],
                     $event->rules
                 );
             }
@@ -271,7 +273,7 @@ class Sherlock extends Plugin
     /**
      * Registers CP alerts.
      */
-    private function _registerCpAlerts()
+    private function _registerCpAlerts(): void
     {
         Event::on(Cp::class, Cp::EVENT_REGISTER_ALERTS,
             function(RegisterCpAlertsEvent $event) {
@@ -283,7 +285,7 @@ class Sherlock extends Plugin
     /**
      * Registers after install event.
      */
-    private function _registerAfterInstallEvent()
+    private function _registerAfterInstallEvent(): void
     {
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function(PluginEvent $event) {
