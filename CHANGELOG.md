@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4.1 - Unreleased
+
+### Fixed
+
+- Fixed an error that could occur if a plugin update had no associated release date ([#45](https://github.com/putyourlightson/craft-sherlock/issues/45)).
+
 ## 4.4.0 - 2023-10-09
 
 ### Added

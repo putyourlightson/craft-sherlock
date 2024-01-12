@@ -731,7 +731,7 @@ class TestsService extends Component
     /**
      * Returns a formatted date.
      */
-    private function _formatDate(DateTime|int|string $date): string
+    private function _formatDate(DateTime|int|string|null $date): string
     {
         return Craft::$app->getFormatter()->asDate($date, 'long');
     }
