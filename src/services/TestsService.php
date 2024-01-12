@@ -191,7 +191,7 @@ class TestsService extends Component
                                     'https://github.com/craftcms/cms/blob/develop/CHANGELOG.md#' . str_replace('.', '-', $release->version)
                                 ) . Html::tag(
                                     'span',
-                                    'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date),
+                                    'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date) . '.',
                                     ['class' => 'info']
                                 );
                         }
@@ -220,7 +220,7 @@ class TestsService extends Component
                                             ['target' => '_blank'],
                                         ) . Html::tag(
                                             'span',
-                                            'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date),
+                                            'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date) . '.',
                                             ['class' => 'info']
                                         );
                                 }
@@ -261,7 +261,7 @@ class TestsService extends Component
                                         ['target' => '_blank'],
                                     ) . Html::tag(
                                         'span',
-                                        'Local version ' . $plugin->version . ' is ' . count($update->releases) . ' release' . (count($update->releases) != 1 ? 's' : '') . ' behind latest version ' . $latestRelease->version . ', released on ' . $this->_formatDate($latestRelease->date),
+                                        'Local version ' . $plugin->version . ' is ' . count($update->releases) . ' release' . (count($update->releases) != 1 ? 's' : '') . ' behind latest version ' . $latestRelease->version . ', released on ' . $this->_formatDate($latestRelease->date) . '.',
                                         ['class' => 'info']
                                     );
                             }
