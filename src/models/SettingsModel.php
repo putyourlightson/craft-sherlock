@@ -164,11 +164,6 @@ class SettingsModel extends Model
         'forceFail' => true,
     ];
 
-    /** @deprecated in 4.2.0  */
-    public array $expectCT = [
-        'canFail' => true,
-    ];
-
     public array $referrerPolicy = [
         'canFail' => true,
     ];
