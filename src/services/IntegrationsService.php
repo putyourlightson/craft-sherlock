@@ -131,7 +131,7 @@ class IntegrationsService extends Component
     /**
      * Runs enabled integrations.
      */
-    public function runEnabledIntegrations()
+    public function runEnabledIntegrations(): void
     {
         // Return if not pro
         if (!Sherlock::$plugin->getIsPro()) {

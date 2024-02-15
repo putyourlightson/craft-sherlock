@@ -27,7 +27,7 @@ class SecurityService extends Component
     /**
      * Applies restrictions.
      */
-    public function applyRestrictions()
+    public function applyRestrictions(): void
     {
         if (Sherlock::$plugin->getIsLite()) {
             return;
@@ -55,7 +55,7 @@ class SecurityService extends Component
     /**
      * Applies header protection.
      */
-    public function applyHeaderProtection()
+    public function applyHeaderProtection(): void
     {
         $settings = Sherlock::$plugin->settings->headerProtectionSettings;
 
@@ -71,7 +71,7 @@ class SecurityService extends Component
     /**
      * Applies content security policy.
      */
-    public function applyContentSecurityPolicy()
+    public function applyContentSecurityPolicy(): void
     {
         /** @var User|null $user */
         $user = Craft::$app->getUser()->getIdentity();

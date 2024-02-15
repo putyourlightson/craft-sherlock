@@ -1,7 +1,7 @@
 {
   "name": "putyourlightson/craft-sherlock",
   "description": "Security scanner and monitor to keep your site and CMS secure.",
-  "version": "4.4.1",
+  "version": "5.0.0-beta.1",
   "type": "craft-plugin",
   "homepage": "https://putyourlightson.com/plugins/sherlock",
   "license": "proprietary",
@@ -14,15 +14,15 @@
     "secure"
   ],
   "require": {
-    "php": "^8.0.2",
-    "craftcms/cms": "^4.0.0"
+    "php": "^8.2",
+    "craftcms/cms": "^5.0.0-beta.1"
   },
   "require-dev": {
-    "codeception/codeception": "^4.1.29",
-    "codeception/module-asserts": "^1.3.1",
-    "codeception/module-yii2": "^1.1.5",
+    "bugsnag/bugsnag": "^3.29",
     "craftcms/ecs": "dev-main",
     "craftcms/phpstan": "dev-main",
+    "rollbar/rollbar": "^4.0",
+    "sentry/sdk": "^4.0",
     "yiisoft/yii2-redis": "^2.0",
     "vlucas/phpdotenv": "^5.4.1"
   },
@@ -30,6 +30,20 @@
     "psr-4": {
       "putyourlightson\\sherlock\\": "src/"
     }
+  },
+  "scripts": {
+    "phpstan": "phpstan --ansi --memory-limit=1G",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --fix --ansi"
+  },
+  "config": {
+    "allow-plugins": {
+      "craftcms/plugin-installer": true,
+      "pestphp/pest-plugin": true,
+      "yiisoft/yii2-composer": true
+    },
+    "optimize-autoloader": true,
+    "sort-packages": true
   },
   "support": {
     "docs": "https://putyourlightson.com/plugins/sherlock",

@@ -62,7 +62,7 @@ class TestModel extends Model
     /**
      * Fail test
      */
-    public function failTest()
+    public function failTest(): void
     {
         $this->pass = !$this->forceFail && !($this->canFail && $this->highSecurityLevel);
         $this->warning = true;

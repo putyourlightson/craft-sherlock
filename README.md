@@ -19,7 +19,7 @@ This plugin requires a free or commercial license purchasable through the [Craft
 
 ## Requirements
 
-This plugin requires [Craft CMS](https://craftcms.com/) 3.1.0 or later, or 4.0.0 or later.
+This plugin requires [Craft CMS](https://craftcms.com/) 3.1.0 or later, or 4.0.0 or later, or 5.0.0 or later.
 
 ## Installation
 

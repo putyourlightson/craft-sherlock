@@ -72,7 +72,7 @@ class ScansController extends Controller
      * @param int $count
      * @param int $total
      */
-    public function setProgressHandler(int $count, int $total)
+    public function setProgressHandler(int $count, int $total): void
     {
         Console::updateProgress($count, $total);
     }
