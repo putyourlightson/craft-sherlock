@@ -1,17 +1,41 @@
-# Static Analysis
-
-To run static analysis on the plugin, install PHPStan and run the following command from the root of your project.
-
-    vendor/bin/phpstan analyse vendor/putyourlightson/craft-sherlock/src -c vendor/putyourlightson/craft-sherlock/phpstan.neon -l 3
-
 # Testing
 
-To test the plugin, install Codeception, update `.env` and run the following command from the root of your project.
+## Static Analysis
 
-    ./vendor/bin/codecept run -c ./vendor/putyourlightson/craft-sherlock
+To run static analysis on the plugin,
+install [PHPStan for Craft CMS](https://github.com/craftcms/phpstan) and run the
+following command from the root of your project.
+
+```shell
+./vendor/bin/phpstan analyse -c vendor/putyourlightson/craft-sherlock/phpstan.neon  --memory-limit 1G
+```
+
+## Easy Coding Standard
+
+To run the Easy Coding Standard on the plugin,
+install [ECS for Craft CMS](https://github.com/craftcms/ecs) and run the
+following command from the root of your project.
+
+```shell
+./vendor/bin/ecs check -c vendor/putyourlightson/craft-sherlock/ecs.php
+```
+
+## Pest Tests
+
+To run Pest tests, first install [Craft Pest](https://craft-pest.com/) core as a dev dependency.
+
+```shell
+composer require markhuot/craft-pest-core:^2.0.0-rc2 --dev
+```
+
+Then run the following command from the root of your project.
+
+```shell
+php php vendor/bin/pest --configuration=vendor/putyourlightson/craft-sherlock/tests/pest/phpunit.xml --test-directory=vendor/putyourlightson/craft-sherlock/tests/pest
+```
 
 Or to run a specific test.
 
-    ./vendor/bin/codecept run -c ./vendor/putyourlightson/craft-sherlock unit services/GenerateCacheTest:cacheSaved
-
-> Ensure that the database you specify in `.env` is not one that actually contains any data as it will be cleared when the tests are run. 
+```shell
+php php vendor/bin/pest --configuration=vendor/putyourlightson/craft-sherlock/tests/pest/phpunit.xml --test-directory=vendor/putyourlightson/craft-sherlock/tests/pest --filter=CacheRequestTest
+```
