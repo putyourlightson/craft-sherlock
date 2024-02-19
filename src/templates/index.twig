@@ -116,7 +116,9 @@
             {% include 'sherlock/_includes/runScanButton' with {align: 'right'} %}
 
             <h1 class="title">{{ 'Security Scan History'|t('sherlock') }}</h1>
-            <h2><i class="fas fa-history"></i> {{ 'Previously run security scans'|t('sherlock') }}</h2>
+            <h2>
+                <i class="fas fa-history"></i> {{ 'Previously run security scans'|t('sherlock') }}
+            </h2>
 
             <table class="data fullwidth limited" data-limit="10">
                 <thead>
@@ -146,13 +148,17 @@
             </table>
 
             <div class="expand" style="display: none;">
-                <a class="view-more" href="#">{{ 'View full scan history'|t('sherlock') }}<strong class="caret"></strong></a>
-                <a class="view-less dropup" href="#" style="display: none;">{{ 'View less scan history'|t('sherlock') }}<strong class="caret up"></strong></a>
+                <a class="view-more" href="#">{{ 'View full scan history'|t('sherlock') }}
+                    <strong class="caret"></strong></a>
+                <a class="view-less dropup" href="#" style="display: none;">{{ 'View less scan history'|t('sherlock') }}
+                    <strong class="caret up"></strong></a>
             </div>
 
         {% else %}
 
-            <h2><i class="fas fa-history"></i> {{ 'No security scans have been run for this site.'|t('sherlock') }}</h2>
+            <h2>
+                <i class="fas fa-history"></i> {{ 'No security scans have been run for this site.'|t('sherlock') }}
+            </h2>
 
             {% include 'sherlock/_includes/runScanButton' %}
 
