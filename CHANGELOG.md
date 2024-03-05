@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4.2 - Unreleased
+
+### Changed
+ 
+- A custom log target is now only registered if a dispatcher exists.
+
 ## 4.4.1 - 2024-01-12
 
 ### Fixed
