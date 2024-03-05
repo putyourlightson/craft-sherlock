@@ -147,7 +147,7 @@ class ScansService extends Component
             && Sherlock::$plugin->settings->monitor
             && !empty(Sherlock::$plugin->settings->notificationEmailAddresses)
         ) {
-            $this->_sendNotifications($scanModel);
+            $this->sendNotifications($scanModel);
         }
     }
 
@@ -156,7 +156,7 @@ class ScansService extends Component
      *
      * @param ScanModel $scanModel
      */
-    private function _sendNotifications(ScanModel $scanModel): void
+    private function sendNotifications(ScanModel $scanModel): void
     {
         // Check failed scan against last scan
         $lastScan = $this->getLastScan();
@@ -169,7 +169,7 @@ class ScansService extends Component
 
         if ($lastScan->pass) {
             // Send & log notification email
-            $this->_sendLogNotificationEmail(
+            $this->sendLogNotificationEmail(
                 'Security Scan Failed',
                 'Sherlock security scan for site "' . $site->name . '" failed: ',
                 'Sent email about failed scan to '
@@ -181,7 +181,7 @@ class ScansService extends Component
             || (isset($scanModel->results['fail']['criticalPluginUpdates']) && empty($lastScan->results['fail']['criticalPluginUpdates']))
         ) {
             // Send & log notification email
-            $this->_sendLogNotificationEmail(
+            $this->sendLogNotificationEmail(
                 'Security Scan Critical Updates',
                 'Sherlock security scan for site "' . $site->name . '" detected critical updates: ',
                 'Sent email about critical updates to '
@@ -192,7 +192,7 @@ class ScansService extends Component
     /**
      * Sends and logs notification email.
      */
-    private function _sendLogNotificationEmail(string $subject, string $body, string $log): void
+    private function sendLogNotificationEmail(string $subject, string $body, string $log): void
     {
         Craft::$app->mailer->compose()
             ->setTo(Sherlock::$plugin->settings->notificationEmailAddresses)

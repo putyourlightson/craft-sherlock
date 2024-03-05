@@ -191,7 +191,7 @@ class TestsService extends Component
                                     'https://github.com/craftcms/cms/blob/develop/CHANGELOG.md#' . str_replace('.', '-', $release->version)
                                 ) . Html::tag(
                                     'span',
-                                    'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date) . '.',
+                                    'Version ' . $release->version . ' is a critical update, released on ' . $this->formatDate($release->date) . '.',
                                     ['class' => 'info']
                                 );
                         }
@@ -220,7 +220,7 @@ class TestsService extends Component
                                             ['target' => '_blank'],
                                         ) . Html::tag(
                                             'span',
-                                            'Version ' . $release->version . ' is a critical update, released on ' . $this->_formatDate($release->date) . '.',
+                                            'Version ' . $release->version . ' is a critical update, released on ' . $this->formatDate($release->date) . '.',
                                             ['class' => 'info']
                                         );
                                 }
@@ -261,7 +261,7 @@ class TestsService extends Component
                                         ['target' => '_blank'],
                                     ) . Html::tag(
                                         'span',
-                                        'Local version ' . $plugin->version . ' is ' . count($update->releases) . ' release' . (count($update->releases) != 1 ? 's' : '') . ' behind latest version ' . $latestRelease->version . ', released on ' . $this->_formatDate($latestRelease->date) . '.',
+                                        'Local version ' . $plugin->version . ' is ' . count($update->releases) . ' release' . (count($update->releases) != 1 ? 's' : '') . ' behind latest version ' . $latestRelease->version . ', released on ' . $this->formatDate($latestRelease->date) . '.',
                                         ['class' => 'info']
                                     );
                             }
@@ -283,14 +283,14 @@ class TestsService extends Component
                     $url = trim($this->siteUrl, '/') . '/' . Craft::$app->getConfig()->getGeneral()->cpTrigger;
                 }
 
-                if (!$this->_redirectsToHttps($url)) {
+                if (!$this->redirectsToHttps($url)) {
                     $testModel->failTest();
                 }
 
                 break;
 
             case 'httpsFrontEnd':
-                if (!$this->_redirectsToHttps($this->siteUrl)) {
+                if (!$this->redirectsToHttps($this->siteUrl)) {
                     $testModel->failTest();
                 }
 
@@ -305,7 +305,7 @@ class TestsService extends Component
                     'config/license.key' => Craft::getAlias('@config/license.key'),
                 ];
 
-                $pathsFailed = $this->_getPathsWritableByEveryone($paths);
+                $pathsFailed = $this->getPathsWritableByEveryone($paths);
 
                 if (!empty($pathsFailed)) {
                     $testModel->failTest();
@@ -323,7 +323,7 @@ class TestsService extends Component
                     'webroot/cpresources' => Craft::getAlias('@webroot/cpresources'),
                 ];
 
-                $pathsFailed = $this->_getPathsWritableByEveryone($paths);
+                $pathsFailed = $this->getPathsWritableByEveryone($paths);
 
                 if (!empty($pathsFailed)) {
                     $testModel->failTest();
@@ -447,7 +447,7 @@ class TestsService extends Component
                 break;
 
             case 'contentSecurityPolicy':
-                $value = $this->_getHeaderValue('Content-Security-Policy');
+                $value = $this->getHeaderValue('Content-Security-Policy');
                 $headerSet = !empty($value);
 
                 if (!$headerSet) {
@@ -473,7 +473,7 @@ class TestsService extends Component
                 break;
 
             case 'cors':
-                $value = $this->_getHeaderValue('Access-Control-Allow-Origin');
+                $value = $this->getHeaderValue('Access-Control-Allow-Origin');
 
                 if ($value) {
                     if ($value == '*') {
@@ -488,7 +488,7 @@ class TestsService extends Component
                 break;
 
             case 'referrerPolicy':
-                $value = $this->_getHeaderValue('Referrer-Policy');
+                $value = $this->getHeaderValue('Referrer-Policy');
 
                 if (empty($value)) {
                     $testModel->failTest();
@@ -499,7 +499,7 @@ class TestsService extends Component
                 break;
 
             case 'strictTransportSecurity':
-                $value = $this->_getHeaderValue('Strict-Transport-Security');
+                $value = $this->getHeaderValue('Strict-Transport-Security');
 
                 if (empty($value)) {
                     $testModel->failTest();
@@ -516,7 +516,7 @@ class TestsService extends Component
                 break;
 
             case 'xContentTypeOptions':
-                $value = $this->_getHeaderValue('X-Content-Type-Options');
+                $value = $this->getHeaderValue('X-Content-Type-Options');
 
                 if ($value != 'nosniff') {
                     $testModel->failTest();
@@ -527,7 +527,7 @@ class TestsService extends Component
                 break;
 
             case 'xFrameOptions':
-                $value = $this->_getHeaderValue('X-Frame-Options');
+                $value = $this->getHeaderValue('X-Frame-Options');
 
                 if ($value != 'DENY' && $value != 'SAMEORIGIN') {
                     $testModel->failTest();
@@ -538,10 +538,10 @@ class TestsService extends Component
                 break;
 
             case 'xXssProtection':
-                $value = $this->_getHeaderValue('X-Xss-Protection');
+                $value = $this->getHeaderValue('X-Xss-Protection');
 
                 // If not set then check alternative case
-                $value = $value ?: $this->_getHeaderValue('X-XSS-Protection');
+                $value = $value ?: $this->getHeaderValue('X-XSS-Protection');
 
                 // Remove spaces and convert to lower case for comparison
                 $compareValue = strtolower(str_replace(' ', '', $value));
@@ -688,7 +688,7 @@ class TestsService extends Component
     /**
      * Returns a header value.
      */
-    private function _getHeaderValue(string $name): string
+    private function getHeaderValue(string $name): string
     {
         // Use lower-case name if it exists in the header
         if (!empty($this->siteUrlResponse['headers'][strtolower($name)])) {
@@ -714,7 +714,7 @@ class TestsService extends Component
      * @param array $paths
      * @return array
      */
-    private function _getPathsWritableByEveryone(array $paths): array
+    private function getPathsWritableByEveryone(array $paths): array
     {
         $writablePaths = [];
 
@@ -731,7 +731,7 @@ class TestsService extends Component
     /**
      * Returns a formatted date.
      */
-    private function _formatDate(DateTime|int|string|null $date): string
+    private function formatDate(DateTime|int|string|null $date): string
     {
         return Craft::$app->getFormatter()->asDate($date, 'long');
     }
@@ -739,7 +739,7 @@ class TestsService extends Component
     /**
      * Returns whether an insecure URL redirects to HTTPS or errors.
      */
-    private function _redirectsToHttps(string $url): bool
+    private function redirectsToHttps(string $url): bool
     {
         /** @noinspection HttpUrlsUsage */
         $url = str_replace('https://', 'http://', $url);
