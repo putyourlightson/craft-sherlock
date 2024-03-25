@@ -249,7 +249,9 @@ class Sherlock extends Plugin
         Event::on(Application::class, Application::EVENT_INIT,
             function() {
                 $this->security->applyContentSecurityPolicy();
-            }
+            },
+            null,
+            false,
         );
     }
 
