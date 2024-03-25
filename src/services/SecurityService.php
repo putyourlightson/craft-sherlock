@@ -14,7 +14,6 @@ use putyourlightson\sherlock\Sherlock;
 use yii\web\ForbiddenHttpException;
 
 /**
- * @property-read string $nonce
  * @property-read array $cpAlerts
  */
 class SecurityService extends Component
@@ -22,12 +21,12 @@ class SecurityService extends Component
     /**
      * @var string|null
      */
-    private ?string $_nonce = null;
+    private ?string $nonce = null;
 
     /**
      * Applies restrictions.
      */
-    public function applyRestrictions()
+    public function applyRestrictions(): void
     {
         if (Sherlock::$plugin->getIsLite()) {
             return;
@@ -38,7 +37,7 @@ class SecurityService extends Component
         $restrictControlPanelIpAddresses = Sherlock::$plugin->settings->restrictControlPanelIpAddresses;
 
         if (!empty($restrictControlPanelIpAddresses) && $request->getIsCpRequest()) {
-            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($restrictControlPanelIpAddresses, $request->getUserIP())) {
+            if (!Craft::$app->getUser()->getIsAdmin() && !$this->matchIpAddresses($restrictControlPanelIpAddresses, $request->getUserIP())) {
                 throw new ForbiddenHttpException();
             }
         }
@@ -46,7 +45,7 @@ class SecurityService extends Component
         $restrictFrontEndIpAddresses = Sherlock::$plugin->settings->restrictFrontEndIpAddresses;
 
         if (!empty($restrictFrontEndIpAddresses) && $request->getIsSiteRequest()) {
-            if (!Craft::$app->getUser()->getIsAdmin() && !$this->_matchIpAddresses($restrictFrontEndIpAddresses, $request->getUserIP())) {
+            if (!Craft::$app->getUser()->getIsAdmin() && !$this->matchIpAddresses($restrictFrontEndIpAddresses, $request->getUserIP())) {
                 throw new ForbiddenHttpException();
             }
         }
@@ -55,7 +54,7 @@ class SecurityService extends Component
     /**
      * Applies header protection.
      */
-    public function applyHeaderProtection()
+    public function applyHeaderProtection(): void
     {
         $settings = Sherlock::$plugin->settings->headerProtectionSettings;
 
@@ -71,7 +70,7 @@ class SecurityService extends Component
     /**
      * Applies content security policy.
      */
-    public function applyContentSecurityPolicy()
+    public function applyContentSecurityPolicy(): void
     {
         /** @var User|null $user */
         $user = Craft::$app->getUser()->getIdentity();
@@ -137,11 +136,11 @@ class SecurityService extends Component
      */
     public function getNonce(): string
     {
-        if ($this->_nonce === null) {
-            $this->_nonce = base64_encode(StringHelper::randomString());
+        if ($this->nonce === null) {
+            $this->nonce = base64_encode(StringHelper::randomString());
         }
 
-        return $this->_nonce;
+        return $this->nonce;
     }
 
     /**
@@ -149,7 +148,7 @@ class SecurityService extends Component
      *
      * @param string[]|string[][] $ipAddresses
      */
-    private function _matchIpAddresses(array $ipAddresses, string $userIp = null): bool
+    private function matchIpAddresses(array $ipAddresses, string $userIp = null): bool
     {
         foreach ($ipAddresses as $ipAddress) {
             $ipAddress = is_array($ipAddress) ? $ipAddress[0] : $ipAddress;

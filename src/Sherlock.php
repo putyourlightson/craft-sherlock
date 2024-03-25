@@ -118,9 +118,9 @@ class Sherlock extends Plugin
         parent::init();
         self::$plugin = $this;
 
-        $this->_registerVariables();
-        $this->_registerLogTarget();
-        $this->_registerTwigExtensions();
+        $this->registerVariables();
+        $this->registerLogTarget();
+        $this->registerTwigExtensions();
 
         $this->integrations->runEnabledIntegrations();
 
@@ -132,11 +132,11 @@ class Sherlock extends Plugin
         $this->security->applyHeaderProtection();
 
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
-            $this->_registerContentSecurityPolicy();
+            $this->registerContentSecurityPolicy();
         } elseif (Craft::$app->getRequest()->getIsCpRequest()) {
-            $this->_registerCpUrlRules();
-            $this->_registerCpAlerts();
-            $this->_registerAfterInstallEvent();
+            $this->registerCpUrlRules();
+            $this->registerCpAlerts();
+            $this->registerAfterInstallEvent();
         }
     }
 
@@ -200,7 +200,7 @@ class Sherlock extends Plugin
     /**
      * Registers variables.
      */
-    private function _registerVariables(): void
+    private function registerVariables(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
             function(Event $event) {
@@ -216,7 +216,7 @@ class Sherlock extends Plugin
      *
      * @see LineFormatter::SIMPLE_FORMAT
      */
-    private function _registerLogTarget(): void
+    private function registerLogTarget(): void
     {
         if (Craft::getLogger()->dispatcher instanceof Dispatcher) {
             Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
@@ -236,7 +236,7 @@ class Sherlock extends Plugin
     /**
      * Registers Twig extensions.
      */
-    private function _registerTwigExtensions(): void
+    private function registerTwigExtensions(): void
     {
         Craft::$app->getView()->registerTwigExtension(new SherlockTwigExtension());
     }
@@ -244,7 +244,7 @@ class Sherlock extends Plugin
     /**
      * Registers the content security policy.
      */
-    private function _registerContentSecurityPolicy(): void
+    private function registerContentSecurityPolicy(): void
     {
         Event::on(Application::class, Application::EVENT_INIT,
             function() {
@@ -258,7 +258,7 @@ class Sherlock extends Plugin
     /**
      * Registers CP URL rules event.
      */
-    private function _registerCpUrlRules(): void
+    private function registerCpUrlRules(): void
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function(RegisterUrlRulesEvent $event) {
@@ -278,7 +278,7 @@ class Sherlock extends Plugin
     /**
      * Registers CP alerts.
      */
-    private function _registerCpAlerts(): void
+    private function registerCpAlerts(): void
     {
         Event::on(Cp::class, Cp::EVENT_REGISTER_ALERTS,
             function(RegisterCpAlertsEvent $event) {
@@ -290,7 +290,7 @@ class Sherlock extends Plugin
     /**
      * Registers after install event.
      */
-    private function _registerAfterInstallEvent(): void
+    private function registerAfterInstallEvent(): void
     {
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function(PluginEvent $event) {
