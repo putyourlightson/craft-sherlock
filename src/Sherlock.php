@@ -263,7 +263,6 @@ class Sherlock extends Plugin
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function(RegisterUrlRulesEvent $event) {
                 $event->rules['sherlock'] = 'sherlock/scans/index';
-                $event->rules['sherlock/<siteHandle:{handle}>'] = 'sherlock/scans/index';
 
                 // Merge so that settings controller action comes first (important!)
                 $event->rules = array_merge([

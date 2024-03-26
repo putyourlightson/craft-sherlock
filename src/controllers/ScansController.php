@@ -6,6 +6,7 @@
 namespace putyourlightson\sherlock\controllers;
 
 use Craft;
+use craft\helpers\Cp;
 use craft\web\Controller;
 use putyourlightson\sherlock\Sherlock;
 use yii\web\Response;
@@ -30,15 +31,12 @@ class ScansController extends Controller
     /**
      * Renders the main Sherlock template.
      */
-    public function actionIndex(string $siteHandle = null): Response
+    public function actionIndex(): Response
     {
-        // Set the current site to the site handle if set
-        if ($siteHandle !== null) {
-            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-
-            if ($site !== null) {
-                Craft::$app->getSites()->setCurrentSite($site);
-            }
+        // Set the current site to the requested site
+        $site = Cp::requestedSite();
+        if ($site !== null) {
+            Craft::$app->getSites()->setCurrentSite($site);
         }
 
         return $this->renderTemplate('sherlock/index');

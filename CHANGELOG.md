@@ -1,5 +1,11 @@
 # Release Notes for Sherlock
 
+## 5.0.0-beta.3 - 2024-03-26
+
+### Fixed
+
+- Fixed the site selector dropdown.
+
 ## 5.0.0-beta.2 - 2024-03-25
 
 ### Changed
