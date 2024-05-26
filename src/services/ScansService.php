@@ -149,6 +149,19 @@ class ScansService extends Component
         ) {
             $this->sendNotifications($scanModel);
         }
+
+        if (Sherlock::$plugin->settings->maxScans !== false) {
+            $scanIds = ScanRecord::find()
+                ->select(['id'])
+                ->where(['siteId' => $siteId])
+                ->orderBy(['dateCreated' => SORT_DESC])
+                ->offset(Sherlock::$plugin->settings->maxScans)
+                ->column();
+
+            if (!empty($scanIds)) {
+                ScanRecord::deleteAll(['id' => $scanIds]);
+            }
+        }
     }
 
     /**

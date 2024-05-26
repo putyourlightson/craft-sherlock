@@ -48,6 +48,9 @@ return [
         //    'directives' => [[]],
         //],
 
+        // The number of scans Sherlock will keep before it starts deleting the oldest scans. If set to `false`, Sherlock will not delete any scans.
+        //'maxScans' => 100,
+
         // A random 32 character string that will allow calls to the plugin API.
         //'apiKey' => '',
 
@@ -64,148 +67,147 @@ return [
          * =========================================================================
          * Individual test settings.
          * =========================================================================
-         *
+         */
 
         // Updates
-        'criticalCraftUpdates' => [
-            'forceFail' => true,
-        ],
-        'criticalPluginUpdates' => [
-            'forceFail' => true,
-        ],
-        'craftUpdates' => [],
-        'pluginUpdates' => [],
+        //'criticalCraftUpdates' => [
+        //    'forceFail' => true,
+        //],
+        //'criticalPluginUpdates' => [
+        //    'forceFail' => true,
+        //],
+        //'craftUpdates' => [],
+        //'pluginUpdates' => [],
 
         // HTTPS
-        'httpsControlPanel' => [
-            'forceFail' => true,
-        ],
-        'httpsFrontEnd' => [
-            'forceFail' => true,
-        ],
+        //'httpsControlPanel' => [
+        //    'forceFail' => true,
+        //],
+        //'httpsFrontEnd' => [
+        //    'forceFail' => true,
+        //],
 
         // System
-        'craftFilePermissions' => [
-            'canFail' => true,
-        ],
-        'craftFolderPermissions' => [
-            'canFail' => true,
-        ],
-        'craftFoldersAboveWebRoot' => [
-            'canFail' => true,
-        ],
-        'phpVersion' => [
-            'canFail' => true,
-            'thresholds' => [
-                '8.0' => '2023-11-26',
-                '8.1' => '2024-11-25',
-                '8.2' => '2025-12-08',
-            ],
-        ],
+        //'craftFilePermissions' => [
+        //    'canFail' => true,
+        //],
+        //'craftFolderPermissions' => [
+        //    'canFail' => true,
+        //],
+        //'craftFoldersAboveWebRoot' => [
+        //    'canFail' => true,
+        //],
+        //'phpVersion' => [
+        //    'canFail' => true,
+        //    'thresholds' => [
+        //        '8.0' => '2023-11-26',
+        //        '8.1' => '2024-11-25',
+        //        '8.2' => '2025-12-08',
+        //    ],
+        //],
 
         // Setup
-        'adminUsername' => [],
-        'requireEmailVerification' => [
-            'canFail' => true,
-        ],
-        'webAliasInSiteBaseUrl => [
-            'forceFail' => true,
-        ],
-        'webAliasInVolumeBaseUrl => [
-            'forceFail' => true,
-        ],
+        //'adminUsername' => [],
+        //'requireEmailVerification' => [
+        //    'canFail' => true,
+        //],
+        //'webAliasInSiteBaseUrl => [
+        //    'forceFail' => true,
+        //],
+        //'webAliasInVolumeBaseUrl => [
+        //    'forceFail' => true,
+        //],
 
         // Headers
-        'contentSecurityPolicy' => [
-            'canFail' => true,
-        ],
-        'cors' => [
-            'forceFail' => true,
-        ],
-        'referrerPolicy' => [
-            'canFail' => true,
-        ],
-        'strictTransportSecurity' => [
-            'canFail' => true,
-            'threshold' => 15552000, // 6 months
-        ],
-        'xContentTypeOptions' => [
-            'canFail' => true,
-        ],
-        'xFrameOptions' => [
-            'canFail' => true,
-        ],
-        'xXssProtection' => [],
+        //'contentSecurityPolicy' => [
+        //    'canFail' => true,
+        //],
+        //'cors' => [
+        //    'forceFail' => true,
+        //],
+        //'referrerPolicy' => [
+        //    'canFail' => true,
+        //],
+        //'strictTransportSecurity' => [
+        //    'canFail' => true,
+        //    'threshold' => 15552000, // 6 months
+        //],
+        //'xContentTypeOptions' => [
+        //    'canFail' => true,
+        //],
+        //'xFrameOptions' => [
+        //    'canFail' => true,
+        //],
+        //'xXssProtection' => [],
 
         // General config settings
-        'blowfishHashCost' => [
-            'threshold' => 13,
-        ],
-        'cooldownDuration' => [
-            'threshold' => 300, // 5 minutes
-        ],
-        'cpTrigger' => [],
-        'defaultDirMode' => [
-            'canFail' => true,
-            'threshold' => 0775,
-        ],
-        'defaultFileMode' => [
-            'canFail' => true,
-            'threshold' => 0664,
-        ],
-        'defaultTokenDuration' => [
-            'canFail' => true,
-            'threshold' => 86400, // 1 day
-        ],
-        'deferPublicRegistrationPassword' => [],
-        'devMode' => [
-            'forceFail' => true,
-        ],
-        'elevatedSessionDuration' => [
-            'canFail' => true,
-            'threshold' => 300, // 5 minutes
-        ],
-        'enableCsrfProtection' => [
-            'canFail' => true,
-        ],
-        'invalidLoginWindowDuration' => [
-            'threshold' => 3600, // 1 hour
-        ],
-        'maxInvalidLogins' => [
-            'canFail' => true,
-            'threshold' => 5,
-        ],
-        'preventUserEnumeration' => [
-            'canFail' => true,
-        ],
-        'rememberedUserSessionDuration' => [
-            'threshold' => 1209600, // 14 days
-        ],
-        'requireMatchingUserAgentForSession' => [],
-        'requireUserAgentAndIpForSession' => [],
-        'sanitizeSvgUploads' => [
-            'canFail' => true,
-        ],
-        'sendPoweredByHeader' => [
-            'canFail' => false,
-        ],
-        'testToEmailAddress' => [
-            'canFail' => true,
-        ],
-        'translationDebugOutput' => [
-            'canFail' => true,
-        ],
-        'userSessionDuration' => [
-            'canFail' => true,
-            'threshold' => 3600, // 1 hour
-        ],
-        'useSecureCookies' => [
-            'canFail' => true,
-        ],
-        'verificationCodeDuration' => [
-            'canFail' => true,
-            'threshold' => 86400, // 1 day
-        ],
-         */
+        //'blowfishHashCost' => [
+        //    'threshold' => 13,
+        //],
+        //'cooldownDuration' => [
+        //    'threshold' => 300, // 5 minutes
+        //],
+        //'cpTrigger' => [],
+        //'defaultDirMode' => [
+        //    'canFail' => true,
+        //    'threshold' => 0775,
+        //],
+        //'defaultFileMode' => [
+        //    'canFail' => true,
+        //    'threshold' => 0664,
+        //],
+        //'defaultTokenDuration' => [
+        //    'canFail' => true,
+        //    'threshold' => 86400, // 1 day
+        //],
+        //'deferPublicRegistrationPassword' => [],
+        //'devMode' => [
+        //    'forceFail' => true,
+        //],
+        //'elevatedSessionDuration' => [
+        //    'canFail' => true,
+        //    'threshold' => 300, // 5 minutes
+        //],
+        //'enableCsrfProtection' => [
+        //    'canFail' => true,
+        //],
+        //'invalidLoginWindowDuration' => [
+        //    'threshold' => 3600, // 1 hour
+        //],
+        //'maxInvalidLogins' => [
+        //    'canFail' => true,
+        //    'threshold' => 5,
+        //],
+        //'preventUserEnumeration' => [
+        //    'canFail' => true,
+        //],
+        //'rememberedUserSessionDuration' => [
+        //    'threshold' => 1209600, // 14 days
+        //],
+        //'requireMatchingUserAgentForSession' => [],
+        //'requireUserAgentAndIpForSession' => [],
+        //'sanitizeSvgUploads' => [
+        //    'canFail' => true,
+        //],
+        //'sendPoweredByHeader' => [
+        //    'canFail' => false,
+        //],
+        //'testToEmailAddress' => [
+        //    'canFail' => true,
+        //],
+        //'translationDebugOutput' => [
+        //    'canFail' => true,
+        //],
+        //'userSessionDuration' => [
+        //    'canFail' => true,
+        //    'threshold' => 3600, // 1 hour
+        //],
+        //'useSecureCookies' => [
+        //    'canFail' => true,
+        //],
+        //'verificationCodeDuration' => [
+        //    'canFail' => true,
+        //    'threshold' => 86400, // 1 day
+        //],
     ],
 ];

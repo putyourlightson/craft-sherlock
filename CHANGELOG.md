@@ -1,6 +1,10 @@
 # Release Notes for Sherlock
 
-## 5.0.1 - Unreleased
+## 5.1.0 - Unreleased
+
+### Added
+
+- Added the `maxScans` config setting that determines the number of scans Sherlock will keep before it starts deleting the oldest scans.
 
 ### Changed
 
