@@ -8,10 +8,11 @@
   "keywords": [
     "craft",
     "cms",
-    "craftcms",
     "security",
     "scanner",
-    "secure"
+    "secure",
+    "monitor",
+    "notifications"
   ],
   "require": {
     "php": "^8.0.2",

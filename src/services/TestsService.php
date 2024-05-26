@@ -372,7 +372,7 @@ class TestsService extends Component
                     $eolDate = $testModel->thresholds[$value];
                 }
 
-                $testModel->value = $version . ($eolDate ? ' (until ' . $eolDate . ')' : '');
+                $testModel->value = $version;
 
                 break;
 
