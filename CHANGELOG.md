@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4.3 - Unreleased
+
+### Changed
+
+- Updated the supported PHP version periods and added 8.3.
+
 ## 4.4.2 - 2024-03-25
 
 ### Changed
