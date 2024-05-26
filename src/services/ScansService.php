@@ -24,7 +24,7 @@ class ScansService extends Component
         /** @var ScanRecord|null $scanRecord */
         $scanRecord = ScanRecord::find()
             ->where(['siteId' => $siteId])
-            ->orderBy('dateCreated desc')
+            ->orderBy(['dateCreated' => SORT_DESC])
             ->one();
 
         if ($scanRecord === null) {
@@ -51,7 +51,7 @@ class ScansService extends Component
         $scanRecords = ScanRecord::find()
             ->where(['siteId' => $siteId])
             ->andWhere('id > :offsetId', [':offsetId' => $offsetId])
-            ->orderBy('dateCreated desc')
+            ->orderBy(['dateCreated' => SORT_DESC])
             ->all();
 
         $scans = [];
