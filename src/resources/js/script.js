@@ -2,7 +2,7 @@ $(document).ready(function()
 {
     $('table.limited').each(function() {
         const limit = $(this).data('limit');
-        if ($(this).find('tr').length > limit) {
+        if ($(this).find('tbody tr').length > limit) {
             $(this).closest('.sherlock').find('.expand').show();
             $(this).find('tr:nth-child(n+' + (limit + 1) + ')').hide();
         }
@@ -33,13 +33,13 @@ $(document).ready(function()
         $('.running #graphic').addClass('spinner')
 
         $.get($(this).attr('data-url'), function() {
-            location.reload();
-        })
-        .fail(function(xhr) {
-            const error = xhr.responseText.replace(/<\/?pre>/gi, '');
-            $('.running #graphic').addClass('error').removeClass('spinner');
-            $('.running #text').addClass('error').html(error);
-            $('.running #back').show();
-        });
+                location.reload();
+            })
+            .fail(function(xhr) {
+                const error = xhr.responseText.replace(/<\/?pre>/gi, '');
+                $('.running #graphic').addClass('error').removeClass('spinner');
+                $('.running #text').addClass('error').html(error);
+                $('.running #back').show();
+            });
     });
 });
