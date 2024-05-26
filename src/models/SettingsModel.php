@@ -128,8 +128,6 @@ class SettingsModel extends Model
     public array $phpVersion = [
         'canFail' => true,
         'thresholds' => [
-            '8.0' => '2023-11-26',
-            '8.1' => '2026-01-01',
             '8.2' => '2027-01-01',
             '8.3' => '2028-01-01',
         ],
