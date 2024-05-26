@@ -1,6 +1,10 @@
 # Changelog
 
-## 4.4.3 - Unreleased
+## 4.5.0 - Unreleased
+
+### Added
+
+- Added the `maxScans` config setting that determines the number of scans Sherlock will keep before it starts deleting the oldest scans.
 
 ### Changed
 

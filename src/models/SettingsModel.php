@@ -51,6 +51,11 @@ class SettingsModel extends Model
     ];
 
     /**
+     * @var int|false
+     */
+    public int|false $maxScans = 100;
+
+    /**
      * @var string
      */
     public string $apiKey = '';
