@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.1 - 2025-04-09
+
+- Fixed a bug in which notification emails were not being sent on newly failed scans ([#46](https://github.com/putyourlightson/craft-sherlock/issues/46)).
+
 ## 4.5.0 - 2024-05-27
 
 ### Added
