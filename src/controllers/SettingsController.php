@@ -83,7 +83,7 @@ class SettingsController extends Controller
             return null;
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('sherlock', 'Plugin settings saved.'));
+        Craft::$app->getSession()->setSuccess(Craft::t('sherlock', 'Plugin settings saved.'));
 
         return $this->redirectToPostedUrl();
     }

@@ -17,13 +17,14 @@ class ScansService extends Component
     /**
      * Returns the last scan.
      */
-    public function getLastScan(int $siteId = null): ?ScanModel
+    public function getLastScan(int $siteId = null, array $condition = []): ?ScanModel
     {
         $siteId = $siteId ?: Craft::$app->getSites()->getCurrentSite()->id;
 
         /** @var ScanRecord|null $scanRecord */
         $scanRecord = ScanRecord::find()
             ->where(['siteId' => $siteId])
+            ->andWhere($condition)
             ->orderBy(['dateCreated' => SORT_DESC])
             ->one();
 
@@ -139,6 +140,7 @@ class ScansService extends Component
         }
 
         $scanRecord->save();
+        $scanModel->id = $scanRecord->id;
 
         Sherlock::$plugin->log('Scan run on site ID ' . $siteId . ' by ' . $runBy . ' with result: ' . ($scanModel->pass ? 'pass' . ($scanModel->warning ? ' with warnings' : '') : 'fail'));
 
@@ -171,8 +173,8 @@ class ScansService extends Component
      */
     private function sendNotifications(ScanModel $scanModel): void
     {
-        // Check failed scan against last scan
-        $lastScan = $this->getLastScan();
+        // Check failed scan against previous scan
+        $lastScan = $this->getLastScan($scanModel->siteId, ['not', ['id' => $scanModel->id]]);
 
         if ($lastScan === null) {
             return;
