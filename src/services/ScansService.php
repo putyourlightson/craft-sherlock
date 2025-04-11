@@ -7,6 +7,7 @@ namespace putyourlightson\sherlock\services;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use putyourlightson\sherlock\models\ScanModel;
 use putyourlightson\sherlock\records\ScanRecord;
@@ -209,8 +210,10 @@ class ScansService extends Component
      */
     private function sendLogNotificationEmail(string $subject, string $body, string $log): void
     {
+        $to = StringHelper::split(Sherlock::$plugin->settings->notificationEmailAddresses);
+
         Craft::$app->mailer->compose()
-            ->setTo(Sherlock::$plugin->settings->notificationEmailAddresses)
+            ->setTo($to)
             ->setSubject(Craft::$app->getSites()->getCurrentSite()->name . ' - ' . $subject)
             ->setHtmlBody($body . UrlHelper::cpUrl('sherlock'))
             ->send();

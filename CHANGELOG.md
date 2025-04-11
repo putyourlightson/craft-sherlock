@@ -1,5 +1,9 @@
 # Release Notes for Sherlock
 
+## 5.1.2 - 2025-04-11
+
+- Improved the processing of comma-separated notification email addresses ([#46](https://github.com/putyourlightson/craft-sherlock/issues/46)).
+
 ## 5.1.1 - 2025-04-09
 
 - Fixed a bug in which notification emails were not being sent on newly failed scans ([#46](https://github.com/putyourlightson/craft-sherlock/issues/46)).
