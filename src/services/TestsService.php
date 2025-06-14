@@ -141,7 +141,7 @@ class TestsService extends Component
         }
 
         $config = ['timeout' => 10];
-        if (!Sherlock::$plugin->getIsLite() && Sherlock::$plugin->settings->basicAuthUsername) {
+        if (!Sherlock::$plugin->getIsLite() && Sherlock::$plugin->settings->basicAuthEnabled) {
             $config['auth'] = [
                 Sherlock::$plugin->settings->basicAuthUsername,
                 Sherlock::$plugin->settings->basicAuthPassword,

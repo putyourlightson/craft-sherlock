@@ -284,30 +284,42 @@
             {{ not isLite ? '<hr>' }}
 
             {% set fields %}
-                <h1>{{ 'Basic Auth'|t('sherlock') }}</h1>
-                {{ forms.autosuggestField({
-                    label: 'Username'|t('sherlock'),
-                    name: (isLite ? '' : 'basicAuthUsername'),
-                    instructions: 'A username to use for basic authentication when accessing the site.'|t('sherlock'),
+                {{ forms.lightswitchField({
+                    label: 'Basic Auth'|t('sherlock'),
+                    name: (isLite ? '' : 'basicAuthEnabled'),
+                    instructions: 'Whether to enable basic authentication when accessing the site.'|t('sherlock'),
                     suggestEnvVars: true,
                     suggestions: craft.cp.getEnvSuggestions(),
-                    warning: (config.basicAuthUsername is defined ? configWarning('basicAuthUsername')),
-                    value: (isLite ? '' : settings.basicAuthUsername),
-                    errors: settings.getErrors('basicAuthUsername'),
+                    warning: (config.basicAuthEnabled is defined ? configWarning('basicAuthEnabled')),
+                    value: (isLite ? '' : settings.basicAuthEnabled),
+                    errors: settings.getErrors('basicAuthEnabled'),
                     disabled: readOnly,
+                    toggle: 'basicAuth',
                 }) }}
-                {{ forms.autosuggestField({
-                    type: 'password',
-                    label: 'Password'|t('sherlock'),
-                    name: (isLite ? '' : 'basicAuthPassword'),
-                    instructions: 'A password to use for basic authentication when accessing the site.'|t('sherlock'),
-                    suggestEnvVars: true,
-                    suggestions: craft.cp.getEnvSuggestions(),
-                    warning: (config.basicAuthPassword is defined ? configWarning('basicAuthPassword')),
-                    value: (isLite ? '' : settings.basicAuthPassword),
-                    errors: settings.getErrors('basicAuthPassword'),
-                    disabled: readOnly,
-                }) }}
+                <div id="basicAuth" class="hidden">
+                    {{ forms.autosuggestField({
+                        label: 'Username'|t('sherlock'),
+                        name: (isLite ? '' : 'basicAuthUsername'),
+                        instructions: 'A username to use for basic authentication when accessing the site.'|t('sherlock'),
+                        suggestEnvVars: true,
+                        suggestions: craft.cp.getEnvSuggestions(),
+                        warning: (config.basicAuthUsername is defined ? configWarning('basicAuthUsername')),
+                        value: (isLite ? '' : settings.basicAuthUsername),
+                        errors: settings.getErrors('basicAuthUsername'),
+                        disabled: readOnly,
+                    }) }}
+                    {{ forms.autosuggestField({
+                        label: 'Password'|t('sherlock'),
+                        name: (isLite ? '' : 'basicAuthPassword'),
+                        instructions: 'A password to use for basic authentication when accessing the site.'|t('sherlock'),
+                        suggestEnvVars: true,
+                        suggestions: craft.cp.getEnvSuggestions(),
+                        warning: (config.basicAuthPassword is defined ? configWarning('basicAuthPassword')),
+                        value: (isLite ? '' : settings.basicAuthPassword),
+                        errors: settings.getErrors('basicAuthPassword'),
+                        disabled: readOnly,
+                    }) }}
+                </div>
             {% endset %}
 
             {% include 'sherlock/_includes/paidFields' %}

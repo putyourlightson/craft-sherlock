@@ -71,6 +71,11 @@ class SettingsModel extends Model
     public array|string $restrictFrontEndIpAddresses = [];
 
     /**
+     * @var bool
+     */
+    public bool $basicAuthEnabled = false;
+
+    /**
      * @var string
      */
     public string $basicAuthUsername = '';
