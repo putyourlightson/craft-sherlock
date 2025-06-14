@@ -140,14 +140,20 @@ class TestsService extends Component
             return;
         }
 
-        $this->client = Craft::createGuzzleClient([
-            'timeout' => 10,
-        ]);
+        $config = ['timeout' => 10];
+        if (!Sherlock::$plugin->getIsLite() && Sherlock::$plugin->settings->basicAuthUsername) {
+            $config['auth'] = [
+                Sherlock::$plugin->settings->basicAuthUsername,
+                Sherlock::$plugin->settings->basicAuthPassword,
+            ];
+        }
+
+        $this->client = Craft::createGuzzleClient($config);
 
         // Get updates, forcing a refresh
         $this->updates = Craft::$app->getUpdates()->getUpdates(true);
 
-        // Get the current site's base URL if not already set (by unit tests)
+        // Get the current site’s base URL if not already set (by unit tests)
         $this->siteUrl = $this->siteUrl ?? Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
 
         $event = new RunTestsEvent([

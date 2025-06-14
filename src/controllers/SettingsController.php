@@ -44,6 +44,7 @@ class SettingsController extends Controller
             'isLite' => Sherlock::$plugin->getIsLite(),
             'isPro' => Sherlock::$plugin->getIsPro(),
             'integrations' => $integrations,
+            'readOnly' => !Craft::$app->getConfig()->getGeneral()->allowAdminChanges,
         ]);
     }
 

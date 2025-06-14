@@ -60,6 +60,12 @@ return [
         // Restrict access to the front-end to the following IP addresses (logged in admins always have access).
         //'restrictFrontEndIpAddresses' =>  = [],
 
+        // A username to use for basic authentication when accessing the site.
+        //'basicAuthUsername' => '',
+
+        // A password to use for basic authentication when accessing the site.
+        //'basicAuthPassword' => '',
+
         // Add tests to disable to the array.
         //'disabledTests' => [],
 

@@ -1,7 +1,8 @@
 {% extends '_layouts/cp' %}
 
 {% import '_includes/forms' as forms %}
-{% import 'sherlock/_macros' as macros %}
+{% from 'sherlock/_macros' import configWarning %}
+{% from 'sherlock/_macros' import info %}
 
 {% do view.registerAssetBundle("putyourlightson\\sherlock\\assets\\SherlockAsset") %}
 
@@ -37,26 +38,27 @@
         {% namespace 'settings' %}
 
             {% set fields %}
-
                 {{ forms.lightswitchField({
                     first: true,
                     label: 'Monitor'|t('sherlock'),
                     name: (isLite ? '' : 'monitor'),
                     instructions: 'Whether to monitor scans. If enabled, control panel alerts will be shown to all users that have access to the Sherlock plugin and notification emails will be sent if the site scan status changes from pass to fail and if any critical updates are detected.'|t('sherlock'),
-                    warning: (config.monitor is defined ? macros.configWarning('monitor')),
+                    warning: (config.monitor is defined ? configWarning('monitor')),
                     on: (isLite ? false : settings.monitor),
-                    errors: settings.getErrors('monitor')
+                    errors: settings.getErrors('monitor'),
+                    disabled: readOnly,
                 }) }}
-
-                {{ forms.textField({
+                {{ forms.autosuggestField({
                     label: 'Notification Email Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'notificationEmailAddresses'),
                     instructions: 'Enter the email addresses (separated by commas) that should be notified of security issues when monitor is enabled.'|t('sherlock'),
-                    warning: (config.notificationEmailAddresses is defined ? macros.configWarning('notificationEmailAddresses')),
+                    suggestEnvVars: true,
+                    suggestions: craft.cp.getEnvSuggestions(),
+                    warning: (config.notificationEmailAddresses is defined ? configWarning('notificationEmailAddresses')),
                     value: (isLite ? '' : settings.notificationEmailAddresses),
-                    errors: settings.getErrors('notificationEmailAddresses')
+                    errors: settings.getErrors('notificationEmailAddresses'),
+                    disabled: readOnly,
                 }) }}
-
             {% endset %}
 
             {% include 'sherlock/_includes/paidFields' %}
@@ -67,9 +69,10 @@
                 label: 'High Security Level'|t('sherlock'),
                 name: 'highSecurityLevel',
                 instructions: 'Whether Sherlock should be extra critical of security issues and the resulting warnings.'|t('sherlock'),
-                warning: (config.highSecurityLevel is defined ? macros.configWarning('highSecurityLevel')),
+                warning: (config.highSecurityLevel is defined ? configWarning('highSecurityLevel')),
                 on: settings.highSecurityLevel,
-                errors: settings.getErrors('highSecurityLevel')
+                errors: settings.getErrors('highSecurityLevel'),
+                disabled: readOnly,
             }) }}
 
             <hr>
@@ -78,17 +81,17 @@
                 label: 'Header Protection'|t('sherlock'),
                 name: 'headerProtectionSettings[enabled]',
                 instructions: 'Protects your site by setting HTTP response headers that provide added security.'|t('sherlock'),
-                warning: (config.headerProtectionSettings is defined ? macros.configWarning('headerProtectionSettings')),
+                warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
                 on: settings.headerProtectionSettings.enabled,
                 toggle: 'headerProtectionSettings',
+                disabled: readOnly,
             }) }}
 
             <div id="headerProtectionSettings" {% if not settings.headerProtectionSettings.enabled %} class="hidden"{% endif %}>
-
                 {{ forms.editableTableField({
                     name: 'headerProtectionSettings[headers]',
                     id: 'headerProtectionSettings-headers',
-                    warning: (config.headerProtectionSettings is defined ? macros.configWarning('headerProtectionSettings')),
+                    warning: (config.headerProtectionSettings is defined ? configWarning('headerProtectionSettings')),
                     cols: [
                         {
                             type: 'lightswitch',
@@ -115,8 +118,8 @@
                     allowAdd: true,
                     allowDelete: true,
                     allowReorder: true,
+                    disabled: readOnly,
                 }) }}
-
             </div>
 
             <hr>
@@ -125,37 +128,37 @@
                 label: 'Content Security Policy'|t('sherlock'),
                 name: 'contentSecurityPolicySettings[enabled]',
                 instructions: 'Enables a content security policy on the front-end of your site. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('sherlock', {url: 'https://content-security-policy.com/'}),
-                warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
+                warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
                 on: settings.contentSecurityPolicySettings.enabled,
                 toggle: 'contentSecurityPolicySettings',
+                disabled: readOnly,
             }) }}
 
             <div id="contentSecurityPolicySettings" {% if not settings.contentSecurityPolicySettings.enabled %} class="hidden"{% endif %}>
-
                 {% set infoText = 'Before enabling enforcing of the policy, be sure to thoroughly test your site with reporting enabled. Not doing so could result in aspects of your site being broken or not functioning as expected.' %}
                 {{ forms.lightswitchField({
                     offLabel: 'Report Only'|t('sherlock'),
                     onLabel: 'Enforce'|t('sherlock'),
                     name: 'contentSecurityPolicySettings[enforce]',
-                    instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock') ~ macros.info(infoText),
-                    warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
+                    instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock') ~ info(infoText),
+                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
                     on: settings.contentSecurityPolicySettings.enforce,
+                    disabled: readOnly,
                 }) }}
-
                 {% set infoText = 'Using the "HTTP Header" option is generally recommended and is required when using "Report Only" mode. If using a static cache such as Blitz with server redirects (so that requests are never handled by Craft) then you should consider either selecting the "Meta Tag" option or manually adding the HTTP header to your server configuration file.' %}
                 {{ forms.lightswitchField({
                     offLabel: 'Meta Tag'|t('sherlock'),
                     onLabel: 'HTTP Header'|t('sherlock'),
                     name: 'contentSecurityPolicySettings[header]',
-                    instructions: 'Whether to set the content security policy using a meta tag or a HTTP header.'|t('sherlock') ~ macros.info(infoText),
-                    warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
+                    instructions: 'Whether to set the content security policy using a meta tag or a HTTP header.'|t('sherlock') ~ info(infoText),
+                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
                     on: settings.contentSecurityPolicySettings.header,
+                    disabled: readOnly,
                 }) }}
-
                 {{ forms.editableTableField({
                     name: 'contentSecurityPolicySettings[directives]',
                     id: 'contentSecurityPolicySettings-directives',
-                    warning: (config.contentSecurityPolicySettings is defined ? macros.configWarning('contentSecurityPolicySettings')),
+                    warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
                     cols: [
                         {
                             type: 'lightswitch',
@@ -207,25 +210,24 @@
                     allowAdd: true,
                     allowDelete: true,
                     allowReorder: true,
+                    disabled: readOnly,
                 }) }}
-
             </div>
 
             {{ not isLite ? '<hr>' }}
 
             {% set fields %}
-
                 {{ forms.autosuggestField({
                     label: 'API Key'|t('sherlock'),
                     name: (isLite ? '' : 'apiKey'),
                     instructions: 'A random 32 character string that will allow calls to the plugin API.'|t('sherlock'),
-                    warning: (config.apiKey is defined ? macros.configWarning('apiKey')),
+                    warning: (config.apiKey is defined ? configWarning('apiKey')),
                     suggestEnvVars: true,
                     suggestions: craft.cp.getEnvSuggestions(),
                     value: (isLite ? '' : settings.apiKey),
-                    errors: settings.getErrors('apiKey')
+                    errors: settings.getErrors('apiKey'),
+                    disabled: readOnly,
                 }) }}
-
             {% endset %}
 
             {% include 'sherlock/_includes/paidFields' %}
@@ -233,13 +235,12 @@
             {{ not isLite ? '<hr>' }}
 
             {% set fields %}
-
                 {{ forms.editableTableField({
                     label: 'Restrict Control Panel Access To IP Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'restrictControlPanelIpAddresses'),
                     id: 'restrictControlPanelIpAddresses',
                     instructions: 'Restrict access to the control panel to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-                    warning: (config.restrictControlPanelIpAddresses is defined ? macros.configWarning('restrictControlPanelIpAddresses')),
+                    warning: (config.restrictControlPanelIpAddresses is defined ? configWarning('restrictControlPanelIpAddresses')),
                     cols: [
                         {
                             type: 'singleline',
@@ -253,14 +254,14 @@
                     allowAdd: true,
                     allowDelete: true,
                     allowReorder: true,
+                    disabled: readOnly,
                 }) }}
-
                 {{ forms.editableTableField({
                     label: 'Restrict Front-End Access To IP Addresses'|t('sherlock'),
                     name: (isLite ? '' : 'restrictFrontEndIpAddresses'),
                     id: 'restrictFrontEndIpAddresses',
                     instructions: 'Restrict access to the front-end to the following IP addresses (logged in admins always have access). The wildcards `*` and `?` are supported.'|t('sherlock'),
-                    warning: (config.restrictFrontEndIpAddresses is defined ? macros.configWarning('restrictFrontEndIpAddresses')),
+                    warning: (config.restrictFrontEndIpAddresses is defined ? configWarning('restrictFrontEndIpAddresses')),
                     cols: [
                         {
                             type: 'singleline',
@@ -274,8 +275,39 @@
                     allowAdd: true,
                     allowDelete: true,
                     allowReorder: true,
+                    disabled: readOnly,
                 }) }}
+            {% endset %}
 
+            {% include 'sherlock/_includes/paidFields' %}
+
+            {{ not isLite ? '<hr>' }}
+
+            {% set fields %}
+                <h1>{{ 'Basic Auth'|t('sherlock') }}</h1>
+                {{ forms.autosuggestField({
+                    label: 'Username'|t('sherlock'),
+                    name: (isLite ? '' : 'basicAuthUsername'),
+                    instructions: 'A username to use for basic authentication when accessing the site.'|t('sherlock'),
+                    suggestEnvVars: true,
+                    suggestions: craft.cp.getEnvSuggestions(),
+                    warning: (config.basicAuthUsername is defined ? configWarning('basicAuthUsername')),
+                    value: (isLite ? '' : settings.basicAuthUsername),
+                    errors: settings.getErrors('basicAuthUsername'),
+                    disabled: readOnly,
+                }) }}
+                {{ forms.autosuggestField({
+                    type: 'password',
+                    label: 'Password'|t('sherlock'),
+                    name: (isLite ? '' : 'basicAuthPassword'),
+                    instructions: 'A password to use for basic authentication when accessing the site.'|t('sherlock'),
+                    suggestEnvVars: true,
+                    suggestions: craft.cp.getEnvSuggestions(),
+                    warning: (config.basicAuthPassword is defined ? configWarning('basicAuthPassword')),
+                    value: (isLite ? '' : settings.basicAuthPassword),
+                    errors: settings.getErrors('basicAuthPassword'),
+                    disabled: readOnly,
+                }) }}
             {% endset %}
 
             {% include 'sherlock/_includes/paidFields' %}
@@ -285,31 +317,27 @@
         {{ isPro ? '<hr>' }}
 
         {% set fields %}
-
             <h1>{{ 'Integrations'|t('sherlock') }}</h1>
-
             {% for integration in integrations %}
                 {% namespace 'settings[integrationSettings][' ~ className(integration) ~ ']' %}
                     {{ forms.lightswitchField({
                         label: integration.displayName,
                         instructions: integration.displayDescription,
-                        warning: (config.integrationSettings is defined ? macros.configWarning('integrationSettings')),
+                        warning: (config.integrationSettings is defined ? configWarning('integrationSettings')),
                         name: (isPro ? 'enabled' : ''),
                         on: (isPro and integration.enabled),
                         toggle: 'settings',
+                        disabled: readOnly,
                     }) }}
-
                     <div id="settings" class="{{ (isPro and integration.enabled) ? '' : 'hidden' }}">
                         {% set warning = integration.warning %}
                         {% if warning %}
                             <p class="warning with-icon">{{ warning|markdown(inlineOnly=true) }}</p>
                         {% endif %}
-
                         {{ integration.getSettingsHtml()|raw }}
                     </div>
                 {% endnamespace %}
             {% endfor %}
-
         {% endset %}
 
         {% include 'sherlock/_includes/paidFields' with {type: 'pro'} %}

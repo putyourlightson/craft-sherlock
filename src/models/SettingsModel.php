@@ -71,6 +71,16 @@ class SettingsModel extends Model
     public array|string $restrictFrontEndIpAddresses = [];
 
     /**
+     * @var string
+     */
+    public string $basicAuthUsername = '';
+
+    /**
+     * @var string
+     */
+    public string $basicAuthPassword = '';
+
+    /**
      * @var array The integration type classes to add to the plugin’s default integration types.
      */
     public array $integrationTypes = [];
