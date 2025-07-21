@@ -1,5 +1,10 @@
 # Release Notes for Sherlock
 
+## 5.2.0 - 2025-07-21
+
+- Added basic auth username and password settings ([#48](https://github.com/putyourlightson/craft-sherlock/issues/48)).
+- Added non-CSP, browser-supported directives ([#47](https://github.com/putyourlightson/craft-sherlock/issues/47)).
+
 ## 5.1.2 - 2025-04-11
 
 - Improved the processing of comma-separated notification email addresses ([#46](https://github.com/putyourlightson/craft-sherlock/issues/46)).

@@ -287,7 +287,8 @@
                 {{ forms.lightswitchField({
                     label: 'Basic Auth'|t('sherlock'),
                     name: (isLite ? '' : 'basicAuthEnabled'),
-                    instructions: 'Whether to enable basic authentication when accessing the site.'|t('sherlock'),
+                    instructions: 'Whether to enable [basic HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Authentication#basic_authentication_scheme) when accessing the site.'|t('sherlock'),
+                    on: (isLite ? false : settings.basicAuthEnabled),
                     suggestEnvVars: true,
                     suggestions: craft.cp.getEnvSuggestions(),
                     warning: (config.basicAuthEnabled is defined ? configWarning('basicAuthEnabled')),

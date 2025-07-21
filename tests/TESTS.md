@@ -6,7 +6,7 @@ This document outlines the test specification for the Sherlock plugin.
 
 ## Feature Tests
 
-### [s](pest/Feature/TestsTest.php)
+### [s](Feature/TestsTest.php)
 
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Passes `https` control panel test.  
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Passes `https` front-end test.  
