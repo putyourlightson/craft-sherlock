@@ -1,5 +1,9 @@
 # Release Notes for Sherlock
 
+## 5.2.1 - Unreleased
+
+- Fixed a bug in which an error could be thrown if the latest release of a plugin did not have an associated date ([#49](https://github.com/putyourlightson/craft-sherlock/issues/49)).
+
 ## 5.2.0 - 2025-07-21
 
 - Added basic auth username and password settings ([#48](https://github.com/putyourlightson/craft-sherlock/issues/48)).
