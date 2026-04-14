@@ -1,7 +1,8 @@
 # Release Notes for Sherlock
 
-## 5.2.1 - Unreleased
+## 5.2.1 - 2026-04-14
 
+- Added the ability to view read-only settings in environments where admin changes are disallowed ([#53](https://github.com/putyourlightson/craft-sherlock/issues/53)).
 - Fixed a bug in which an error could be thrown if the latest release of a plugin did not have an associated date ([#49](https://github.com/putyourlightson/craft-sherlock/issues/49)).
 
 ## 5.2.0 - 2025-07-21

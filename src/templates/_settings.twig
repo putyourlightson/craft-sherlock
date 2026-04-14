@@ -13,13 +13,18 @@
 
 {% set title = 'Sherlock' %}
 
-{% set fullPageForm = true %}
+{% set readOnly = readOnly ?? false %}
+{% set fullPageForm = not readOnly %}
+
+{% if readOnly %}
+    {% set contentNotice = readOnlyNotice() %}
+{% endif %}
 
 
 {% block actionButton %}
-
-    <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
-
+    {% if not readOnly %}
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+    {% endif %}
 {% endblock %}
 
 
@@ -115,9 +120,9 @@
                     rows: settings.headerProtectionSettings.headers,
                     minRows: 1,
                     addRowLabel: 'Add a header'|t('sherlock'),
-                    allowAdd: true,
-                    allowDelete: true,
-                    allowReorder: true,
+                    allowAdd: not readOnly,
+                    allowDelete: not readOnly,
+                    allowReorder: not readOnly,
                     disabled: readOnly,
                 }) }}
             </div>
@@ -207,9 +212,9 @@
                     rows: settings.contentSecurityPolicySettings.directives,
                     minRows: 1,
                     addRowLabel: 'Add a directive'|t('sherlock'),
-                    allowAdd: true,
-                    allowDelete: true,
-                    allowReorder: true,
+                    allowAdd: not readOnly,
+                    allowDelete: not readOnly,
+                    allowReorder: not readOnly,
                     disabled: readOnly,
                 }) }}
             </div>
@@ -251,9 +256,9 @@
                     ],
                     rows: (isLite ? [] : settings.restrictControlPanelIpAddresses),
                     addRowLabel: 'Add an IP address'|t('sherlock'),
-                    allowAdd: true,
-                    allowDelete: true,
-                    allowReorder: true,
+                    allowAdd: not readOnly,
+                    allowDelete: not readOnly,
+                    allowReorder: not readOnly,
                     disabled: readOnly,
                 }) }}
                 {{ forms.editableTableField({
@@ -272,9 +277,9 @@
                     ],
                     rows: (isLite ? [] : settings.restrictFrontEndIpAddresses),
                     addRowLabel: 'Add an IP address'|t('sherlock'),
-                    allowAdd: true,
-                    allowDelete: true,
-                    allowReorder: true,
+                    allowAdd: not readOnly,
+                    allowDelete: not readOnly,
+                    allowReorder: not readOnly,
                     disabled: readOnly,
                 }) }}
             {% endset %}

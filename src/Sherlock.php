@@ -103,6 +103,11 @@ class Sherlock extends Plugin
     /**
      * @inheritdoc
      */
+    public bool $hasReadOnlyCpSettings = true;
+
+    /**
+     * @inheritdoc
+     */
     public string $schemaVersion = '5.1.0';
 
     /**

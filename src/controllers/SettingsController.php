@@ -17,7 +17,7 @@ class SettingsController extends Controller
      */
     public function beforeAction($action): bool
     {
-        $this->requireAdmin();
+        $this->requireAdmin(false);
 
         return parent::beforeAction($action);
     }
