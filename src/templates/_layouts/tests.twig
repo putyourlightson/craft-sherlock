@@ -266,9 +266,9 @@
         typeName: 'HTTP Header',
         details: {
             pass: 'Strict-Transport-Security header is set to',
-            warning: 'Set Strict-Transport-Security header to "max-age=15552000"',
+            warning: 'Set Strict-Transport-Security header to "max-age=31536000" or more',
         },
-        info: 'The Strict-Transport-Security header (often abbreviated as HSTS) lets a web site tell browsers that it should only be accessed using HTTPS, instead of using HTTP. Setting this to 15552000 or more will ensure that browsers remember this setting for at least 6 months.',
+        info: 'The Strict-Transport-Security header (often abbreviated as HSTS) lets a web site tell browsers that it should only be accessed using HTTPS, instead of using HTTP. Setting `max-age` to 31536000 or more will ensure that browsers remember this setting for at least 1 year. Only add `includeSubDomains` or preload after confirming that all affected subdomains support HTTPS.',
         link: {
             label: 'MDN Web Docs',
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security',

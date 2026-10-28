@@ -56,6 +56,42 @@ test('Validates the effective referrer policy', function(string|array $value, bo
     'multiple unsafe headers' => [['no-referrer', 'unsafe-url'], false],
 ]);
 
+test('Validates the HSTS max-age', function(string|array $value, bool $pass) {
+    Sherlock::$plugin->tests->client = new \GuzzleHttp\Client();
+    Sherlock::$plugin->tests->siteUrlResponse['headers']['Strict-Transport-Security'] = $value;
+    $testModel = Sherlock::$plugin->tests->runTest('strictTransportSecurity');
+
+    expect($testModel->pass)
+        ->toBe($pass)
+        ->and($testModel->warning)
+        ->toBe(!$pass);
+})->with([
+    'one year' => ['max-age=31536000', true],
+    'longer duration' => ['max-age=63072000', true],
+    'below threshold' => ['max-age=31535999', false],
+    'short duration with subdomains' => ['max-age=60; includeSubDomains', false],
+    'one year with subdomains' => ['max-age=31536000; includeSubDomains', true],
+    'max-age after other directives' => ['includeSubDomains; max-age=31536000; preload', true],
+    'case and whitespace' => [" MAX-AGE = 31536000 \t; includeSubDomains", true],
+    'quoted duration' => ['max-age="31536000"', true],
+    'leading zeros' => ['max-age=00031536000', true],
+    'large duration' => ['max-age=999999999999999999999999', true],
+    'missing header' => ['', false],
+    'missing max-age' => ['includeSubDomains', false],
+    'disabled HSTS' => ['max-age=0; includeSubDomains', false],
+    'negative duration' => ['max-age=-1', false],
+    'decimal duration' => ['max-age=31536000.5', false],
+    'exponential duration' => ['max-age=4e7', false],
+    'nonnumeric duration' => ['max-age=invalid', false],
+    'trailing text' => ['max-age=31536000invalid', false],
+    'missing value' => ['max-age=', false],
+    'missing equals' => ['max-age', false],
+    'unclosed quotes' => ['max-age="31536000', false],
+    'duplicate max-age' => ['max-age=31536000; max-age=31536000', false],
+    'malformed duplicate max-age' => ['max-age=invalid; max-age=31536000', false],
+    'first header wins' => [['max-age=0', 'max-age=31536000'], false],
+]);
+
 test('Passes content security policy header test', function() {
     Sherlock::$plugin->tests->siteUrlResponse['headers']['Content-Security-Policy'] = "default-src 'unsafe-inline'";
     $testModel = Sherlock::$plugin->tests->runTest('contentSecurityPolicy');

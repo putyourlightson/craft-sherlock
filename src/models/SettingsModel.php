@@ -33,7 +33,7 @@ class SettingsModel extends Model
         'enabled' => true,
         'headers' => [
             [true, 'Referrer-Policy', 'strict-origin-when-cross-origin'],
-            [true, 'Strict-Transport-Security', 'max-age=15552000'],
+            [true, 'Strict-Transport-Security', 'max-age=31536000'],
             [true, 'X-Content-Type-Options', 'nosniff'],
             [true, 'X-Frame-Options', 'SAMEORIGIN'],
         ],
@@ -188,7 +188,7 @@ class SettingsModel extends Model
 
     public array $strictTransportSecurity = [
         'canFail' => true,
-        'threshold' => 15552000, // 6 months
+        'threshold' => 31536000, // 1 year
     ];
 
     public array $xContentTypeOptions = [

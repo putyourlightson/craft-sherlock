@@ -527,17 +527,32 @@ class TestsService extends Component
 
             case 'strictTransportSecurity':
                 $value = $this->getHeaderValue('Strict-Transport-Security');
+                $seconds = null;
 
-                if (empty($value)) {
-                    $testModel->failTest();
-                } else {
-                    $seconds = explode('=', $value)[1] ?? 0;
+                foreach (explode(';', $value) as $directive) {
+                    $parts = explode('=', $directive, 2);
 
-                    if ($seconds < $testModel->threshold) {
-                        $testModel->warning = true;
-                    } else {
-                        $testModel->value = '"' . $value . '"';
+                    if (strcasecmp(trim($parts[0]), 'max-age') !== 0) {
+                        continue;
                     }
+
+                    $maxAge = trim($parts[1] ?? '');
+
+                    // Reject duplicate directives and values other than (optionally quoted) digits.
+                    if ($seconds !== null || !preg_match('/^(?:[0-9]+|"[0-9]+")$/D', $maxAge)) {
+                        $seconds = null;
+                        break;
+                    }
+
+                    $seconds = (int)trim($maxAge, '"');
+                }
+
+                if ($seconds === null || $seconds === 0 || $seconds < $testModel->threshold) {
+                    $testModel->failTest();
+                }
+
+                if ($value !== '') {
+                    $testModel->value = '"' . $value . '"';
                 }
 
                 break;

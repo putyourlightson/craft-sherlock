@@ -139,7 +139,7 @@ return [
         //],
         //'strictTransportSecurity' => [
         //    'canFail' => true,
-        //    'threshold' => 15552000, // 6 months
+        //    'threshold' => 31536000, // 1 year
         //],
         //'xContentTypeOptions' => [
         //    'canFail' => true,
