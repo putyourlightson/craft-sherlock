@@ -1,6 +1,6 @@
 # Release Notes for Sherlock
 
-## 5.3.0 - Unreleased
+## 5.3.0 - 2026-10-28
 
 - Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.
 - Improved CSP checks to assess effective script restrictions and recognise enforced `frame-ancestors` headers as framing protection.
