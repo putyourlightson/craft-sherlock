@@ -12,6 +12,7 @@ use craft\helpers\ConfigHelper;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
+use craft\web\Request;
 use DateTime;
 use DOMDocument;
 use GuzzleHttp\Client;
@@ -618,8 +619,31 @@ class TestsService extends Component
 
                 break;
 
-            case 'enableCsrfProtection':
             case 'useSecureCookies':
+                $value = Craft::$app->getConfig()->getGeneral()->useSecureCookies;
+
+                if ($value === true) {
+                    $testModel->value = 'The Secure cookie flag is enabled';
+                } elseif ($value === 'auto') {
+                    $request = Craft::$app->getRequest();
+
+                    if (!$request instanceof Request) {
+                        $testModel->failTest();
+                        $testModel->value = 'auto (HTTPS detection cannot be verified in a console request)';
+                    } elseif (!$request->getIsSecureConnection()) {
+                        $testModel->failTest();
+                        $testModel->value = 'auto (the current request is not detected as HTTPS)';
+                    } else {
+                        $testModel->value = 'auto (the current request is detected as HTTPS)';
+                    }
+                } else {
+                    $testModel->failTest();
+                    $testModel->value = $value === false ? 'The Secure cookie flag is disabled' : 'Unsupported secure cookie setting';
+                }
+
+                break;
+
+            case 'enableCsrfProtection':
             case 'requireMatchingUserAgentForSession':
             case 'requireUserAgentAndIpForSession':
             case 'preventUserEnumeration':
@@ -711,7 +735,9 @@ class TestsService extends Component
                 $value = Craft::$app->getConfig()->getGeneral()->{$test};
                 $seconds = ConfigHelper::durationInSeconds($value);
 
-                if ($seconds < $testModel->threshold) {
+                if ($test === 'cooldownDuration' && $seconds === 0) {
+                    $testModel->value = '0 (indefinite lockout; an administrator must unlock the account)';
+                } elseif ($seconds < $testModel->threshold) {
                     $testModel->failTest();
                 } else {
                     $testModel->value = $value;

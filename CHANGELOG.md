@@ -8,8 +8,11 @@
 - Changed the deferred registration password test to consider public registration, email verification and moderator activation instead of warning whenever passwords are deferred.
 - Changed the default `Referrer-Policy` header to `strict-origin-when-cross-origin` and updated its security test to warn about invalid or less restrictive policies.
 - Changed the default `Strict-Transport-Security` header and security test threshold to one year, and fixed incorrect parsing of `max-age` values when other directives are present.
-- Fixed HTTPS checks incorrectly passing on HTTP error pages and connection failures.
 - Removed the obsolete `X-XSS-Protection` header test and default header ([#54](https://github.com/putyourlightson/craft-sherlock/issues/54)).
+- Fixed HTTPS checks incorrectly passing on HTTP error pages and connection failures.
+- Fixed the remembered session threshold to use 14 days.
+- Fixed the cooldown duration test to accept indefinite login lockouts.
+- Fixed the secure cookie test to verify HTTPS detection in auto mode.
 
 ## 5.2.1 - 2026-04-14
 

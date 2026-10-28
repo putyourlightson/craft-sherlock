@@ -111,6 +111,71 @@ test('Checks deferred passwords in the registration workflow', function(bool $de
     'default user settings disable public registration' => [true, [], false],
 ])->with([false, true]);
 
+test('Checks login lockout and session durations', function(string $test, int|string|bool $value, bool $warning) {
+    $generalConfig = Craft::$app->getConfig()->getGeneral();
+    $originalValue = $generalConfig->{$test};
+    $generalConfig->{$test} = $value;
+
+    try {
+        $service = new TestsService(['client' => new Client()]);
+        $testModel = $service->runTest($test);
+
+        expect($testModel->pass)->toBeTrue()
+            ->and($testModel->warning)->toBe($warning);
+    } finally {
+        $generalConfig->{$test} = $originalValue;
+    }
+})->with([
+    'indefinite lockout' => ['cooldownDuration', 0, false],
+    'zero interval lockout' => ['cooldownDuration', 'PT0S', false],
+    'legacy indefinite lockout' => ['cooldownDuration', false, false],
+    'short lockout' => ['cooldownDuration', 299, true],
+    'five minute lockout' => ['cooldownDuration', 300, false],
+    'five minute interval' => ['cooldownDuration', 'PT5M', false],
+    'negative lockout' => ['cooldownDuration', -1, true],
+    'zero login window still warns' => ['invalidLoginWindowDuration', 0, true],
+    'remember me disabled' => ['rememberedUserSessionDuration', 0, false],
+    '14 day session' => ['rememberedUserSessionDuration', 1209600, false],
+    '14 day interval' => ['rememberedUserSessionDuration', 'P14D', false],
+    'session just over 14 days' => ['rememberedUserSessionDuration', 1209601, true],
+    'old incorrect session threshold' => ['rememberedUserSessionDuration', 12096004, true],
+]);
+
+test('Checks secure cookie HTTPS detection', function(bool|string $value, ?bool $https, bool $pass) {
+    $generalConfig = Craft::$app->getConfig()->getGeneral();
+    $originalValue = $generalConfig->useSecureCookies;
+    $originalRequest = Craft::$app->getRequest();
+    $request = $https === null
+        ? $this->createMock(\craft\console\Request::class)
+        : $this->createMock(\craft\web\Request::class);
+    if ($https !== null) {
+        $request->method('getIsSecureConnection')->willReturn($https);
+    }
+    $generalConfig->useSecureCookies = $value;
+    Craft::$app->set('request', $request);
+
+    try {
+        $service = new TestsService(['client' => new Client()]);
+        $testModel = $service->runTest('useSecureCookies');
+
+        expect($testModel->pass)->toBe($pass)
+            ->and($testModel->warning)->toBe(!$pass)
+            ->and($generalConfig->useSecureCookies)->toBe($value);
+    } finally {
+        $generalConfig->useSecureCookies = $originalValue;
+        Craft::$app->set('request', $originalRequest);
+    }
+})->with([
+    'explicit true on HTTPS' => [true, true, true],
+    'explicit true on HTTP' => [true, false, true],
+    'explicit true in console' => [true, null, true],
+    'disabled on HTTPS' => [false, true, false],
+    'auto detects HTTPS' => ['auto', true, true],
+    'auto detects HTTP' => ['auto', false, false],
+    'auto cannot verify in console' => ['auto', null, false],
+    'unsupported truthy value' => ['invalid', true, false],
+]);
+
 test('Checks PHP security update versions', function(string $version, bool $pass) {
     Sherlock::$plugin->settings->highSecurityLevel = false;
     $service = new SherlockTestsServiceWithPhpVersion([

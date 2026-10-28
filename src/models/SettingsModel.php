@@ -268,7 +268,7 @@ class SettingsModel extends Model
     ];
 
     public array $rememberedUserSessionDuration = [
-        'threshold' => 12096004, // 14 days
+        'threshold' => 1209600, // 14 days
     ];
 
     public array $requireMatchingUserAgentForSession = [];
