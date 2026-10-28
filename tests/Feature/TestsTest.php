@@ -1,6 +1,13 @@
 <?php
 
 use craft\models\Updates;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\Sherlock;
 
@@ -25,25 +32,58 @@ beforeEach(function() {
     Sherlock::$plugin->tests->siteUrl = 'https://putyourlightson.com';
 });
 
-test('Passes `https` control panel test', function() {
-    $testModel = Sherlock::$plugin->tests->runTest('httpsControlPanel');
+test('Checks HTTPS enforcement without accepting unrelated request failures', function(array $responses, bool $pass, string $message, string $test) {
+    $queue = [];
+    foreach ($responses as $response) {
+        if (is_int($response)) {
+            $queue[] = new Response($response);
+        } elseif (is_int($response[0])) {
+            $queue[] = new Response($response[0], ['Location' => $response[1]]);
+        } else {
+            $request = new Request('GET', $response[2] . '://example.test/');
+            $context = ['errno' => $response[1]];
+            $queue[] = $response[0] === 'connect'
+                ? new ConnectException('Connection failed', $request, null, $context)
+                : new RequestException('Request failed', $request, null, null, $context);
+        }
+    }
+    $mock = new MockHandler($queue);
+    $service = new TestsService([
+        'siteUrl' => 'https://example.test/',
+        'client' => new Client(['handler' => HandlerStack::create($mock)]),
+    ]);
+    $testModel = $service->runTest($test);
 
-    expect($testModel->pass)
-        ->toBeTrue();
-});
-
-test('Passes `https` front-end test', function() {
-    $testModel = Sherlock::$plugin->tests->runTest('httpsFrontEnd');
-
-    expect($testModel->pass)
-        ->toBeTrue();
-});
+    expect($testModel->pass)->toBe($pass)
+        ->and($testModel->warning)->toBe(!$pass)
+        ->and($testModel->value)->toContain($message);
+})->with([
+    'HTTP success without redirect' => [[200], false, 'HTTP responded'],
+    'HTTP forbidden' => [[403], false, 'HTTP responded'],
+    'HTTP not found' => [[404], false, 'HTTP responded'],
+    'HTTP server error' => [[500], false, 'HTTP responded'],
+    'HTTPS redirect' => [[[301, 'https://example.test/'], 200], true, 'HTTP redirects to HTTPS'],
+    'HTTPS redirect to error page' => [[[301, 'https://example.test/'], 500], true, 'HTTP redirects to HTTPS'],
+    'HTTP redirect stays insecure' => [[[302, 'http://example.test/other'], 200], false, 'HTTP responded'],
+    'HTTPS redirect downgrades' => [[[301, 'https://example.test/'], [302, 'http://example.test/'], 200], false, 'HTTP responded'],
+    'unavailable HTTP and working HTTPS' => [[['connect', 7, 'http'], 200], true, 'HTTP connection is unavailable; HTTPS response verified'],
+    'unavailable HTTP and HTTPS error page' => [[['connect', 7, 'http'], 404], true, 'HTTP connection is unavailable; HTTPS response verified'],
+    'unavailable HTTP and unavailable HTTPS' => [[['connect', 7, 'http'], ['connect', 7, 'https']], false, 'HTTPS could not be verified'],
+    'unavailable HTTP and HTTPS downgrade' => [[['connect', 7, 'http'], [302, 'http://example.test/'], 200], false, 'HTTPS could not be verified'],
+    'DNS failure' => [[['connect', 6, 'http']], false, 'Connection failed'],
+    'timeout' => [[['connect', 28, 'http']], false, 'Connection failed'],
+    'unclassified connection error' => [[['connect', 0, 'http']], false, 'Connection failed'],
+    'TLS verification failure after redirect' => [[[301, 'https://example.test/'], ['request', 60, 'https']], false, 'Request failed'],
+    'HTTPS connection fails after redirect' => [[[301, 'https://example.test/'], ['connect', 7, 'https']], false, 'Connection failed'],
+    'HTTP connection fails after HTTP redirect' => [[[301, 'http://example.test/other'], ['connect', 7, 'http']], false, 'Connection failed'],
+    'redirect loop' => [array_fill(0, 7, [301, 'http://example.test/loop']), false, 'Request failed'],
+])->with(['httpsControlPanel', 'httpsFrontEnd']);
 
 test('Checks PHP security update versions', function(string $version, bool $pass) {
     Sherlock::$plugin->settings->highSecurityLevel = false;
     $service = new SherlockTestsServiceWithPhpVersion([
         'version' => $version,
-        'client' => new \GuzzleHttp\Client(),
+        'client' => new Client(),
     ]);
     $testModel = $service->runTest('phpSecurityUpdates');
 
@@ -80,7 +120,7 @@ test('Checks PHP support deadlines', function(string $version, array $thresholds
     try {
         $service = new SherlockTestsServiceWithPhpVersion([
             'version' => $version,
-            'client' => new \GuzzleHttp\Client(),
+            'client' => new Client(),
         ]);
         $testModel = $service->runTest('phpVersion');
 
@@ -102,7 +142,7 @@ test('Checks PHP support deadlines', function(string $version, array $thresholds
 test('Reports CORS access for review without failing the scan', function(array $headers, bool $warning, bool $highSecurityLevel) {
     Sherlock::$plugin->settings->highSecurityLevel = $highSecurityLevel;
     $service = new TestsService([
-        'client' => new \GuzzleHttp\Client(),
+        'client' => new Client(),
         'siteUrlResponse' => ['headers' => $headers],
     ]);
     $testModel = $service->runTest('cors');
@@ -119,7 +159,7 @@ test('Reports CORS access for review without failing the scan', function(array $
 ])->with([false, true]);
 
 test('Validates the effective referrer policy', function(string|array $value, bool $pass) {
-    Sherlock::$plugin->tests->client = new \GuzzleHttp\Client();
+    Sherlock::$plugin->tests->client = new Client();
     Sherlock::$plugin->tests->siteUrlResponse['headers']['Referrer-Policy'] = $value;
     $testModel = Sherlock::$plugin->tests->runTest('referrerPolicy');
 
@@ -147,7 +187,7 @@ test('Validates the effective referrer policy', function(string|array $value, bo
 ]);
 
 test('Validates the HSTS max-age', function(string|array $value, bool $pass) {
-    Sherlock::$plugin->tests->client = new \GuzzleHttp\Client();
+    Sherlock::$plugin->tests->client = new Client();
     Sherlock::$plugin->tests->siteUrlResponse['headers']['Strict-Transport-Security'] = $value;
     $testModel = Sherlock::$plugin->tests->runTest('strictTransportSecurity');
 
@@ -184,7 +224,7 @@ test('Validates the HSTS max-age', function(string|array $value, bool $pass) {
 
 test('Checks effective CSP script restrictions', function(array $headers, string $body, bool $pass) {
     $service = new TestsService([
-        'client' => new \GuzzleHttp\Client(),
+        'client' => new Client(),
         'siteUrlResponse' => ['headers' => $headers, 'body' => $body],
     ]);
     $testModel = $service->runTest('contentSecurityPolicy');
@@ -224,7 +264,7 @@ test('Checks effective CSP script restrictions', function(array $headers, string
 
 test('Checks CSP framing protection', function(array $headers, string $body, bool $pass) {
     $service = new TestsService([
-        'client' => new \GuzzleHttp\Client(),
+        'client' => new Client(),
         'siteUrlResponse' => ['headers' => $headers, 'body' => $body],
     ]);
     $testModel = $service->runTest('xFrameOptions');

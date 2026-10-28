@@ -15,8 +15,11 @@ use craft\models\Updates;
 use DateTime;
 use DOMDocument;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\TransferStats;
+use Psr\Http\Message\UriInterface;
 use putyourlightson\sherlock\events\RunTestsEvent;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
@@ -289,16 +292,12 @@ class TestsService extends Component
                     $url = trim($this->siteUrl, '/') . '/' . Craft::$app->getConfig()->getGeneral()->cpTrigger;
                 }
 
-                if (!$this->redirectsToHttps($url)) {
-                    $testModel->failTest();
-                }
+                $this->checkHttps($url, $testModel);
 
                 break;
 
             case 'httpsFrontEnd':
-                if (!$this->redirectsToHttps($this->siteUrl)) {
-                    $testModel->failTest();
-                }
+                $this->checkHttps($this->siteUrl, $testModel);
 
                 break;
 
@@ -389,7 +388,7 @@ class TestsService extends Component
 
                 $testModel->value = $version . ($minimumVersion === null
                         ? ' (no security update threshold is configured for this PHP branch)'
-                        : ' (requires ' . $minimumVersion . ' or later in this branch)');
+                        : ' (requires ' . $minimumVersion . ' or later)');
 
                 break;
 
@@ -941,29 +940,65 @@ class TestsService extends Component
     }
 
     /**
-     * Returns whether an insecure URL redirects to HTTPS or errors.
+     * Checks HTTPS enforcement without treating unrelated request failures as proof of protection.
      */
-    private function redirectsToHttps(string $url): bool
+    private function checkHttps(string $url, TestModel $testModel): void
     {
-        /** @noinspection HttpUrlsUsage */
-        $url = str_replace('https://', 'http://', $url);
-        $scheme = null;
+        $uri = new Uri($url);
+        $responseReceived = false;
 
         try {
-            // Get redirect URL scheme of insecure URL
-            $this->client->get($url, [
-                'on_stats' => function(TransferStats $stats) use (&$scheme) {
-                    $scheme = $stats->getEffectiveUri()->getScheme();
-                },
-            ]);
+            $scheme = $this->getResponseScheme($uri->withScheme('http'), $responseReceived);
 
-            if ($scheme != 'https') {
-                return false;
+            if ($scheme === 'https') {
+                $testModel->value = 'HTTP redirects to HTTPS';
+
+                return;
+            }
+
+            $testModel->value = 'HTTP responded without a verified HTTPS redirect';
+        } catch (ConnectException $exception) {
+            $context = $exception->getHandlerContext();
+            $testModel->value = 'Connection failed; HTTPS enforcement could not be verified';
+
+            // cURL error 7 means the connection could not be established. DNS failures and timeouts
+            // are inconclusive. Only accept unavailable HTTP if HTTPS can also be verified.
+            if (($context['errno'] ?? null) === 7 && !$responseReceived && $exception->getRequest()->getUri()->getScheme() === 'http') {
+                try {
+                    $scheme = $this->getResponseScheme($uri->withScheme('https'), $responseReceived);
+
+                    if ($scheme === 'https') {
+                        $testModel->value = 'HTTP connection is unavailable; HTTPS response verified';
+
+                        return;
+                    }
+                } catch (GuzzleException) {
+                    // An unavailable HTTP endpoint alone does not confirm working HTTPS.
+                }
+                $testModel->value = 'HTTP connection is unavailable; HTTPS could not be verified';
             }
         } catch (GuzzleException) {
-            // An error indicates that insecure requests are blocked, so allow to pass
+            $testModel->value = 'Request failed; HTTPS enforcement could not be verified';
         }
 
-        return true;
+        $testModel->failTest();
+    }
+
+    /**
+     * Requests a URL and returns its final scheme, recording any responses received along the way.
+     */
+    private function getResponseScheme(UriInterface $uri, bool &$responseReceived): ?string
+    {
+        $scheme = null;
+        $this->client->get($uri, [
+            // An HTTP error page is still an HTTP response, not evidence of blocked access.
+            'http_errors' => false,
+            'on_stats' => function(TransferStats $stats) use (&$scheme, &$responseReceived) {
+                $scheme = $stats->getEffectiveUri()->getScheme();
+                $responseReceived = $responseReceived || $stats->hasResponse();
+            },
+        ]);
+
+        return $scheme;
     }
 }

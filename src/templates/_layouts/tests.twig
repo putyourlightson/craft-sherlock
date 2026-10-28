@@ -63,12 +63,12 @@
         type: 'secure',
         typeName: 'Security',
         details: {
-            pass: 'Control panel is forcing an encrypted HTTPS connection',
-            warning: 'Force an encrypted HTTPS connection in control panel',
+            pass: 'Control panel HTTPS check:',
+            warning: 'Review HTTPS enforcement in control panel:',
         },
         info: 'Using an SSL certificate and forcing the control panel to use an encrypted HTTPS connection ensures secure authentication of users and protects site data. This is especially important since some of your users may be admins or have elevated privileges.
 
-            SSL certificates have become very affordable and straightforward to install, so there is no excuse for not using one. A HTTPS connection will not only secure all communications between users and your site, it will also make your site appear more trustworthy to browsers and search engines.',
+            Sherlock checks that HTTP redirects to HTTPS, or that an unavailable HTTP connection is accompanied by a working HTTPS response. DNS failures, timeouts, TLS errors and other request failures require review.',
         link: {
             label: 'Craft Article',
             url: 'https://craftcms.com/knowledge-base/enforcing-ssl-for-cp-requests',
@@ -79,12 +79,12 @@
         type: 'secure',
         typeName: 'Security',
         details: {
-            pass: 'Front-end site is forcing an encrypted HTTPS connection',
-            warning: 'Force an encrypted HTTPS connection on front-end',
+            pass: 'Front-end HTTPS check:',
+            warning: 'Review HTTPS enforcement on front-end:',
         },
         info: 'Using an SSL certificate and forcing the front-end of your site to use an encrypted HTTPS connection protects the site and user data. This is especially important if public user registration is allowed, as you may be collecting and storing personal data.
 
-            SSL certificates have become very affordable and straightforward to install, so there is no excuse for not using one. A HTTPS connection will not only secure all communications between users and your site, it will also make your site appear more trustworthy to browsers and search engines.',
+            Sherlock checks that HTTP redirects to HTTPS, or that an unavailable HTTP connection is accompanied by a working HTTPS response. DNS failures, timeouts, TLS errors and other request failures require review.',
         link: {
             label: 'Craft Article',
             url: 'https://craftcms.com/knowledge-base/securing-craft#install-an-ssl-certificate-and-enforce-it',
@@ -154,12 +154,12 @@
         },
     },
     phpSecurityUpdates: {
-        name: 'PHP Security Updates (PHP2Shell)',
+        name: 'PHP Security Updates',
         type: 'code',
         typeName: 'Server Language',
         details: {
             pass: 'PHP meets the configured security update threshold',
-            warning: 'Update PHP or verify a vendor-backported security fix',
+            warning: 'Update PHP',
         },
         info: 'PHP2Shell (CVE-2026-109618 and CVE-2026-109619) can allow unauthenticated remote code execution in PHP itself. The upstream fixes are PHP 8.2.35, 8.3.36, 8.4.27 and 8.5.12. Updating Craft or its plugins does not fix the PHP runtime.
 
