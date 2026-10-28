@@ -143,9 +143,7 @@ return [
         //'contentSecurityPolicy' => [
         //    'canFail' => true,
         //],
-        //'cors' => [
-        //    'forceFail' => true,
-        //],
+        //'cors' => [],
         //'referrerPolicy' => [
         //    'canFail' => true,
         //],

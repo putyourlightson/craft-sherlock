@@ -193,9 +193,7 @@ class SettingsModel extends Model
         'canFail' => true,
     ];
 
-    public array $cors = [
-        'forceFail' => true,
-    ];
+    public array $cors = [];
 
     public array $referrerPolicy = [
         'canFail' => true,

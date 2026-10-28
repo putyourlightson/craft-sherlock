@@ -99,6 +99,25 @@ test('Checks PHP support deadlines', function(string $version, array $thresholds
     'two-digit minor version' => ['8.10.0', ['8.10' => '2999-01-01'], true],
 ]);
 
+test('Reports CORS access for review without failing the scan', function(array $headers, bool $warning, bool $highSecurityLevel) {
+    Sherlock::$plugin->settings->highSecurityLevel = $highSecurityLevel;
+    $service = new TestsService([
+        'client' => new \GuzzleHttp\Client(),
+        'siteUrlResponse' => ['headers' => $headers],
+    ]);
+    $testModel = $service->runTest('cors');
+
+    expect($testModel->pass)->toBeTrue()
+        ->and($testModel->warning)->toBe($warning);
+})->with([
+    'no CORS header' => [[], false],
+    'public wildcard' => [['Access-Control-Allow-Origin' => '*'], true],
+    'explicit origin' => [['Access-Control-Allow-Origin' => 'https://partner.example'], true],
+    'null origin' => [['Access-Control-Allow-Origin' => 'null'], true],
+    'wildcard with credentials' => [['Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Credentials' => 'true'], true],
+    'lowercase header' => [['access-control-allow-origin' => '*'], true],
+])->with([false, true]);
+
 test('Validates the effective referrer policy', function(string|array $value, bool $pass) {
     Sherlock::$plugin->tests->client = new \GuzzleHttp\Client();
     Sherlock::$plugin->tests->siteUrlResponse['headers']['Referrer-Policy'] = $value;

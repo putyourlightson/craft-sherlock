@@ -507,12 +507,8 @@ class TestsService extends Component
                 $value = $this->getHeaderValue('Access-Control-Allow-Origin');
 
                 if ($value) {
-                    if ($value == '*') {
-                        $testModel->failTest();
-                    } else {
-                        $testModel->warning = true;
-                    }
-
+                    // Public resources may intentionally allow cross-origin access.
+                    $testModel->warning = true;
                     $testModel->value = '"' . $value . '"';
                 }
 

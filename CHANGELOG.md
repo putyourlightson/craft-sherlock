@@ -4,6 +4,7 @@
 
 - Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.
 - Improved CSP checks to assess effective script restrictions and recognise enforced `frame-ancestors` headers as framing protection.
+- Changed CORS findings to review warnings instead of failing scans for wildcard access, which may be intentional for public resources.
 - Changed the default `Referrer-Policy` header to `strict-origin-when-cross-origin` and updated its security test to warn about invalid or less restrictive policies.
 - Changed the default `Strict-Transport-Security` header and security test threshold to one year, and fixed incorrect parsing of `max-age` values when other directives are present.
 - Removed the obsolete `X-XSS-Protection` header test and default header ([#54](https://github.com/putyourlightson/craft-sherlock/issues/54)).
