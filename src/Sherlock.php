@@ -29,7 +29,6 @@ use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\twigextensions\SherlockTwigExtension;
 use putyourlightson\sherlock\variables\SherlockVariable;
 use yii\base\Event;
-use yii\log\Dispatcher;
 use yii\log\Logger;
 
 /**
@@ -223,19 +222,17 @@ class Sherlock extends Plugin
      */
     private function registerLogTarget(): void
     {
-        if (Craft::getLogger()->dispatcher instanceof Dispatcher) {
-            Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
-                'name' => 'sherlock',
-                'categories' => ['sherlock'],
-                'level' => LogLevel::INFO,
-                'logContext' => false,
-                'allowLineBreaks' => false,
-                'formatter' => new LineFormatter(
-                    format: "[%datetime%] %message%\n",
-                    dateFormat: 'Y-m-d H:i:s',
-                ),
-            ]);
-        }
+        Craft::$app->getLog()->targets[] = new MonologTarget([
+            'name' => 'sherlock',
+            'categories' => ['sherlock'],
+            'level' => LogLevel::INFO,
+            'logContext' => false,
+            'allowLineBreaks' => false,
+            'formatter' => new LineFormatter(
+                format: "[%datetime%] %message%\n",
+                dateFormat: 'Y-m-d H:i:s',
+            ),
+        ]);
     }
 
     /**

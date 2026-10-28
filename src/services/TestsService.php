@@ -13,6 +13,7 @@ use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\Updates;
 use DateTime;
+use DOMDocument;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\TransferStats;
@@ -257,7 +258,6 @@ class TestsService extends Component
                         if (!empty($update->releases)) {
                             $latestRelease = $update->getLatest();
 
-                            /** @var Plugin $plugin */
                             $plugin = Craft::$app->getPlugins()->getPlugin($handle);
 
                             if ($plugin !== null) {
@@ -388,8 +388,8 @@ class TestsService extends Component
                 }
 
                 $testModel->value = $version . ($minimumVersion === null
-                    ? ' (no security update threshold is configured for this PHP branch)'
-                    : ' (requires ' . $minimumVersion . ' or later in this branch)');
+                        ? ' (no security update threshold is configured for this PHP branch)'
+                        : ' (requires ' . $minimumVersion . ' or later in this branch)');
 
                 break;
 
@@ -686,7 +686,7 @@ class TestsService extends Component
                 if ($value < $testModel->threshold) {
                     $testModel->failTest();
                 } else {
-                    $testModel->value = $value;
+                    $testModel->value = (string)$value;
                 }
 
                 break;
@@ -712,7 +712,7 @@ class TestsService extends Component
                 } elseif ($value > $testModel->threshold) {
                     $testModel->warning = true;
                 } else {
-                    $testModel->value = $value;
+                    $testModel->value = (string)$value;
                 }
 
                 break;
@@ -773,7 +773,7 @@ class TestsService extends Component
 
         $body = $this->siteUrlResponse['body'] ?? '';
         if ($includeMeta && $body !== '') {
-            $document = new \DOMDocument();
+            $document = new DOMDocument();
             $document->loadHTML($body, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
             foreach ($document->getElementsByTagName('head') as $head) {
                 foreach ($head->getElementsByTagName('meta') as $meta) {
