@@ -138,7 +138,7 @@
         typeName: 'Server Language',
         details: {
             pass: 'Site is running on a supported PHP version',
-            warning: 'Site is running on an unsupported PHP version',
+            warning: 'PHP security support has ended or its support period is unknown',
         },
         info: 'Each release branch of PHP is fully supported for two years from its initial stable release, followed by two additional years for critical security issues only. After this time the branch reaches its end of life and is no longer supported.
 
@@ -146,11 +146,29 @@
             • PHP 8.1 receives security support until 31 December 2025.
             • PHP 8.2 receives security support until 31 December 2026.
             • PHP 8.3 receives security support until 31 December 2027.
+            • PHP 8.4 receives security support until 31 December 2028.
+            • PHP 8.5 receives security support until 31 December 2029.
 
             Running a version of PHP that is no longer receiving security support may put your site at serious risk.',
         link: {
             label: 'Supported Versions',
             url: 'https://www.php.net/supported-versions.php',
+        },
+    },
+    phpSecurityUpdates: {
+        name: 'PHP Security Updates',
+        type: 'code',
+        typeName: 'Server Language',
+        details: {
+            pass: 'PHP meets the configured security update threshold',
+            warning: 'Update PHP',
+        },
+        info: 'PHP2Shell (CVE-2026-109618 and CVE-2026-109619) can allow unauthenticated remote code execution in PHP itself. The upstream fixes are PHP 8.2.35, 8.3.36, 8.4.27 and 8.5.12. Updating Craft or its plugins does not fix the PHP runtime.
+
+            This check compares the PHP version running the scan with the configured minimum for its branch. Distribution packages may include backported fixes without changing the upstream version. Confirm these fixes with your hosting provider before overriding the thresholds. A command-line scan checks the CLI runtime, which may differ from the web runtime.',
+        link: {
+            label: 'PHP Security Advisory',
+            url: 'https://www.php.net/archive/2026.php#2026-10-21-5',
         },
     },
     phpComposerVersion: {

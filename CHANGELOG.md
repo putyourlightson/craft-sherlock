@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.6.0 - 2026-10-28
+
+- Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.
+
 ## 4.5.2 - 2025-04-11
 
 - Improved the processing of comma-separated notification email addresses ([#46](https://github.com/putyourlightson/craft-sherlock/issues/46)).

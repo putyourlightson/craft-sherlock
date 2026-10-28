@@ -24,6 +24,7 @@
     "codeception/module-yii2": "^1.1.5",
     "craftcms/ecs": "dev-main",
     "craftcms/phpstan": "dev-main",
+    "phpstan/phpstan": "^2.0",
     "yiisoft/yii2-redis": "^2.0",
     "vlucas/phpdotenv": "^5.4.1"
   },

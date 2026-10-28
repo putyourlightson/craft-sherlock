@@ -101,8 +101,22 @@ return [
         //    'canFail' => true,
         //    'thresholds' => [
         //        '8.0' => '2023-11-26',
-        //        '8.1' => '2024-11-25',
-        //        '8.2' => '2025-12-08',
+        //        '8.1' => '2026-01-01',
+        //        '8.2' => '2027-01-01',
+        //        '8.3' => '2028-01-01',
+        //        '8.4' => '2029-01-01',
+        //        '8.5' => '2030-01-01',
+        //    ],
+        //],
+        // Minimum upstream versions fixing PHP2Shell (CVE-2026-109618 and CVE-2026-109619).
+        // Only override these thresholds after verifying a vendor-backported fix.
+        //'phpSecurityUpdates' => [
+        //    'forceFail' => true,
+        //    'thresholds' => [
+        //        '8.2' => '8.2.35',
+        //        '8.3' => '8.3.36',
+        //        '8.4' => '8.4.27',
+        //        '8.5' => '8.5.12',
         //    ],
         //],
 
