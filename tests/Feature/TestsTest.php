@@ -79,6 +79,38 @@ test('Checks HTTPS enforcement without accepting unrelated request failures', fu
     'redirect loop' => [array_fill(0, 7, [301, 'http://example.test/loop']), false, 'Request failed'],
 ])->with(['httpsControlPanel', 'httpsFrontEnd']);
 
+test('Checks deferred passwords in the registration workflow', function(bool $deferred, array $userSettings, bool $warning, bool $highSecurityLevel) {
+    $generalConfig = Craft::$app->getConfig()->getGeneral();
+    $originalDeferred = $generalConfig->deferPublicRegistrationPassword;
+    $originalProjectConfig = Craft::$app->getProjectConfig();
+    $projectConfig = $this->createMock(\craft\services\ProjectConfig::class);
+    $projectConfig->method('get')->with('users')->willReturn($userSettings);
+    $generalConfig->deferPublicRegistrationPassword = $deferred;
+    Craft::$app->set('projectConfig', $projectConfig);
+    Sherlock::$plugin->settings->highSecurityLevel = $highSecurityLevel;
+
+    try {
+        $service = new TestsService(['client' => new \GuzzleHttp\Client()]);
+        $testModel = $service->runTest('deferPublicRegistrationPassword');
+
+        expect($testModel->pass)->toBeTrue()
+            ->and($testModel->warning)->toBe($warning)
+            ->and($testModel->value)->not->toBeEmpty();
+    } finally {
+        $generalConfig->deferPublicRegistrationPassword = $originalDeferred;
+        Craft::$app->set('projectConfig', $originalProjectConfig);
+    }
+})->with([
+    'password required during registration' => [false, ['allowPublicRegistration' => true, 'requireEmailVerification' => false], false],
+    'public registration disabled' => [true, ['allowPublicRegistration' => false, 'requireEmailVerification' => false], false],
+    'email verification enabled' => [true, ['allowPublicRegistration' => true, 'requireEmailVerification' => true], false],
+    'email verification defaults to enabled' => [true, ['allowPublicRegistration' => true], false],
+    'moderator activation enabled' => [true, ['allowPublicRegistration' => true, 'requireEmailVerification' => false, 'deactivateByDefault' => true], false],
+    'public registration needs review' => [true, ['allowPublicRegistration' => true, 'requireEmailVerification' => false], true],
+    'explicitly unmoderated registration needs review' => [true, ['allowPublicRegistration' => true, 'requireEmailVerification' => false, 'deactivateByDefault' => false], true],
+    'default user settings disable public registration' => [true, [], false],
+])->with([false, true]);
+
 test('Checks PHP security update versions', function(string $version, bool $pass) {
     Sherlock::$plugin->settings->highSecurityLevel = false;
     $service = new SherlockTestsServiceWithPhpVersion([

@@ -5,6 +5,7 @@
 - Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.
 - Improved CSP checks to assess effective script restrictions and recognise enforced `frame-ancestors` headers as framing protection.
 - Changed CORS findings to review warnings instead of failing scans for wildcard access, which may be intentional for public resources.
+- Changed the deferred registration password test to consider public registration, email verification and moderator activation instead of warning whenever passwords are deferred.
 - Changed the default `Referrer-Policy` header to `strict-origin-when-cross-origin` and updated its security test to warn about invalid or less restrictive policies.
 - Changed the default `Strict-Transport-Security` header and security test threshold to one year, and fixed incorrect parsing of `max-age` values when other directives are present.
 - Fixed HTTPS checks incorrectly passing on HTTP error pages and connection failures.

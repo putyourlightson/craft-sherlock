@@ -411,13 +411,13 @@
         type: 'settings',
         typeName: 'Config Setting',
         details: {
-            pass: 'Defer public registration password is disabled',
-            warning: 'Defer public registration password to false',
+            pass: 'Registration password setup:',
+            warning: 'Review the registration and password setup workflow:',
         },
-        info: 'By default, Craft will require a password field to be submitted on front-end, public user registrations. Setting this to true will no longer require it on the initial registration form. If you have email verification enabled, new users will set their password once they’ve clicked on the verification link in the email. If you don’t, the only way they can set their password is to go through your forgot password workflow.',
+        info: 'Deferring the password is a supported registration workflow. Users set their password after following an activation email. Craft can also send this email when email verification is not required. If public registration is enabled without required email verification or moderator activation, review account activation, password setup and the permissions granted to new users.',
         link: {
             label: 'Craft Docs',
-            url: 'https://craftcms.com/docs/4.x/config/config-settings.html#deferpublicregistrationpassword',
+            url: 'https://craftcms.com/docs/5.x/reference/config/general.html#deferpublicregistrationpassword',
         },
     },
     devMode: {

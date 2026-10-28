@@ -631,6 +631,26 @@ class TestsService extends Component
                 break;
 
             case 'deferPublicRegistrationPassword':
+                $deferred = Craft::$app->getConfig()->getGeneral()->deferPublicRegistrationPassword;
+                $userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
+
+                if (!$deferred) {
+                    $testModel->value = 'Passwords are requested during registration';
+                } elseif (!($userSettings['allowPublicRegistration'] ?? false)) {
+                    $testModel->value = 'Public registration is disabled';
+                } elseif ($userSettings['deactivateByDefault'] ?? false) {
+                    $testModel->value = 'Public registrations require moderator activation';
+                } elseif ($userSettings['requireEmailVerification'] ?? true) {
+                    $testModel->value = 'Passwords are set after email activation';
+                } else {
+                    // Deferred passwords are supported without required email verification, but
+                    // the public registration and password setup workflow should be reviewed.
+                    $testModel->warning = true;
+                    $testModel->value = 'Public registration defers passwords without requiring email verification or moderator activation';
+                }
+
+                break;
+
             case 'devMode':
             case 'sendPoweredByHeader':
             case 'testToEmailAddress':
