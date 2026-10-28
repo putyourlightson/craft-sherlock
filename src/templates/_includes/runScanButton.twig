@@ -3,7 +3,7 @@
 <div class="{{ align }}">
     {% if craft.app.isLive and currentSite.hasUrls %}
         <a href="#" class="btn submit run-scan" data-url="{{ actionUrl('sherlock/scans/run-scan-ajax', {siteId: currentSite.id}) }}">
-            {{ 'Run Scan Now'|t('sherlock') }}
+            {{ 'Run scan now'|t('sherlock') }}
         </a>
     {% else %}
         <p class="{{ align ? 'info' : 'light' }}" style="vertical-align: top;">
@@ -14,7 +14,7 @@
             {% endif %}
         </p>
         <a href="#" class="btn submit disabled">
-            {{ 'Run Scan Now'|t('sherlock') }}
+            {{ 'Run scan now'|t('sherlock') }}
         </a>
     {% endif %}
 </div>

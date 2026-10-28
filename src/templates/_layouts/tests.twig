@@ -342,9 +342,9 @@
         typeName: 'Config Setting',
         details: {
             pass: 'Cooldown duration is set to',
-            warning: 'Set cooldown duration to false or at least 300',
+            warning: 'Set cooldown duration to 0 or at least 300',
         },
-        info: 'The amount of time a user must wait before re-attempting to log in after their account is locked due to too many failed login attempts. Setting this to false will keep the account locked indefinitely. Setting this to 300 will keep the account locked for 5 minutes.',
+        info: 'The amount of time a user must wait before re-attempting to log in after their account is locked due to too many failed login attempts. Setting this to 0 keeps the account locked until an administrator unlocks it. Setting this to 300 keeps the account locked for 5 minutes.',
         link: {
             label: 'Craft Docs',
             url: 'https://craftcms.com/docs/4.x/config/config-settings.html#cooldownduration',
@@ -621,10 +621,10 @@
         type: 'settings',
         typeName: 'Config Setting',
         details: {
-            pass: 'Site is using secure cookies',
-            warning: 'Set secure cookies to "on" or "auto"',
+            pass: 'Secure cookie configuration:',
+            warning: 'Set useSecureCookies to true, or verify HTTPS detection for auto:',
         },
-        info: 'Whether Craft should set the secure flag on its cookies, limiting them to only be sent on secure (SSL) requests. Setting this to "on" or "auto" will ensure that the secure flag is set.',
+        info: 'The Secure flag limits cookies to HTTPS connections. Setting useSecureCookies to true enables the flag regardless of how Craft detects the current connection. The auto setting enables it only when Craft detects HTTPS on the current web request. Ensure that trusted proxy settings are correct when HTTPS terminates at a proxy. A console scan cannot verify web request detection in auto mode.',
         link: {
             label: 'Craft Docs',
             url: 'https://craftcms.com/docs/4.x/config/config-settings.html#usesecurecookies',

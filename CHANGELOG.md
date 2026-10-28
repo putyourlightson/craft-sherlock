@@ -4,6 +4,9 @@
 
 - Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.
 - Removed the obsolete `X-XSS-Protection` header test and default header ([#54](https://github.com/putyourlightson/craft-sherlock/issues/54)).
+- Fixed the remembered session threshold to use 14 days.
+- Fixed the cooldown duration test to accept indefinite login lockouts.
+- Fixed the secure cookie test to verify HTTPS detection in auto mode.
 
 ## 4.5.2 - 2025-04-11
 
