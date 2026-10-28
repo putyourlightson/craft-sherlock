@@ -1,5 +1,9 @@
 # Release Notes for Sherlock
 
+## 5.3.0 - Unreleased
+
+- Removed the obsolete `X-XSS-Protection` header test and default header ([#54](https://github.com/putyourlightson/craft-sherlock/issues/54)).
+
 ## 5.2.1 - 2026-04-14
 
 - Added the ability to view read-only settings in environments where admin changes are disallowed ([#53](https://github.com/putyourlightson/craft-sherlock/issues/53)).

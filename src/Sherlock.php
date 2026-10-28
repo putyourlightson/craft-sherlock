@@ -108,7 +108,7 @@ class Sherlock extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '5.1.0';
+    public string $schemaVersion = '5.3.0';
 
     /**
      * @inheritdoc
