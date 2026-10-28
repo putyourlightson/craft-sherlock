@@ -93,7 +93,6 @@ class TestsService extends Component
             'strictTransportSecurity',
             'xContentTypeOptions',
             'xFrameOptions',
-            'xXssProtection',
 
             // General config settings
             'blowfishHashCost',
@@ -542,23 +541,6 @@ class TestsService extends Component
                 $value = $this->getHeaderValue('X-Frame-Options');
 
                 if ($value != 'DENY' && $value != 'SAMEORIGIN') {
-                    $testModel->failTest();
-                } else {
-                    $testModel->value = '"' . $value . '"';
-                }
-
-                break;
-
-            case 'xXssProtection':
-                $value = $this->getHeaderValue('X-Xss-Protection');
-
-                // If not set then check alternative case
-                $value = $value ?: $this->getHeaderValue('X-XSS-Protection');
-
-                // Remove spaces and convert to lower case for comparison
-                $compareValue = strtolower(str_replace(' ', '', $value));
-
-                if ($compareValue != '1;mode=block') {
                     $testModel->failTest();
                 } else {
                     $testModel->value = '"' . $value . '"';

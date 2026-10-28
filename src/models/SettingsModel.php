@@ -36,7 +36,6 @@ class SettingsModel extends Model
             [true, 'Strict-Transport-Security', 'max-age=15552000'],
             [true, 'X-Content-Type-Options', 'nosniff'],
             [true, 'X-Frame-Options', 'SAMEORIGIN'],
-            [true, 'X-Xss-Protection', '1; mode=block'],
         ],
     ];
 
@@ -206,8 +205,6 @@ class SettingsModel extends Model
     public array $xFrameOptions = [
         'canFail' => true,
     ];
-
-    public array $xXssProtection = [];
 
     // General config settings
 

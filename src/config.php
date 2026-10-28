@@ -35,7 +35,6 @@ return [
         //        [true, 'Strict-Transport-Security', 'max-age=31536000'],
         //        [true, 'X-Content-Type-Options', 'nosniff'],
         //        [true, 'X-Frame-Options', 'SAMEORIGIN'],
-        //        [true, 'X-Xss-Protection', '1; mode=block'],
         //    ]
         //],
 
@@ -152,7 +151,6 @@ return [
         //'xFrameOptions' => [
         //    'canFail' => true,
         //],
-        //'xXssProtection' => [],
 
         // General config settings
         //'blowfishHashCost' => [
