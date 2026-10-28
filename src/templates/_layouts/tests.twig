@@ -243,7 +243,9 @@
 
             By enforcing a Content Security Policy, you explicitly tell the browser which types of resources (images, scripts, styles, etc.) it is allowed to load, where it may load them from (your site, external sites, etc.) and whether inline scripts and styles may be processed. Setting it up takes some time and should be done with care, but results in a very effective method of mitigating and reporting attacks.
 
-            Sherlock can help you create a Content Security Policy by allowing you to set the directives, switch from reporting to enforcing when you are ready and choose to implement it using a HTTP header or meta tag.',
+            Sherlock checks the effective restrictions on script elements, inline event handlers and eval. Review allowed script hosts carefully, and test the policy on your site.
+
+            Sherlock can help you create a Content Security Policy by allowing you to set the directives and switch from reporting to enforcing when you are ready. Report-only policies always use an HTTP header. Enforced policies can use a header or meta tag, but frame-ancestors requires a header.',
         link: {
             label: 'MDN Article',
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP',
@@ -311,10 +313,10 @@
         type: 'secure',
         typeName: 'HTTP Header',
         details: {
-            pass: 'X-Frame-Options header is set to',
-            warning: 'Set X-Frame-Options header to "DENY" or "SAMEORIGIN"',
+            pass: 'Framing protection is set:',
+            warning: 'Set a restrictive CSP frame-ancestors header or X-Frame-Options to "DENY" or "SAMEORIGIN"',
         },
-        info: 'The X-Frame-Options header can be used to indicate whether or not a browser should be allowed to render a page in a <frame>, <iframe>, <embed> or <object>. Sites can use this to avoid click-jacking attacks, by ensuring that their content is not embedded into other sites.',
+        info: 'The X-Frame-Options header can be used to indicate whether or not a browser should be allowed to render a page in a <frame>, <iframe>, <embed> or <object>. An enforced CSP frame-ancestors header takes precedence and can also prevent click-jacking by allowing only selected origins. Report-only policies and meta tags do not provide this framing protection.',
         link: {
             label: 'MDN Web Docs',
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options',

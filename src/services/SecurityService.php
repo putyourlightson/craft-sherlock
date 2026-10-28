@@ -97,7 +97,8 @@ class SecurityService extends Component
 
             $value = trim($value);
 
-            if ($settings['header']) {
+            // Browsers do not support report-only policies in meta tags.
+            if ($settings['header'] || !$settings['enforce']) {
                 Craft::$app->getResponse()->getHeaders()->add($name, $value);
             } else {
                 Craft::$app->getView()->registerMetaTag([

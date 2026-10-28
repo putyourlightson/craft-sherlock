@@ -145,12 +145,12 @@
                     offLabel: 'Report Only'|t('sherlock'),
                     onLabel: 'Enforce'|t('sherlock'),
                     name: 'contentSecurityPolicySettings[enforce]',
-                    instructions: 'Whether to report issues in the console only (requires selecting HTTP Header below), or to actually enforce the policy.'|t('sherlock') ~ info(infoText),
+                    instructions: 'Whether to report issues in the console only (always uses an HTTP header), or to actually enforce the policy.'|t('sherlock') ~ info(infoText),
                     warning: (config.contentSecurityPolicySettings is defined ? configWarning('contentSecurityPolicySettings')),
                     on: settings.contentSecurityPolicySettings.enforce,
                     disabled: readOnly,
                 }) }}
-                {% set infoText = 'Using the "HTTP Header" option is generally recommended and is required when using "Report Only" mode. If using a static cache such as Blitz with server redirects (so that requests are never handled by Craft) then you should consider either selecting the "Meta Tag" option or manually adding the HTTP header to your server configuration file.' %}
+                {% set infoText = 'Using the "HTTP Header" option is generally recommended and is required for frame-ancestors. `Report Only` mode always uses an HTTP header, regardless of this setting. If using a static cache such as Blitz with server redirects (so that requests are never handled by Craft) then you should consider either selecting the `Meta Tag` option for an enforced policy or manually adding the HTTP header to your server configuration file.' %}
                 {{ forms.lightswitchField({
                     offLabel: 'Meta Tag'|t('sherlock'),
                     onLabel: 'HTTP Header'|t('sherlock'),

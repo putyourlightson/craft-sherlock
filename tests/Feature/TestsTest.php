@@ -163,33 +163,97 @@ test('Validates the HSTS max-age', function(string|array $value, bool $pass) {
     'first header wins' => [['max-age=0', 'max-age=31536000'], false],
 ]);
 
-test('Passes content security policy header test', function() {
-    Sherlock::$plugin->tests->siteUrlResponse['headers']['Content-Security-Policy'] = "default-src 'unsafe-inline'";
-    $testModel = Sherlock::$plugin->tests->runTest('contentSecurityPolicy');
+test('Checks effective CSP script restrictions', function(array $headers, string $body, bool $pass) {
+    $service = new TestsService([
+        'client' => new \GuzzleHttp\Client(),
+        'siteUrlResponse' => ['headers' => $headers, 'body' => $body],
+    ]);
+    $testModel = $service->runTest('contentSecurityPolicy');
 
-    expect($testModel->pass)
-        ->toBeTrue()
-        ->and($testModel->warning)
-        ->toBeTrue();
-});
+    expect($testModel->pass)->toBe($pass)
+        ->and($testModel->warning)->toBe(!$pass);
+})->with([
+    'missing policy' => [[], '', false],
+    'images only' => [['Content-Security-Policy' => "img-src 'self'"], '', false],
+    'default source' => [['Content-Security-Policy' => "default-src 'self'"], '', true],
+    'no scripts' => [['Content-Security-Policy' => "script-src 'none'"], '', true],
+    'empty script list' => [['Content-Security-Policy' => 'script-src'], '', true],
+    'unsafe inline scripts' => [['Content-Security-Policy' => "default-src 'unsafe-inline'"], '', false],
+    'case insensitive unsafe inline' => [['Content-Security-Policy' => "SCRIPT-SRC 'UNSAFE-INLINE'"], '', false],
+    'unsafe eval' => [['Content-Security-Policy' => "script-src 'self' 'unsafe-eval'"], '', false],
+    'case insensitive unsafe eval' => [['Content-Security-Policy' => "script-src 'self' 'UNSAFE-EVAL'"], '', false],
+    'unsafe styles only' => [['Content-Security-Policy' => "script-src 'self'; style-src 'unsafe-inline'"], '', true],
+    'unrestricted script override' => [['Content-Security-Policy' => "default-src 'self'; script-src *"], '', false],
+    'broad scheme' => [['Content-Security-Policy' => 'script-src https:'], '', false],
+    'broad data source' => [['Content-Security-Policy' => 'script-src data:'], '', false],
+    'wildcard host' => [['Content-Security-Policy' => 'script-src https://*'], '', false],
+    'element override' => [['Content-Security-Policy' => "script-src 'self'; script-src-elem *"], '', false],
+    'attribute override' => [['Content-Security-Policy' => "script-src 'self'; script-src-attr 'unsafe-inline'"], '', false],
+    'element restriction only' => [['Content-Security-Policy' => "script-src-elem 'self'"], '', false],
+    'duplicate directive keeps first' => [['Content-Security-Policy' => "script-src *; script-src 'none'"], '', false],
+    'nonce overrides unsafe-inline' => [['Content-Security-Policy' => "script-src 'nonce-YWJjZA==' 'unsafe-inline'"], '', true],
+    'strict dynamic ignores broad sources' => [['Content-Security-Policy' => "script-src 'nonce-YWJjZA==' 'strict-dynamic' https: 'unsafe-inline'"], '', true],
+    'combined headers' => [['Content-Security-Policy' => ["script-src-elem 'self'; script-src-attr 'none'", "script-src 'self' 'unsafe-inline'"]], '', true],
+    'combined comma-separated policies' => [['Content-Security-Policy' => "script-src * 'unsafe-inline', script-src 'self'"], '', true],
+    'header names are case insensitive' => [['CONTENT-SECURITY-POLICY' => "script-src 'self'"], '', true],
+    'report-only does not enforce' => [['Content-Security-Policy-Report-Only' => "script-src 'none'"], '', false],
+    'meta policy' => [[], '<html><head><meta content="script-src &apos;self&apos;" http-equiv="Content-Security-Policy"></head></html>', true],
+    'meta combines with header' => [['Content-Security-Policy' => 'img-src https:'], '<html><head><meta http-equiv="Content-Security-Policy" content="script-src &apos;self&apos;"></head></html>', true],
+    'meta in body is ignored' => [[], '<html><head></head><body><meta http-equiv="Content-Security-Policy" content="script-src &apos;none&apos;"></body></html>', false],
+    'commented meta is ignored' => [[], '<html><head><!-- <meta http-equiv="Content-Security-Policy" content="script-src &apos;none&apos;"> --></head></html>', false],
+]);
 
-test('Passes content security policy meta tag test', function() {
-    Sherlock::$plugin->tests->siteUrlResponse['body'] = '
-        <html lang="en">
-            <head>
-                <title></title>
-                <meta http-equiv="Content-Security-Policy" content="
-                    default-src \'unsafe-inline\'
-                ">
-            </head>
-        </html>
-    ';
-    $testModel = Sherlock::$plugin->tests->runTest('contentSecurityPolicy');
+test('Checks CSP framing protection', function(array $headers, string $body, bool $pass) {
+    $service = new TestsService([
+        'client' => new \GuzzleHttp\Client(),
+        'siteUrlResponse' => ['headers' => $headers, 'body' => $body],
+    ]);
+    $testModel = $service->runTest('xFrameOptions');
 
-    expect($testModel->pass)
-        ->toBeTrue()
-        ->and($testModel->warning)
-        ->toBeTrue();
+    expect($testModel->pass)->toBe($pass)
+        ->and($testModel->warning)->toBe(!$pass);
+})->with([
+    'no protection' => [[], '', false],
+    'deny framing' => [['X-Frame-Options' => 'DENY'], '', true],
+    'same origin framing' => [['X-Frame-Options' => 'sameorigin'], '', true],
+    'CSP none' => [['Content-Security-Policy' => "frame-ancestors 'none'"], '', true],
+    'CSP self' => [['Content-Security-Policy' => "frame-ancestors 'self'"], '', true],
+    'CSP trusted origin' => [['Content-Security-Policy' => "frame-ancestors 'self' https://partner.example"], '', true],
+    'CSP wildcard' => [['Content-Security-Policy' => 'frame-ancestors *'], '', false],
+    'CSP broad scheme' => [['Content-Security-Policy' => 'frame-ancestors https:'], '', false],
+    'CSP overrides XFO' => [['Content-Security-Policy' => 'frame-ancestors *', 'X-Frame-Options' => 'DENY'], '', false],
+    'default-src does not protect framing' => [['Content-Security-Policy' => "default-src 'none'"], '', false],
+    'report-only does not protect framing' => [['Content-Security-Policy-Report-Only' => "frame-ancestors 'none'"], '', false],
+    'meta does not protect framing' => [[], '<html><head><meta http-equiv="Content-Security-Policy" content="frame-ancestors &apos;none&apos;"></head></html>', false],
+    'combined framing policies' => [['Content-Security-Policy' => ['frame-ancestors *', "frame-ancestors 'self'"]], '', true],
+    'duplicate directive keeps first' => [['Content-Security-Policy' => "frame-ancestors *; frame-ancestors 'none'"], '', false],
+]);
+
+test('Emits report-only CSP as a header when meta delivery is selected', function() {
+    $settings = Sherlock::$plugin->settings;
+    $originalSettings = $settings->contentSecurityPolicySettings;
+    $settings->contentSecurityPolicySettings = [
+        'enabled' => true,
+        'enforce' => false,
+        'header' => false,
+        'directives' => [[true, 'default-src', "'self'"]],
+    ];
+    $view = Craft::$app->getView();
+    $originalMetaTags = $view->metaTags;
+    $headers = Craft::$app->getResponse()->getHeaders();
+    $originalHeaders = $headers->toArray();
+
+    try {
+        $view->metaTags = [];
+        Sherlock::$plugin->security->applyContentSecurityPolicy();
+
+        expect($headers->get('Content-Security-Policy-Report-Only'))->toBe("default-src 'self';")
+            ->and($view->metaTags)->toBe([]);
+    } finally {
+        $settings->contentSecurityPolicySettings = $originalSettings;
+        $view->metaTags = $originalMetaTags;
+        $headers->fromArray($originalHeaders);
+    }
 });
 
 test('Passes web alias in site base URL test', function() {

@@ -464,27 +464,41 @@ class TestsService extends Component
                 break;
 
             case 'contentSecurityPolicy':
-                $value = $this->getHeaderValue('Content-Security-Policy');
-                $headerSet = !empty($value);
+                $policies = $this->getContentSecurityPolicies();
+                $restrictedElements = false;
+                $restrictedAttributes = false;
+                $restrictedEval = false;
 
-                if (!$headerSet) {
-                    // Look for meta tag
-                    preg_match('/<meta http-equiv="Content-Security-Policy" content="(.*?)"/si', $this->siteUrlResponse['body'], $matches);
-                    $value = $matches[1] ?? '';
+                foreach ($policies as $directives) {
+                    $scriptSources = $directives['script-src'] ?? $directives['default-src'] ?? null;
+                    $elementSources = $directives['script-src-elem'] ?? $scriptSources;
+                    $attributeSources = $directives['script-src-attr'] ?? $scriptSources;
+
+                    // Each enforced policy adds restrictions, so separate policies can protect different contexts.
+                    $restrictedElements = $restrictedElements || $this->restrictsScripts($elementSources);
+                    $restrictedAttributes = $restrictedAttributes || ($attributeSources !== null && !$this->allowsInlineScripts($attributeSources));
+                    $restrictedEval = $restrictedEval || ($scriptSources !== null && !in_array("'unsafe-eval'", $scriptSources, true));
                 }
 
-                if (empty($value)) {
-                    $testModel->failTest();
-                    $testModel->value = 'Neither Content-Security-Policy header nor meta tag are set';
-                } else {
-                    $testModel->value = 'Content-Security-Policy ' . ($headerSet ? 'header' : 'meta tag') . ' ';
+                $unrestricted = [];
+                if (!$restrictedElements) {
+                    $unrestricted[] = 'script elements';
+                }
+                if (!$restrictedAttributes) {
+                    $unrestricted[] = 'inline event handlers';
+                }
+                if (!$restrictedEval) {
+                    $unrestricted[] = 'eval';
+                }
 
-                    if (str_contains($value, 'unsafe-inline') || str_contains($value, 'unsafe-eval')) {
-                        $testModel->warning = true;
-                        $testModel->value .= 'contains "unsafe" values';
-                    } else {
-                        $testModel->value .= 'is set';
-                    }
+                if ($policies === []) {
+                    $testModel->failTest();
+                    $testModel->value = 'No enforced Content-Security-Policy header or meta tag is set';
+                } elseif ($unrestricted !== []) {
+                    $testModel->failTest();
+                    $testModel->value = 'Content-Security-Policy is set but does not sufficiently restrict ' . implode(', ', $unrestricted);
+                } else {
+                    $testModel->value = 'Content-Security-Policy restricts script elements, inline event handlers and eval';
                 }
 
                 break;
@@ -582,8 +596,26 @@ class TestsService extends Component
 
             case 'xFrameOptions':
                 $value = $this->getHeaderValue('X-Frame-Options');
+                $frameAncestorsSet = false;
+                $restrictiveFrameAncestors = false;
 
-                if ($value != 'DENY' && $value != 'SAMEORIGIN') {
+                // Only enforced headers support frame-ancestors; meta tags and report-only policies do not.
+                foreach ($this->getContentSecurityPolicies(false) as $directives) {
+                    if (isset($directives['frame-ancestors'])) {
+                        $frameAncestorsSet = true;
+                        $restrictiveFrameAncestors = $restrictiveFrameAncestors || $this->restrictsFraming($directives['frame-ancestors']);
+                    }
+                }
+
+                if ($frameAncestorsSet) {
+                    // An enforced frame-ancestors directive takes precedence over X-Frame-Options.
+                    if (!$restrictiveFrameAncestors) {
+                        $testModel->failTest();
+                    }
+                    $testModel->value = $restrictiveFrameAncestors
+                        ? 'Content-Security-Policy frame-ancestors restricts framing'
+                        : 'Content-Security-Policy frame-ancestors does not sufficiently restrict framing';
+                } elseif (!in_array(strtoupper(trim($value)), ['DENY', 'SAMEORIGIN'], true)) {
                     $testModel->failTest();
                 } else {
                     $testModel->value = '"' . $value . '"';
@@ -720,6 +752,133 @@ class TestsService extends Component
         }
 
         return $testModel;
+    }
+
+    /**
+     * Returns parsed enforced CSP policies, optionally including meta tags in the document head.
+     *
+     * @return array<string, string[]>[]
+     */
+    private function getContentSecurityPolicies(bool $includeMeta = true): array
+    {
+        $values = [];
+        foreach ($this->siteUrlResponse['headers'] ?? [] as $name => $headers) {
+            if (strcasecmp($name, 'Content-Security-Policy') === 0) {
+                foreach ((array)$headers as $header) {
+                    // Multiple header fields and comma-separated policies are enforced together.
+                    array_push($values, ...explode(',', $header));
+                }
+            }
+        }
+
+        $body = $this->siteUrlResponse['body'] ?? '';
+        if ($includeMeta && $body !== '') {
+            $document = new \DOMDocument();
+            $document->loadHTML($body, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
+            foreach ($document->getElementsByTagName('head') as $head) {
+                foreach ($head->getElementsByTagName('meta') as $meta) {
+                    if (strcasecmp($meta->getAttribute('http-equiv'), 'Content-Security-Policy') === 0) {
+                        $values[] = $meta->getAttribute('content');
+                    }
+                }
+            }
+        }
+
+        $policies = [];
+        foreach ($values as $value) {
+            $directives = [];
+            foreach (explode(';', $value) as $directive) {
+                $tokens = preg_split('/[\t\n\f\r ]+/', trim($directive), -1, PREG_SPLIT_NO_EMPTY);
+                if ($tokens === []) {
+                    continue;
+                }
+                $name = strtolower(array_shift($tokens));
+                foreach ($tokens as &$token) {
+                    if (in_array(strtolower($token), ["'self'", "'none'", "'unsafe-inline'", "'unsafe-eval'", "'strict-dynamic'"], true)) {
+                        $token = strtolower($token);
+                    }
+                }
+                unset($token);
+                // Browsers ignore subsequent occurrences of a directive within one policy.
+                if (!array_key_exists($name, $directives)) {
+                    $directives[$name] = $tokens;
+                }
+            }
+            if ($directives !== []) {
+                $policies[] = $directives;
+            }
+        }
+
+        return $policies;
+    }
+
+    /**
+     * Returns whether the source list allows arbitrary inline scripts.
+     *
+     * @param string[] $sources
+     */
+    private function allowsInlineScripts(array $sources): bool
+    {
+        if (!in_array("'unsafe-inline'", $sources, true)) {
+            return false;
+        }
+
+        foreach ($sources as $source) {
+            // Nonces and hashes cause modern browsers to ignore unsafe-inline.
+            if (preg_match("/^'(?:nonce-|sha(?:256|384|512)-)[A-Za-z0-9+\/_-]+=*'$/iD", $source)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns whether script elements have a restrictive source list.
+     *
+     * @param string[]|null $sources
+     */
+    private function restrictsScripts(?array $sources): bool
+    {
+        if ($sources === null || $this->allowsInlineScripts($sources)) {
+            return false;
+        }
+
+        if (in_array("'strict-dynamic'", $sources, true)) {
+            foreach ($sources as $source) {
+                if (preg_match("/^'(?:nonce-|sha(?:256|384|512)-)[A-Za-z0-9+\/_-]+=*'$/iD", $source)) {
+                    return true;
+                }
+            }
+        }
+
+        foreach ($sources as $source) {
+            if (str_contains($source, '*') || in_array(strtolower($source), ['http:', 'https:', 'data:', 'blob:', 'filesystem:'], true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns whether framing is limited to an explicit list of origins or disallowed.
+     *
+     * @param string[] $sources
+     */
+    private function restrictsFraming(array $sources): bool
+    {
+        if ($sources === [] || $sources === ["'none'"]) {
+            return true;
+        }
+
+        foreach ($sources as $source) {
+            if ($source !== "'self'" && !preg_match('~^https?://[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?(?::[0-9]+)?/?$~iD', $source)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
