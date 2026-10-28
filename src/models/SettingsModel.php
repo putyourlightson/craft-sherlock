@@ -32,7 +32,7 @@ class SettingsModel extends Model
     public array $headerProtectionSettings = [
         'enabled' => true,
         'headers' => [
-            [true, 'Referrer-Policy', 'no-referrer-when-downgrade'],
+            [true, 'Referrer-Policy', 'strict-origin-when-cross-origin'],
             [true, 'Strict-Transport-Security', 'max-age=15552000'],
             [true, 'X-Content-Type-Options', 'nosniff'],
             [true, 'X-Frame-Options', 'SAMEORIGIN'],

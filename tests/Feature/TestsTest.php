@@ -28,6 +28,34 @@ test('Passes `https` front-end test', function() {
         ->toBeTrue();
 });
 
+test('Validates the effective referrer policy', function(string|array $value, bool $pass) {
+    Sherlock::$plugin->tests->client = new \GuzzleHttp\Client();
+    Sherlock::$plugin->tests->siteUrlResponse['headers']['Referrer-Policy'] = $value;
+    $testModel = Sherlock::$plugin->tests->runTest('referrerPolicy');
+
+    expect($testModel->pass)
+        ->toBe($pass)
+        ->and($testModel->warning)
+        ->toBe(!$pass);
+})->with([
+    'recommended policy' => ['strict-origin-when-cross-origin', true],
+    'no referrer' => ['no-referrer', true],
+    'same origin' => ['same-origin', true],
+    'strict origin' => ['strict-origin', true],
+    'missing policy' => ['', false],
+    'invalid policy' => ['invalid', false],
+    'old default' => ['no-referrer-when-downgrade', false],
+    'unsafe policy' => ['unsafe-url', false],
+    'origin on downgrade' => ['origin', false],
+    'origin on cross origin and downgrade' => ['origin-when-cross-origin', false],
+    'safe fallback' => ['no-referrer-when-downgrade, strict-origin-when-cross-origin', true],
+    'unsafe fallback' => ['no-referrer, unsafe-url', false],
+    'unknown fallback' => ['no-referrer, invalid', true],
+    'whitespace' => ["\t strict-origin-when-cross-origin ", true],
+    'multiple safe headers' => [['unsafe-url', 'no-referrer'], true],
+    'multiple unsafe headers' => [['no-referrer', 'unsafe-url'], false],
+]);
+
 test('Passes content security policy header test', function() {
     Sherlock::$plugin->tests->siteUrlResponse['headers']['Content-Security-Policy'] = "default-src 'unsafe-inline'";
     $testModel = Sherlock::$plugin->tests->runTest('contentSecurityPolicy');

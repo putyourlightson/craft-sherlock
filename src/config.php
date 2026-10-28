@@ -32,6 +32,7 @@ return [
         //'headerProtectionSettings' => [
         //    'enabled' => true,
         //    'headers' => [
+        //        [true, 'Referrer-Policy', 'strict-origin-when-cross-origin'],
         //        [true, 'Strict-Transport-Security', 'max-age=31536000'],
         //        [true, 'X-Content-Type-Options', 'nosniff'],
         //        [true, 'X-Frame-Options', 'SAMEORIGIN'],

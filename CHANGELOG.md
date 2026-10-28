@@ -2,6 +2,7 @@
 
 ## 5.3.0 - Unreleased
 
+- Changed the default `Referrer-Policy` header to `strict-origin-when-cross-origin` and updated its security test to warn about invalid or less restrictive policies.
 - Removed the obsolete `X-XSS-Protection` header test and default header ([#54](https://github.com/putyourlightson/craft-sherlock/issues/54)).
 
 ## 5.2.1 - 2026-04-14

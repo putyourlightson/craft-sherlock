@@ -493,11 +493,33 @@ class TestsService extends Component
                 break;
 
             case 'referrerPolicy':
-                $value = $this->getHeaderValue('Referrer-Policy');
+                $value = $this->getHeaderValue('Referrer-Policy', true);
+                $policy = '';
+                $validPolicies = [
+                    'no-referrer',
+                    'no-referrer-when-downgrade',
+                    'origin',
+                    'origin-when-cross-origin',
+                    'same-origin',
+                    'strict-origin',
+                    'strict-origin-when-cross-origin',
+                    'unsafe-url',
+                ];
 
-                if (empty($value)) {
+                // Browsers use the last recognised policy in a comma-separated list.
+                foreach (explode(',', $value) as $candidate) {
+                    $candidate = trim($candidate);
+
+                    if (in_array($candidate, $validPolicies, true)) {
+                        $policy = $candidate;
+                    }
+                }
+
+                if (!in_array($policy, ['no-referrer', 'same-origin', 'strict-origin', 'strict-origin-when-cross-origin'], true)) {
                     $testModel->failTest();
-                } else {
+                }
+
+                if ($value !== '') {
                     $testModel->value = '"' . $value . '"';
                 }
 
@@ -676,7 +698,7 @@ class TestsService extends Component
     /**
      * Returns a header value.
      */
-    private function getHeaderValue(string $name): string
+    private function getHeaderValue(string $name, bool $combineValues = false): string
     {
         // Use lower-case name if it exists in the header
         if (!empty($this->siteUrlResponse['headers'][strtolower($name)])) {
@@ -686,7 +708,7 @@ class TestsService extends Component
         $value = $this->siteUrlResponse['headers'][$name] ?? '';
 
         if (is_array($value)) {
-            $value = $value[0] ?? '';
+            $value = $combineValues ? implode(', ', $value) : ($value[0] ?? '');
         }
 
         // URL decode and strip tags to make it safe to output raw

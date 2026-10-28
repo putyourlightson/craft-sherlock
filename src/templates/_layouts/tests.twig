@@ -252,9 +252,9 @@
         typeName: 'HTTP Header',
         details: {
             pass: 'Referrer-Policy header is set to',
-            warning: 'Set the Referrer-Policy header',
+            warning: 'Set the Referrer-Policy header to "strict-origin-when-cross-origin", "strict-origin", "same-origin" or "no-referrer"',
         },
-        info: 'The Referrer-Policy header controls how much referrer information (sent via the Referer header) should be included with requests.',
+        info: 'The Referrer-Policy header controls how much referrer information (sent via the Referer header) should be included with requests. Use strict-origin-when-cross-origin to avoid sharing paths and query strings with other origins or sending referrer information when navigating from HTTPS to HTTP. More restrictive policies are also accepted.',
         link: {
             label: 'MDN Web Docs',
             url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy',
