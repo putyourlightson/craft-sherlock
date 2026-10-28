@@ -1,7 +1,18 @@
 <?php
 
 use craft\models\Updates;
+use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\Sherlock;
+
+class SherlockTestsServiceWithPhpVersion extends TestsService
+{
+    public string $version;
+
+    protected function getPhpVersion(): string
+    {
+        return $this->version;
+    }
+}
 
 beforeEach(function() {
     Sherlock::$plugin->settings->highSecurityLevel = true;
@@ -27,6 +38,66 @@ test('Passes `https` front-end test', function() {
     expect($testModel->pass)
         ->toBeTrue();
 });
+
+test('Checks PHP security update versions', function(string $version, bool $pass) {
+    Sherlock::$plugin->settings->highSecurityLevel = false;
+    $service = new SherlockTestsServiceWithPhpVersion([
+        'version' => $version,
+        'client' => new \GuzzleHttp\Client(),
+    ]);
+    $testModel = $service->runTest('phpSecurityUpdates');
+
+    expect($testModel->pass)
+        ->toBe($pass)
+        ->and($testModel->warning)
+        ->toBe(!$pass)
+        ->and($testModel->value)
+        ->toContain($version);
+})->with([
+    '8.2 affected' => ['8.2.34', false],
+    '8.2 fixed' => ['8.2.35', true],
+    '8.2 later' => ['8.2.36', true],
+    '8.3 affected' => ['8.3.35', false],
+    '8.3 fixed' => ['8.3.36', true],
+    '8.3 later' => ['8.3.37', true],
+    '8.4 affected' => ['8.4.26', false],
+    '8.4 fixed' => ['8.4.27', true],
+    '8.4 later' => ['8.4.28', true],
+    '8.5 affected' => ['8.5.11', false],
+    '8.5 fixed' => ['8.5.12', true],
+    '8.5 later' => ['8.5.13', true],
+    'unsupported branch' => ['8.1.34', false],
+    'unknown branch' => ['8.6.0', false],
+    'prerelease' => ['8.5.12RC1', false],
+    'vendor package needs verification' => ['8.3.6-0ubuntu0.24.04.13', false],
+]);
+
+test('Checks PHP support deadlines', function(string $version, array $thresholds, bool $pass) {
+    $settings = Sherlock::$plugin->settings;
+    $originalSettings = $settings->phpVersion;
+    $settings->phpVersion['thresholds'] = $thresholds;
+
+    try {
+        $service = new SherlockTestsServiceWithPhpVersion([
+            'version' => $version,
+            'client' => new \GuzzleHttp\Client(),
+        ]);
+        $testModel = $service->runTest('phpVersion');
+
+        expect($testModel->pass)
+            ->toBe($pass)
+            ->and($testModel->warning)
+            ->toBe(!$pass);
+    } finally {
+        $settings->phpVersion = $originalSettings;
+    }
+})->with([
+    'supported 8.4' => ['8.4.27', ['8.4' => '2999-01-01'], true],
+    'supported 8.5' => ['8.5.12', ['8.5' => '2999-01-01'], true],
+    'expired branch' => ['8.2.35', ['8.2' => '2000-01-01'], false],
+    'unknown branch' => ['8.6.0', ['8.5' => '2999-01-01'], false],
+    'two-digit minor version' => ['8.10.0', ['8.10' => '2999-01-01'], true],
+]);
 
 test('Validates the effective referrer policy', function(string|array $value, bool $pass) {
     Sherlock::$plugin->tests->client = new \GuzzleHttp\Client();

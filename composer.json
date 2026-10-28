@@ -22,6 +22,7 @@
     "bugsnag/bugsnag": "^3.29",
     "craftcms/ecs": "dev-main",
     "craftcms/phpstan": "dev-main",
+    "phpstan/phpstan": "^2.0",
     "rollbar/rollbar": "^4.0",
     "sentry/sdk": "^4.0",
     "yiisoft/yii2-redis": "^2.0",

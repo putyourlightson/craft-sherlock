@@ -77,6 +77,7 @@ class TestsService extends Component
             'craftFolderPermissions',
             'craftFoldersAboveWebRoot',
             'phpVersion',
+            'phpSecurityUpdates',
             'phpComposerVersion',
 
             // Setup
@@ -365,19 +366,30 @@ class TestsService extends Component
                 break;
 
             case 'phpVersion':
-                $version = PHP_VERSION;
-                $value = substr($version, 0, 3);
-                $eolDate = '';
+                $version = $this->getPhpVersion();
+                $branch = implode('.', array_slice(explode('.', $version), 0, 2));
+                $eolDate = $testModel->thresholds[$branch] ?? null;
 
-                if (isset($testModel->thresholds[$value])) {
-                    if (strtotime($testModel->thresholds[$value]) < time()) {
-                        $testModel->failTest();
-                    }
-
-                    $eolDate = $testModel->thresholds[$value];
+                if ($eolDate === null || strtotime($eolDate) <= time()) {
+                    $testModel->failTest();
                 }
 
                 $testModel->value = $version;
+
+                break;
+
+            case 'phpSecurityUpdates':
+                $version = $this->getPhpVersion();
+                $branch = implode('.', array_slice(explode('.', $version), 0, 2));
+                $minimumVersion = $testModel->thresholds[$branch] ?? null;
+
+                if ($minimumVersion === null || version_compare($version, $minimumVersion, '<')) {
+                    $testModel->failTest();
+                }
+
+                $testModel->value = $version . ($minimumVersion === null
+                    ? ' (no security update threshold is configured for this PHP branch)'
+                    : ' (requires ' . $minimumVersion . ' or later in this branch)');
 
                 break;
 
@@ -708,6 +720,14 @@ class TestsService extends Component
         }
 
         return $testModel;
+    }
+
+    /**
+     * Returns the PHP version used by the current process.
+     */
+    protected function getPhpVersion(): string
+    {
+        return PHP_VERSION;
     }
 
     /**
