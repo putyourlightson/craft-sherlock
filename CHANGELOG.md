@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.6.0 - 2026-10-28
+## 4.6.0 - 2026-10-30
 
 - Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.
 - Removed the obsolete `X-XSS-Protection` header test and default header ([#54](https://github.com/putyourlightson/craft-sherlock/issues/54)).
