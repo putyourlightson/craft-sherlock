@@ -243,7 +243,7 @@
 
             By enforcing a Content Security Policy, you explicitly tell the browser which types of resources (images, scripts, styles, etc.) it is allowed to load, where it may load them from (your site, external sites, etc.) and whether inline scripts and styles may be processed. Setting it up takes some time and should be done with care, but results in a very effective method of mitigating and reporting attacks.
 
-            Sherlock checks the effective restrictions on script elements, inline event handlers and eval. Review allowed script hosts carefully, and test the policy on your site.
+            Sherlock reports allowances for script elements, inline event handlers and \'unsafe-eval\' as advisory warnings that do not fail the scan. Review these allowances against your site’s requirements, and test the policy on your site.
 
             Sherlock can help you create a Content Security Policy by allowing you to set the directives and switch from reporting to enforcing when you are ready. Report-only policies always use an HTTP header. Enforced policies can use a header or meta tag, but frame-ancestors requires a header.',
         link: {
@@ -272,7 +272,7 @@
         typeName: 'HTTP Header',
         details: {
             pass: 'Referrer-Policy header is set to',
-            warning: 'Set the Referrer-Policy header to "strict-origin-when-cross-origin", "strict-origin", "same-origin" or "no-referrer"',
+            warning: 'Set the Referrer-Policy header to "strict-origin-when-cross-origin" (default), "strict-origin", "same-origin" or "no-referrer"',
         },
         info: 'The Referrer-Policy header controls how much referrer information (sent via the Referer header) should be included with requests. Use strict-origin-when-cross-origin to avoid sharing paths and query strings with other origins or sending referrer information when navigating from HTTPS to HTTP. More restrictive policies are also accepted.',
         link: {

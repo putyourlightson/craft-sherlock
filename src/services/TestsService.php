@@ -488,17 +488,17 @@ class TestsService extends Component
                     $unrestricted[] = 'inline event handlers';
                 }
                 if (!$restrictedEval) {
-                    $unrestricted[] = 'eval';
+                    $unrestricted[] = "'unsafe-eval'";
                 }
 
                 if ($policies === []) {
                     $testModel->failTest();
                     $testModel->value = 'No enforced Content-Security-Policy header or meta tag is set';
                 } elseif ($unrestricted !== []) {
-                    $testModel->failTest();
-                    $testModel->value = 'Content-Security-Policy is set but does not sufficiently restrict ' . implode(', ', $unrestricted);
+                    $testModel->warning = true;
+                    $testModel->value = 'Review Content-Security-Policy allowances for ' . implode(', ', $unrestricted);
                 } else {
-                    $testModel->value = 'Content-Security-Policy restricts script elements, inline event handlers and eval';
+                    $testModel->value = "Content-Security-Policy restricts script elements and inline event handlers, and blocks 'unsafe-eval'";
                 }
 
                 break;

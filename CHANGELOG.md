@@ -1,5 +1,10 @@
 # Release Notes for Sherlock
 
+## 5.3.1 - 2026-10-30
+
+- Changed the CSP test to warn instead of fail when a policy allows inline scripts, broad script sources or `'unsafe-eval'`.
+- Fixed a bug in which the supported PHP version periods were not updated when upgrading Sherlock.
+
 ## 5.3.0 - 2026-10-28
 
 - Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.
