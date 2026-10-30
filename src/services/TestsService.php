@@ -498,7 +498,7 @@ class TestsService extends Component
                     $testModel->warning = true;
                     $testModel->value = 'Review Content-Security-Policy allowances for ' . implode(', ', $unrestricted);
                 } else {
-                    $testModel->value = "Content-Security-Policy restricts script elements and inline event handlers, and blocks 'unsafe-eval'";
+                    $testModel->value = "Content-Security-Policy restricts script elements and inline event handlers, and blocks unsafe eval";
                 }
 
                 break;
@@ -538,7 +538,7 @@ class TestsService extends Component
                 }
 
                 if (!in_array($policy, ['no-referrer', 'same-origin', 'strict-origin', 'strict-origin-when-cross-origin'], true)) {
-                    $testModel->failTest();
+                    $testModel->warning = true;
                 }
 
                 if ($value !== '') {

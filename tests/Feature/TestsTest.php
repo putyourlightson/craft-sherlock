@@ -255,15 +255,16 @@ test('Reports CORS access for review without failing the scan', function(array $
     'lowercase header' => [['access-control-allow-origin' => '*'], true],
 ])->with([false, true]);
 
-test('Validates the effective referrer policy', function(string|array $value, bool $pass) {
+test('Validates the effective referrer policy', function(string|array $value, bool $recommended, bool $highSecurityLevel) {
+    Sherlock::$plugin->settings->highSecurityLevel = $highSecurityLevel;
     Sherlock::$plugin->tests->client = new Client();
     Sherlock::$plugin->tests->siteUrlResponse['headers']['Referrer-Policy'] = $value;
     $testModel = Sherlock::$plugin->tests->runTest('referrerPolicy');
 
     expect($testModel->pass)
-        ->toBe($pass)
+        ->toBeTrue()
         ->and($testModel->warning)
-        ->toBe(!$pass);
+        ->toBe(!$recommended);
 })->with([
     'recommended policy' => ['strict-origin-when-cross-origin', true],
     'no referrer' => ['no-referrer', true],
@@ -281,7 +282,7 @@ test('Validates the effective referrer policy', function(string|array $value, bo
     'whitespace' => ["\t strict-origin-when-cross-origin ", true],
     'multiple safe headers' => [['unsafe-url', 'no-referrer'], true],
     'multiple unsafe headers' => [['no-referrer', 'unsafe-url'], false],
-]);
+])->with([false, true]);
 
 test('Validates the HSTS max-age', function(string|array $value, bool $pass) {
     Sherlock::$plugin->tests->client = new Client();
