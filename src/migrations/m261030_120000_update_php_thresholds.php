@@ -4,8 +4,9 @@ namespace putyourlightson\sherlock\migrations;
 
 use Craft;
 use craft\db\Migration;
+use craft\helpers\ProjectConfig;
 
-class m261030_120000_update_php_support_thresholds extends Migration
+class m261030_120000_update_php_thresholds extends Migration
 {
     /**
      * @inheritdoc
@@ -13,8 +14,9 @@ class m261030_120000_update_php_support_thresholds extends Migration
     public function safeUp(): bool
     {
         $projectConfig = Craft::$app->getProjectConfig();
-        $path = 'plugins.sherlock.settings.phpVersion.thresholds';
-        $thresholds = $projectConfig->get($path) ?? [];
+        $path = 'plugins.sherlock.settings.phpVersion';
+        $settings = ProjectConfig::unpackAssociativeArray($projectConfig->get($path) ?? []);
+        $thresholds = $settings['thresholds'] ?? [];
         $updatedThresholds = array_replace($thresholds, [
             '8.2' => '2027-01-01',
             '8.3' => '2028-01-01',
@@ -23,7 +25,8 @@ class m261030_120000_update_php_support_thresholds extends Migration
         ]);
 
         if ($updatedThresholds !== $thresholds) {
-            $projectConfig->set($path, $updatedThresholds);
+            $settings['thresholds'] = $updatedThresholds;
+            $projectConfig->set($path, ProjectConfig::packAssociativeArray($settings));
         }
 
         return true;
