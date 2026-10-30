@@ -488,7 +488,7 @@ class TestsService extends Component
                     $unrestricted[] = 'inline event handlers';
                 }
                 if (!$restrictedEval) {
-                    $unrestricted[] = "'unsafe-eval'";
+                    $unrestricted[] = 'unsafe eval';
                 }
 
                 if ($policies === []) {
