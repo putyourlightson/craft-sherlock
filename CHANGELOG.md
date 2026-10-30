@@ -4,7 +4,7 @@
 
 - Changed the CSP test to warn instead of fail when a policy allows inline scripts, broad script sources or unsafe eval.
 - Changed the Referrer-Policy test to warn instead of fail when the header is missing or does not use a recommended policy.
-- Fixed a bug in which the supported PHP version periods were not updated when upgrading Sherlock.
+- Fixed a bug in which some project config settings were not updated when upgrading Sherlock.
 
 ## 5.3.0 - 2026-10-28
 
