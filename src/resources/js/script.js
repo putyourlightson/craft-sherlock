@@ -32,13 +32,14 @@ $(document).ready(function()
         $('.running').show();
         $('.running #graphic').addClass('spinner')
 
-        $.get($(this).attr('data-url'), function() {
+        $.getJSON($(this).attr('data-url'), function() {
                 location.reload();
             })
             .fail(function(xhr) {
-                const error = xhr.responseText.replace(/<\/?pre>/gi, '');
+                const text = $('.running #text');
+                const error = xhr.responseJSON?.message || text.attr('data-error');
                 $('.running #graphic').addClass('error').removeClass('spinner');
-                $('.running #text').addClass('error').html(error);
+                text.addClass('error').text(error);
                 $('.running #back').show();
             });
     });

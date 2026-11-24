@@ -146,6 +146,7 @@
             • PHP 8.3 receives security support until 31 December 2027.
             • PHP 8.4 receives security support until 31 December 2028.
             • PHP 8.5 receives security support until 31 December 2029.
+            • PHP 8.6 receives security support until 31 December 2030.
 
             Running a version of PHP that is no longer receiving security support may put your site at serious risk.',
         link: {
@@ -158,15 +159,15 @@
         type: 'code',
         typeName: 'Server Language',
         details: {
-            pass: 'PHP meets the configured security update threshold',
+            pass: 'PHP meets the minimum security patch version',
             warning: 'Update PHP',
         },
-        info: 'PHP2Shell (CVE-2026-109618 and CVE-2026-109619) can allow unauthenticated remote code execution in PHP itself. The upstream fixes are PHP 8.2.35, 8.3.36, 8.4.27 and 8.5.12. Updating Craft or its plugins does not fix the PHP runtime.
+        info: 'The PHP releases published on 19 November 2026 include fixes for critical security issues. The upstream minimums for this check are PHP 8.2.36, 8.3.37, 8.4.28, 8.5.13 and 8.6.0.
 
-            This check compares the PHP version running the scan with the configured minimum for its branch. Distribution packages may include backported fixes without changing the upstream version. Confirm these fixes with your hosting provider before overriding the thresholds. A command-line scan checks the CLI runtime, which may differ from the web runtime.',
+            This check compares the PHP version running the scan with the upstream minimum for its branch. Distribution packages may include backported fixes without changing the upstream version. A command-line scan checks the CLI runtime, which may differ from the web runtime.',
         link: {
-            label: 'PHP Security Advisory',
-            url: 'https://www.php.net/archive/2026.php#2026-10-21-5',
+            label: 'PHP 8 Changelog',
+            url: 'https://www.php.net/ChangeLog-8.php',
         },
     },
     phpComposerVersion: {

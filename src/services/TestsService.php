@@ -18,6 +18,8 @@ use DOMDocument;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TooManyRedirectsException;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\UriInterface;
@@ -25,7 +27,7 @@ use putyourlightson\sherlock\events\RunTestsEvent;
 use putyourlightson\sherlock\models\TestModel;
 use putyourlightson\sherlock\Sherlock;
 use yii\base\Event;
-use yii\web\NotFoundHttpException;
+use yii\web\HttpException;
 
 /**
  * Tests Service
@@ -38,6 +40,29 @@ class TestsService extends Component
      * @event RunTestsEvent
      */
     public const EVENT_BEFORE_RUN_TESTS = 'beforeRunTests';
+
+    /**
+     * First day after each branch’s upstream security support ends.
+     * @link https://www.php.net/supported-versions.php
+     */
+    private const PHP_EOL_DATES = [
+        '8.2' => '2027-01-01',
+        '8.3' => '2028-01-01',
+        '8.4' => '2029-01-01',
+        '8.5' => '2030-01-01',
+        '8.6' => '2031-01-01',
+    ];
+
+    /**
+     * @link https://www.php.net/archive/2026.php
+     */
+    private const PHP_SECURITY_UPDATE_THRESHOLDS = [
+        '8.2' => '8.2.36',
+        '8.3' => '8.3.37',
+        '8.4' => '8.4.28',
+        '8.5' => '8.5.13',
+        '8.6' => '8.6.0',
+    ];
 
     /**
      * @var Client|null
@@ -171,12 +196,27 @@ class TestsService extends Component
             $this->siteUrlResponse['headers'] = $response->getHeaders();
             $this->siteUrlResponse['body'] = $response->getBody()->getContents();
         } catch (GuzzleException $exception) {
-            $message = Craft::t('sherlock', 'Unable to connect to "{url}". Please ensure that the site is reachable and that the system is turned on.', ['url' => $this->siteUrl]);
+            $status = $exception instanceof RequestException ? $exception->getResponse()?->getStatusCode() : null;
+            $context = $exception instanceof RequestException || $exception instanceof ConnectException
+                ? $exception->getHandlerContext()
+                : [];
+            $reason = match (true) {
+                $exception instanceof TooManyRedirectsException => Craft::t('sherlock', 'The request followed too many redirects.'),
+                $status !== null && $status >= 400 => Craft::t('sherlock', 'The request returned HTTP {status}.', ['status' => $status]),
+                default => match ($context['errno'] ?? null) {
+                    5, 6 => Craft::t('sherlock', 'A DNS lookup failed.'),
+                    7 => Craft::t('sherlock', 'The connection could not be established.'),
+                    28 => Craft::t('sherlock', 'The request timed out.'),
+                    35, 60 => Craft::t('sherlock', 'The TLS connection failed.'),
+                    default => Craft::t('sherlock', 'The request failed.'),
+                },
+            };
+            $message = Craft::t('sherlock', 'Sherlock could not load the site’s base URL. {reason} See the Sherlock log for details.', ['reason' => $reason]);
 
             Sherlock::$plugin->log($message);
             Sherlock::$plugin->log($exception->getMessage());
 
-            throw new NotFoundHttpException($message);
+            throw new HttpException(502, $message);
         }
     }
 
@@ -218,32 +258,41 @@ class TestsService extends Component
                 $criticalPluginUpdates = [];
 
                 if (!empty($this->updates->plugins)) {
+                    $plugins = Craft::$app->getPlugins();
                     foreach ($this->updates->plugins as $handle => $update) {
                         if ($update->getHasCritical()) {
-                            /** @var Plugin $plugin */
-                            $plugin = Craft::$app->getPlugins()->getPlugin($handle);
+                            /** @var Plugin|null $plugin */
+                            $plugin = $plugins->getPlugin($handle);
+                            $disabled = $plugin === null && $plugins->isPluginDisabled($handle);
+                            $pluginLabel = $plugin === null
+                                ? Html::encode($handle)
+                                : Html::a($plugin->name, $plugin->changelogUrl, ['target' => '_blank']);
+
+                            if ($disabled) {
+                                $name = $plugins->getComposerPluginInfo($handle)['name'] ?? $handle;
+                                $pluginLabel = Html::encode(Craft::t('sherlock', '{plugin} (disabled)', ['plugin' => $name]));
+                            }
 
                             foreach ($update->releases as $release) {
                                 if ($release->critical) {
-                                    $criticalPluginUpdates[] = Html::a(
-                                            $plugin->name,
-                                            $plugin->changelogUrl,
-                                            ['target' => '_blank'],
-                                        ) . Html::tag(
+                                    $criticalPluginUpdates[] = $pluginLabel . Html::tag(
                                             'span',
                                             'Version ' . $release->version . ' is a critical update, released on ' . $this->formatDate($release->date) . '.',
                                             ['class' => 'info']
                                         );
+
+                                    if ($disabled) {
+                                        $testModel->warning = true;
+                                    } else {
+                                        $testModel->failTest();
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
-                if (!empty($criticalPluginUpdates)) {
-                    $testModel->failTest();
-                    $testModel->value = implode(' , ', $criticalPluginUpdates);
-                }
+                $testModel->value = implode(' , ', $criticalPluginUpdates);
 
                 break;
 
@@ -368,7 +417,7 @@ class TestsService extends Component
             case 'phpVersion':
                 $version = $this->getPhpVersion();
                 $branch = implode('.', array_slice(explode('.', $version), 0, 2));
-                $eolDate = $testModel->thresholds[$branch] ?? null;
+                $eolDate = self::PHP_EOL_DATES[$branch] ?? null;
 
                 if ($eolDate === null || strtotime($eolDate) <= time()) {
                     $testModel->failTest();
@@ -381,14 +430,14 @@ class TestsService extends Component
             case 'phpSecurityUpdates':
                 $version = $this->getPhpVersion();
                 $branch = implode('.', array_slice(explode('.', $version), 0, 2));
-                $minimumVersion = $testModel->thresholds[$branch] ?? null;
+                $minimumVersion = self::PHP_SECURITY_UPDATE_THRESHOLDS[$branch] ?? null;
 
                 if ($minimumVersion === null || version_compare($version, $minimumVersion, '<')) {
                     $testModel->failTest();
                 }
 
                 $testModel->value = $version . ($minimumVersion === null
-                        ? ' (no security update threshold is configured for this PHP branch)'
+                        ? ' (this PHP branch has no known minimum security patch version)'
                         : ' (requires ' . $minimumVersion . ' or later)');
 
                 break;

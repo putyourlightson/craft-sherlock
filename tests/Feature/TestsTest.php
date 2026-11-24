@@ -1,6 +1,9 @@
 <?php
 
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\models\Updates;
+use craft\services\Plugins;
+use craft\services\ProjectConfig;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -8,6 +11,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use putyourlightson\sherlock\migrations\m261124_120000_remove_saved_php_thresholds;
 use putyourlightson\sherlock\services\TestsService;
 use putyourlightson\sherlock\Sherlock;
 
@@ -31,6 +35,35 @@ beforeEach(function() {
     Craft::setAlias('@web', 'https://putyourlightson.com');
     Sherlock::$plugin->tests->siteUrl = 'https://putyourlightson.com';
 });
+
+test('Reports critical plugin updates according to plugin status', function(array $handles, bool $pass, array $labels) {
+    $plugins = $this->createMock(Plugins::class);
+    $plugins->method('getPlugin')->willReturnMap([['sherlock', Sherlock::$plugin]]);
+    $plugins->method('isPluginDisabled')->willReturnCallback(fn(string $handle): bool => $handle === 'disabled-plugin');
+    $plugins->method('getComposerPluginInfo')->with('disabled-plugin')->willReturn(['name' => 'Disabled Plugin']);
+    $releases = ['releases' => [['version' => '1.2.3', 'critical' => true]]];
+    $service = new TestsService([
+        'client' => new Client(),
+        'updates' => new Updates(['plugins' => array_fill_keys($handles, $releases)]),
+    ]);
+    $originalPlugins = Craft::$app->getPlugins();
+    Craft::$app->set('plugins', $plugins);
+
+    try {
+        $result = $service->runTest('criticalPluginUpdates');
+
+        expect($result->pass)->toBe($pass)
+            ->and($result->warning)->toBeTrue()
+            ->and($result->value)->toContain('1.2.3', ...$labels);
+    } finally {
+        Craft::$app->set('plugins', $originalPlugins);
+    }
+})->with([
+    'disabled' => [['disabled-plugin'], true, ['Disabled Plugin (disabled)']],
+    'enabled' => [['sherlock'], false, ['Sherlock']],
+    'enabled and disabled' => [['sherlock', 'disabled-plugin'], false, ['Sherlock', 'Disabled Plugin (disabled)']],
+    'unavailable with unknown status' => [['unavailable-plugin'], false, ['unavailable-plugin']],
+]);
 
 test('Checks HTTPS enforcement without accepting unrelated request failures', function(array $responses, bool $pass, string $message, string $test) {
     $queue = [];
@@ -176,43 +209,91 @@ test('Checks secure cookie HTTPS detection', function(bool|string $value, ?bool 
     'unsupported truthy value' => ['invalid', true, false],
 ]);
 
-test('Checks PHP security update versions', function(string $version, bool $pass) {
+test('Removes all saved PHP thresholds without changing other settings', function() {
+    $path = 'plugins.sherlock.settings';
+    $stored = ProjectConfigHelper::packAssociativeArrays([
+        'phpVersion' => ['canFail' => false, 'thresholds' => [
+            '8.2' => '2027-01-01',
+            '8.4' => '2029-07-01',
+        ]],
+        'phpSecurityUpdates' => ['forceFail' => true, 'thresholds' => [
+            '8.4' => '8.4.29',
+            '8.5' => '8.5.12',
+        ]],
+        'monitor' => false,
+    ]);
+    $projectConfig = $this->createMock(ProjectConfig::class);
+    $projectConfig->method('get')->with($path)->willReturnCallback(function() use (&$stored): array {
+        return $stored;
+    });
+    $projectConfig->expects($this->once())->method('set')->with($path)->willReturnCallback(function(string $path, array $value) use (&$stored): bool {
+        $stored = $value;
+
+        return true;
+    });
+    $originalProjectConfig = Craft::$app->getProjectConfig();
+    $db = Craft::$app->getDb();
+    Craft::$app->set('projectConfig', $projectConfig);
+
+    try {
+        $migration = new m261124_120000_remove_saved_php_thresholds(['db' => $db]);
+        expect($migration->safeUp())->toBeTrue();
+        expect($migration->safeUp())->toBeTrue();
+        expect(ProjectConfigHelper::unpackAssociativeArrays($stored))->toBe([
+            'phpVersion' => ['canFail' => false],
+            'phpSecurityUpdates' => ['forceFail' => true],
+            'monitor' => false,
+        ]);
+    } finally {
+        Craft::$app->set('projectConfig', $originalProjectConfig);
+    }
+});
+
+test('Checks PHP security update versions', function(string $version, bool $pass, array $overrides = []) {
     Sherlock::$plugin->settings->highSecurityLevel = false;
+    $settings = Sherlock::$plugin->settings;
+    $originalPhpSecurityUpdates = $settings->phpSecurityUpdates;
+    $settings->phpSecurityUpdates = ['forceFail' => true, 'thresholds' => $overrides];
     $service = new SherlockTestsServiceWithPhpVersion([
         'version' => $version,
         'client' => new Client(),
     ]);
-    $testModel = $service->runTest('phpSecurityUpdates');
 
-    expect($testModel->pass)
-        ->toBe($pass)
-        ->and($testModel->warning)
-        ->toBe(!$pass)
-        ->and($testModel->value)
-        ->toContain($version);
+    try {
+        $testModel = $service->runTest('phpSecurityUpdates');
+
+        expect($testModel->pass)
+            ->toBe($pass)
+            ->and($testModel->warning)
+            ->toBe(!$pass)
+            ->and($testModel->value)
+            ->toContain($version);
+    } finally {
+        $settings->phpSecurityUpdates = $originalPhpSecurityUpdates;
+    }
 })->with([
-    '8.2 affected' => ['8.2.34', false],
-    '8.2 fixed' => ['8.2.35', true],
-    '8.2 later' => ['8.2.36', true],
-    '8.3 affected' => ['8.3.35', false],
-    '8.3 fixed' => ['8.3.36', true],
-    '8.3 later' => ['8.3.37', true],
-    '8.4 affected' => ['8.4.26', false],
-    '8.4 fixed' => ['8.4.27', true],
-    '8.4 later' => ['8.4.28', true],
-    '8.5 affected' => ['8.5.11', false],
-    '8.5 fixed' => ['8.5.12', true],
-    '8.5 later' => ['8.5.13', true],
+    '8.2 previous patch' => ['8.2.35', false],
+    '8.2 minimum' => ['8.2.36', true],
+    '8.3 previous patch' => ['8.3.36', false],
+    '8.3 minimum' => ['8.3.37', true],
+    '8.4 previous patch' => ['8.4.27', false],
+    '8.4 minimum' => ['8.4.28', true],
+    '8.5 previous patch' => ['8.5.12', false],
+    '8.5 minimum' => ['8.5.13', true],
+    '8.6 minimum' => ['8.6.0', true],
+    '8.6 later' => ['8.6.1', true],
     'unsupported branch' => ['8.1.34', false],
-    'unknown branch' => ['8.6.0', false],
-    'prerelease' => ['8.5.12RC1', false],
+    'unknown branch' => ['8.7.0', false],
+    'prerelease' => ['8.6.0RC1', false],
+    'configured threshold cannot lower the minimum' => ['8.5.12', false, ['8.5' => '8.5.12']],
+    'configured threshold cannot raise the minimum' => ['8.5.13', true, ['8.5' => '8.5.14']],
     'vendor package needs verification' => ['8.3.6-0ubuntu0.24.04.13', false],
 ]);
 
 test('Checks PHP support deadlines', function(string $version, array $thresholds, bool $pass) {
     $settings = Sherlock::$plugin->settings;
     $originalSettings = $settings->phpVersion;
-    $settings->phpVersion['thresholds'] = $thresholds;
+    $settings->phpVersion = ['canFail' => true, 'thresholds' => $thresholds];
 
     try {
         $service = new SherlockTestsServiceWithPhpVersion([
@@ -229,11 +310,13 @@ test('Checks PHP support deadlines', function(string $version, array $thresholds
         $settings->phpVersion = $originalSettings;
     }
 })->with([
-    'supported 8.4' => ['8.4.27', ['8.4' => '2999-01-01'], true],
-    'supported 8.5' => ['8.5.12', ['8.5' => '2999-01-01'], true],
-    'expired branch' => ['8.2.35', ['8.2' => '2000-01-01'], false],
-    'unknown branch' => ['8.6.0', ['8.5' => '2999-01-01'], false],
-    'two-digit minor version' => ['8.10.0', ['8.10' => '2999-01-01'], true],
+    'supported 8.4' => ['8.4.27', [], time() < strtotime('2029-01-01')],
+    'supported 8.5' => ['8.5.13', [], time() < strtotime('2030-01-01')],
+    'expired branch' => ['8.1.34', ['8.1' => '2999-01-01'], false],
+    'PHP 8.6 uses the built-in date' => ['8.6.0', [], time() < strtotime('2031-01-01')],
+    'configured PHP 8.6 date is ignored' => ['8.6.0', ['8.6' => '2000-01-01'], time() < strtotime('2031-01-01')],
+    'unknown branch' => ['8.7.0', [], false],
+    'configured unknown branch remains unsupported' => ['8.10.0', ['8.10' => '2999-01-01'], false],
 ]);
 
 test('Reports CORS access for review without failing the scan', function(array $headers, bool $warning, bool $highSecurityLevel) {
