@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.6.1 - 2026-11-25
+
+- Fixed a bug in which updating Sherlock could fail when Project Config was read-only.
+
 ## 4.6.0 - 2026-10-30
 
 - Added PHP 8.4 and 8.5 security support thresholds and a critical PHP security update test for PHP2Shell.

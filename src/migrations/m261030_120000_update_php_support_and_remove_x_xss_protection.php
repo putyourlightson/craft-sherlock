@@ -14,6 +14,12 @@ class m261030_120000_update_php_support_and_remove_x_xss_protection extends Migr
     public function safeUp(): bool
     {
         $projectConfig = Craft::$app->getProjectConfig();
+
+        $schemaVersion = $projectConfig->get('plugins.sherlock.schemaVersion', true);
+        if (version_compare($schemaVersion ?? '0', '4.6.0', '>=')) {
+            return true;
+        }
+
         $path = 'plugins.sherlock.settings';
         $settings = ProjectConfig::unpackAssociativeArrays($projectConfig->get($path) ?? []);
         $settings['phpVersion']['thresholds'] = [
