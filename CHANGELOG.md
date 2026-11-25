@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.7.0 - 2026-11-25
+
+- Added PHP 8.6 to the PHP version and security updates checks.
+- Updated the minimum PHP patch versions to 8.2.36, 8.3.37, 8.4.28 and 8.5.13 for the corresponding branches.
+- Made PHP end-of-life dates and minimum patch versions built-in.
+- Changed critical updates for disabled plugins to warnings.
+- Improved the error message shown when Sherlock cannot load the site’s base URL during a scan ([#50](https://github.com/putyourlightson/craft-sherlock/issues/50)).
+- Fixed a scan error when Craft reported a critical update for a plugin that Sherlock could not load.
+
 ## 4.6.1 - 2026-11-25
 
 - Fixed a bug in which updating Sherlock could fail when Project Config was read-only.
